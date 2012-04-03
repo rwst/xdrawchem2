@@ -13,7 +13,8 @@ developing, we will commit ourselves to recreate full functionality,
 to clean up inconsistencies, and possibly implement new functionality
 with an eye on ease of usability.
 
-Please see the Wiki pages on github on what the plan is in
+Please see the [Wiki pages on github]: https://github.com/rwst/xdrawchem2/wiki
+on what the plan is in
 detail, and what the progress is. The progress can be followed,
 of course, by cloning the repo. If you have issues after that,
 please use the tracker. Ideally, we want to publish the first
