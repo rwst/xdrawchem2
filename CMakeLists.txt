@@ -1,16 +1,18 @@
+cmake_minimum_required(VERSION 2.6)
 project(xdrawchem)
 
 set( CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/modules )
+set(openbabel_DIR ./ )
 
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set( CMAKE_COLOR_MAKEFILE ON )
 
-SET(QT_USE_QT3SUPPORT TRUE)
+SET(QT_USE_QT3SUPPORT FALSE)
 SET(QT_USE_QTNETWORK TRUE)
 SET(QT_USE_QTXML TRUE)
 
 find_package( Qt4 REQUIRED )
-find_package( Openbabel REQUIRED )
+#find_package( openbabel REQUIRED )
 
 CONFIGURE_FILE( ${CMAKE_CURRENT_SOURCE_DIR}/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config.h )
 
