@@ -1,3 +1,29 @@
+**XDrawChem2**
+
+XDrawChem2 is the effort of fully porting XDrawChem-1.99
+to the Qt4 platform. XDrawChem-1 was a Qt3 application for
+drawing 2D chemical structures and reaction diagrams; its
+development by Bryan Herger ceased in 2005. However, Gerd
+Fleischer started porting in 2006, up to successful compile
+under Qt4. Nevertheless, the application is not fully functional
+at the moment.
+
+As the codebase, though old, is worth keeping and further
+developing, we will commit ourselves to recreate full functionality,
+to clean up inconsistencies, and possibly implement new functionality
+with an eye on ease of usability.
+
+Please see the Wiki pages on github on what the plan is in
+detail, and what the progress is. The progress can be followed,
+of course, by cloning the repo. If you have issues after that,
+please use the tracker. Ideally, we want to publish the first
+working version on Sourceforge. It should be a positive surprise
+for the maintainer.
+
+R.W.S., March 2012
+
+* * * * *
+
 Welcome to XDrawChem! (version 1.9.9)
 
 Mostly written by Bryan Herger, bherger@users.sourceforge.net
