@@ -45,7 +45,7 @@ if [  "$ONLY_HELP" == "no" ] ; then
 	echo "PREFIX = $PREFIX" >> config.mak
 	echo -e "\nWill install in $PREFIX."
 	echo -n "Creating Makefiles..."
-	qmake4 -o Makefile xdrawchem.pro
+	qmake -o Makefile xdrawchem.pro
 	echo -e " done.\n"
 fi
 
