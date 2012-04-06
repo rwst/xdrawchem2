@@ -49,7 +49,7 @@ void Molecule::SDG( bool coord )
 
     // get unique points
     up = AllPoints();
-    QVector < Atom * >atoms( up.count() );
+    QVector < Atom * >atoms;
 
     // clear "hit" flag on all atoms
     foreach ( tmp_pt, up )
@@ -249,7 +249,6 @@ void Molecule::FromSMILES( QString sm )
     // now convert the molecule into XDC's internal representation
 
     OpenBabel::OBAtom * thisAtom;
-    //int i;
 
     std::vector < DPoint * >avec;
 
@@ -261,15 +260,15 @@ void Molecule::FromSMILES( QString sm )
 
     std::vector < OpenBabel::OBNodeBase * >::iterator ait;
 
-    //i = 0;
+    int i = 0;
 
     std::map < OpenBabel::OBAtom *, DPoint * >hashit;
 
     for ( thisAtom = myMol.BeginAtom( ait ); thisAtom; thisAtom = myMol.NextAtom( ait ) ) {
 
-        //qDebug() << "Adding OBAtom: " << i++ << " of element#: " <<
-        //thisAtom->GetAtomicNum() << " type: " <<
-        //  etable.GetSymbol(thisAtom->GetAtomicNum()) ;
+        qDebug() << "Adding OBAtom: " << i++ << " of element#: " <<
+        thisAtom->GetAtomicNum() << " type: " <<
+          etable.GetSymbol(thisAtom->GetAtomicNum()) ;
         thisDPoint = new DPoint;
         tmp_element = etable.GetSymbol( thisAtom->GetAtomicNum() );
 
