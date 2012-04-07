@@ -1,0 +1,6 @@
+Version 2.0-pre1
+================
+o fix CMakefile anachronisms
+o fix simple SMILES input segfault (still does not work in general)
+
+
