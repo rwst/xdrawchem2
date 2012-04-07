@@ -179,8 +179,8 @@ class Ring : public QVector<Atom *>
       for (int g = 0; g < size()-1; g++) {
 	if ((at(g))->number < (at(f))->number) {
 	  tmp = at(f);
-	  insert(f, at(g));
-	  insert(g, tmp);
+	  replace(f, at(g));
+	  replace(g, tmp);
 	}
       }
     }
@@ -192,8 +192,8 @@ class Ring : public QVector<Atom *>
     for (int f = 0; f < times; f++){
       Atom *n = at(0);
       for (int g = 0; g < size() - 1; g++)
-	insert(g, at(g+1));
-      insert(size() - 1, n);
+	replace(g, at(g+1));
+      replace(size() - 1, n);
     }
   }
 
@@ -202,9 +202,9 @@ class Ring : public QVector<Atom *>
     for (int f = 0; f < times; f++){
       Atom *n = at(size()-1);
       for (int g = size()-1; g > 0; g--) {
-	insert(g, at(g-1));
+	replace(g, at(g-1));
       }
-      insert(0, n);
+      replace(0, n);
     }
   }
 
@@ -214,8 +214,8 @@ class Ring : public QVector<Atom *>
     int oldsize = size() / 2;
     for(int f = 0; f < oldsize; f++){
       t = at(f);
-      insert(f, at(size() - 1 -f));
-      insert(size() - 1 - f, t);
+      replace(f, at(size() - 1 -f));
+      replace(size() - 1 - f, t);
     }
     //resize(oldsize);
   }
@@ -290,8 +290,8 @@ class Ring : public QVector<Atom *>
       to =  at(size()-1);
     }
     QVector<Atom *> ret(2);
-    ret.insert(0, from);
-    ret.insert(1, to);
+    ret.replace(0, from);
+    ret.replace(1, to);
     return ret;
   }
 };
