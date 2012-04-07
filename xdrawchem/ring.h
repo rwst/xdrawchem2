@@ -64,6 +64,8 @@ class Ring : public QVector<Atom *>
     aromatic = false;
   }
 
+  Ring(QVector<Atom*>v):QVector<Atom*>(v) {}
+
   /** Returns a String with a sorted list of nodes numbers */
   QString getSortedString(){
     QString s = "", n1;
