@@ -48,8 +48,9 @@ class setOfRings : public QVector<Ring *>
     qDebug() << "setOfRings::addElement:" << new1->getSortedString() ;
     if (new1->isValid() == false) return;
     new1->serial = size();
-    resize(size() + 1);
-    insert(size() - 1, new1);
+    // QVector is not a static object!
+    // resize(size() + 1);
+    insert(size()>0?size() - 1:0, new1);
   }
 
   /** Checks - and returns 'true' - if a certain ring is
@@ -60,13 +61,12 @@ class setOfRings : public QVector<Ring *>
     s1 = r->getSortedString();
 
     //		System.out.println(this.size());
-    for (int f = 0; f < size(); f++){
+   for (int f = 0; f < size(); f++){
       ring = at(f);
-
       s2 = ring->getSortedString();
       //qDebug() << s1 << "-vs-" << s2 ;
       if (s1 == s2){
-	return true;
+        return true;
       }
     }
     return false;
@@ -129,8 +129,8 @@ class setOfRings : public QVector<Ring *>
   void swap(int i, int j){
     Ring *r;
     r = at(i);
-    insert(i, at(j));
-    insert(j, r);
+    replace(i, at(j));
+    replace(j, r);
   }
 
   /** Lists the rings in this set to the console */
