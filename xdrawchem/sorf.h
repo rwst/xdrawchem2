@@ -313,10 +313,10 @@ class SetOfRingsFinder
 	     a Vector with numbers of nodes */
 
   Ring *prepareRing(QList<Atom *> vec, QVector<Atom *> tempAtomSet)	{
-    Ring *r = new Ring(vec.count());
-    for (int f = 0; f < vec.count(); f++){
-      r[f] = vec.at(f);
-    }
+      Ring *r = new Ring(QVector<Atom*>::fromList(vec));
+//    for (int f = 0; f < vec.count(); f++){
+//      r[f] = vec.at(f);
+//    }
     r->sort();
     return r;
   }
