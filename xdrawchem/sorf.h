@@ -42,7 +42,7 @@ class DataStructureTools {
       int f;
       for (f = 0; f < thisSet.size(); f++)
 	{
-	  newAtomSet.insert(f, thisSet[f]->clone());
+	  newAtomSet[f] = thisSet[f]->clone();
 	}
       for (f = 0; f < thisSet.size(); f++)
 	{
@@ -220,7 +220,7 @@ class SetOfRingsFinder
     // I think Qt does this for us; we're not using Vectors anyway.
     int f;
     for (f = 0; f < OKatoms; f++){
-      path.insert(f, new QList<Atom *>);
+      path[f] = new QList<Atom *>;
     }
     // Initialize the queue with nodes attached to rootNode
     for (f = 0; f < rootNode->degree; f++){
@@ -315,7 +315,7 @@ class SetOfRingsFinder
   Ring *prepareRing(QList<Atom *> vec, QVector<Atom *> tempAtomSet)	{
     Ring *r = new Ring(vec.count());
     for (int f = 0; f < vec.count(); f++){
-      r->insert(f, vec.at(f));
+      r[f] = vec.at(f);
     }
     r->sort();
     return r;
