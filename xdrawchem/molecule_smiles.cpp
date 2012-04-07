@@ -49,7 +49,7 @@ void Molecule::SDG( bool coord )
 
     // get unique points
     up = AllPoints();
-    QVector < Atom * >atoms;
+    QVector < Atom * >atoms (up.count());
 
     // clear "hit" flag on all atoms
     foreach ( tmp_pt, up )
@@ -77,7 +77,7 @@ void Molecule::SDG( bool coord )
         a1->number = tmp_pt->serial;
         a1->degree = tmp_pt->neighbors.count();
         //qDebug() << c1 << "-degree-" << a1->degree ;
-        atoms.insert( c1, a1 );
+        atoms[c1] = a1;
     }
     // now build connectivity table
     for ( c1 = 0; c1 < up.count(); c1++ ) {
