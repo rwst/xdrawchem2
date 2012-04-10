@@ -26,8 +26,9 @@ unix {
   doc.path = $${PREFIX}/share/xdrawchem2/doc
   doc.files = doc/*
   INSTALLS += ringdir doc
-  QMAKE_CXXFLAGS_DEBUG += -O0
+  QMAKE_CXXFLAGS_DEBUG += -O2
   QMAKE_CXXFLAGS_DEBUG += -g3
+  QMAKE_CXXFLAGS_DEBUG += -march=amdfam10
 }
 
 DEFINES += QT_NO_CAST_TO_ASCII
