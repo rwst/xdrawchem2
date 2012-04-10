@@ -69,7 +69,7 @@ Render2D::Render2D( QWidget * parent )
     font_size_kludge = false;
     hotkeymode = false;
     hkprevmode = 0;
-    painter = new QPainter;
+    painter = NULL;  // make sure we only paint inside an event
     createGrid();
 
     // set printing defaults
@@ -327,6 +327,9 @@ void Render2D::setMode_DrawCurveArrow( curveArrowType type )
     case ccw270Arrow:
         symbolfile = QString::fromLatin1( "CCW270" );
         break;
+    default:
+        qDebug() << "Unhandled case in Render2D::setMode_DrawCurveArrow(): " << type;
+        exit(1);
     }
     setCursor( Qt::CrossCursor );
     c->DeselectAll();

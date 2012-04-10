@@ -1878,29 +1878,25 @@ void Render2D::paintEvent( QPaintEvent * )
     //drawFillBox(QPoint(0,0), QPoint(renderWidth, renderHeight), bgcolor);
 
     // initialize global painter object
+    QPainter p;
     if ( outputDevice == OUTPUT_PRINTER ) {
         qDebug() << "printer";
-        painter->begin( printer );
+        p.begin( printer );
     } else if ( outputDevice == OUTPUT_SCREEN ) {
         qDebug() << "screen";
-        if ( directdraw ) {
-            qDebug() << "attempt to directdraw!";
-            painter->begin( this );
-        } else {
-            qDebug() << "paintEvent painter begin";
-            painter->begin( this );
-        }
+        p.begin(this);
+
         ///TODO: make that an option
-        painter->setRenderHint( QPainter::Antialiasing, true );
+        p.setRenderHint( QPainter::Antialiasing, true );
     }
     // clear buffer pixmap
     dbuffer.fill( bgcolor );
     // draw grid as needed
 
     if ( preferences.getDrawGrid() == GRID_SQUARE || preferences.getDrawGrid() == GRID_HEX )
-        painter->drawPixmap( 0, 0, grid );
+        p.drawPixmap( 0, 0, grid );
 
-    painter->scale( zoomFactor, zoomFactor );
+    p.scale( zoomFactor, zoomFactor );
 
     // draw all data
     c->drawAll();
@@ -1974,7 +1970,6 @@ void Render2D::paintEvent( QPaintEvent * )
 //    bitBlt(this, 0, 0, &dbuffer);
     finishedPainting = true;
     qDebug() << "paintEvent painter end";
-    painter->end();
 }
 
 void Render2D::zoomEvent()
