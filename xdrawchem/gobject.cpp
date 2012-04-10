@@ -209,7 +209,7 @@ bool GraphicObject::Find( DPoint *target )
 
 // Do not allow connections to this object.
 // Simplest way to do this, I think, is to disallow this function
-DPoint *GraphicObject::FindNearestPoint( DPoint *target, double &dist )
+DPoint *GraphicObject::FindNearestPoint( DPoint * /*target*/, double &dist )
 {
     dist = 99999.0;
     return 0;
