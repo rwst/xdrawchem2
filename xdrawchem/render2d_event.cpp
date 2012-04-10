@@ -1887,6 +1887,7 @@ void Render2D::paintEvent( QPaintEvent * )
     } else if ( outputDevice == OUTPUT_SCREEN ) {
         qDebug() << "screen";
         if ( directdraw ) {
+            qDebug() << "attempt to directdraw!";
             painter->begin( this );
         } else {
             qDebug() << "paintEvent painter begin";
