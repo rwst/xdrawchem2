@@ -1104,12 +1104,8 @@ void Molecule::FromXML( QString xml_tag )
 {
     QString bondtag, subtag, startid, endid;
 
-    QList < DPoint * >points;
-    DPoint *s1, *e1;
-    int i1, i2;
-
-    i1 = xml_tag.indexOf( "<grouptype>" );
-    if ( i1 > 0 ) {
+    int i1 = xml_tag.indexOf( "<grouptype>" );
+    if (i1 > 0){
         subtag = xml_tag.mid( i1, 20 );
         if ( subtag.toLower().contains( "reactant" ) > 0 )
             group_type = GROUP_REACTANT;
@@ -1117,9 +1113,10 @@ void Molecule::FromXML( QString xml_tag )
             group_type = GROUP_PRODUCT;
     }
     // Extract atom's
+    QList < DPoint * >points;
     do {
-        i1 = xml_tag.indexOf( "<atom " );
-        i2 = xml_tag.indexOf( "</atom>" ) + 7;
+        int i1 = xml_tag.indexOf( "<atom " );
+        int i2 = xml_tag.indexOf( "</atom>" ) + 7;
         if ( i1 >= 0 ) {
             tmp_pt = new DPoint;
             tmp_pt->FromXML( xml_tag.mid( i1, i2 - i1 ) );
@@ -1131,8 +1128,8 @@ void Molecule::FromXML( QString xml_tag )
     } while ( 1 );
     // Add bond's
     do {
-        i1 = xml_tag.indexOf( "<bond " );
-        i2 = xml_tag.indexOf( "</bond>" ) + 7;
+        int i1 = xml_tag.indexOf( "<bond " );
+        int i2 = xml_tag.indexOf( "</bond>" ) + 7;
         if ( i1 >= 0 ) {
             tmp_bond = new Bond( r );
             bondtag = xml_tag.mid( i1, i2 - i1 );
@@ -1146,6 +1143,7 @@ void Molecule::FromXML( QString xml_tag )
             i2 = subtag.indexOf( "</Start>" );
             subtag.remove( i2, 999 );
             subtag.remove( i1, 7 );
+            DPoint *s1 = NULL;
             foreach ( tmp_pt, points ) {
                 if ( tmp_pt->id == subtag ) {
                     s1 = tmp_pt;
@@ -1160,6 +1158,7 @@ void Molecule::FromXML( QString xml_tag )
             i2 = subtag.indexOf( "</End>" );
             subtag.remove( i2, 999 );
             subtag.remove( i1, 5 );
+            DPoint *e1 = NULL;
             foreach ( tmp_pt, points ) {
                 if ( tmp_pt->id == subtag ) {
                     e1 = tmp_pt;
