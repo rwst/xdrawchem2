@@ -201,7 +201,7 @@ class SDG {
 	    fatestIndex = (ring->at(0))->ringCounter;
 	  }
 	}
-	positionRingAtoms(complRing, SPoint(0,0), (double)0, 0, complRingSize - 1);
+	positionRingAtoms(complRing, (double)0, 0, complRingSize - 1);
 	ring = sssr.at(complRing);
 	ring->status = 1;
 
@@ -365,7 +365,7 @@ class SDG {
   /** Positions the atoms 'startAtom' up to 'endAtom' in a regular polygon around
 	    the point 'center' with 'angleOffSet' as the start angle.
 	    Called 'rier' in Denglers C code */
-  void positionRingAtoms(int thisRing, SPoint center, double angleOffSet, int startAtom, int endAtom){
+  void positionRingAtoms(int thisRing, double angleOffSet, int startAtom, int endAtom){
     Atom node;
     Ring *ring = sssr.at(thisRing);
     double ph = 1/(360/3.14159246/2), anz =  0, alph = 0, rad = 0, x, y;
@@ -547,7 +547,7 @@ class SDG {
 
 
 		  secondRing->sort(fRP.startAtomNumber);
-		  positionRingAtoms(secondRingNumber, SPoint(0,0), phi, 1, secondRing->size() - 1);
+		  positionRingAtoms(secondRingNumber, phi, 1, secondRing->size() - 1);
 		  secondRing->status = 1;
 		  transfer(1, secondRing->size() -1, secondRingNumber, SPoint(atomSet[fRP.startAtomNumber]->x, atomSet[fRP.startAtomNumber]->y), fRP.annulAxisOrientation, fRP.toggleStartAngleSign);
 		  //System.out.println("Spiro");
@@ -583,7 +583,7 @@ class SDG {
 		    secondRing->invert();
 		    secondRing->sort(fRP.startAtomNumber);
 		  }
-		  positionRingAtoms(secondRingNumber, SPoint(0,0), fRP.startAngle, 1, secondRing->size() - 2);
+		  positionRingAtoms(secondRingNumber, fRP.startAngle, 1, secondRing->size() - 2);
 		  secondRing->status = 1;
 		  transfer(1, secondRing->size() - 2, secondRingNumber, SPoint(ring->x, ring->y), fRP.annulAxisOrientation, fRP.toggleStartAngleSign);
 		  //System.out.println("Regular " + secondRingNumber);
@@ -919,7 +919,7 @@ class SDG {
 		int ringNumber, SPoint target,
 		int annulAxisOrientation, // iph
 		double toggleStartAngleSign ){ // b
-    int i;
+    
     double phi = 0, aaa, bbb, ax, ay, x, y;
     Ring *ring = sssr.at(ringNumber);
     //Atom node = new Atom();
@@ -1108,7 +1108,7 @@ class SDG {
     ii = true;
     fRP = getFusedRingParams(SPoint(x, y), tempPoint, atomIndex, ib, ii, ir);
     ring->sort(fRP.startAtomNumber);
-    positionRingAtoms(ir, SPoint(0,0), fRP.startAngle, 0, igr - 1);
+    positionRingAtoms(ir, fRP.startAngle, 0, igr - 1);
     if (ir == 4){
       ir = ir;
     }
