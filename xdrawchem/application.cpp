@@ -45,7 +45,7 @@
 #include "application.h"
 #include "colorbutton.h"
 
-#include "lines.h"
+#include "line1.xpm"
 // Brackets
 #include "brackets.h"
 // end brackets

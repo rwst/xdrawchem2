@@ -1,0 +1,23 @@
+/* XPM */
+static const char *line1[] =
+{
+/* width height ncolors chars_per_pixel */
+"12 12 2 1",
+/* colors */
+"A c #FFFFFFFFFFFF",
+"B c #000000000000",
+/* pixels */
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"ABBBBBBBBBBA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+"AAAAAAAAAAAA",
+};
+
