@@ -148,7 +148,7 @@ class SetOfRingsFinder
 
 			// If there are nodes of degree 1, trim them away
       if (smallest->degree == 1){
-	trim(smallest, tempAtomSet);
+        trim(smallest);
 	trimSet.append(smallest);
       }
       // if there are nodes of degree 2, find out of which rings
@@ -174,7 +174,7 @@ class SetOfRingsFinder
 	  remembernodes.insert(0, (nodesN2.at(0)));
 	}
 	for (f = 0; f < nodesToBreakCounter; f++){
-	  breakBond(remembernodes[f], tempAtomSet);
+	  breakBond(remembernodes[f]);
 	}
       }
       else if (smallest->degree == 3){
@@ -186,7 +186,7 @@ class SetOfRingsFinder
 	  }
 	}
 	edgeToRemove = checkEdges(ring, tempAtomSet);
-	breakBond(edgeToRemove[0], edgeToRemove[1], tempAtomSet);
+	breakBond(edgeToRemove[0], edgeToRemove[1]);
       }
     }while(trimSet.count() < fullSet.count());
     ringCounter = sssr.size();
@@ -262,7 +262,7 @@ class SetOfRingsFinder
 		//System.out.println("Path of m: " + path[m.number].toString());
 	      }
 	      ring = getUnion(*path[frontNode->number], *path[m->number]);
-	      return prepareRing(ring, tempAtomSet);
+	      return prepareRing(ring);
 	    }
 	  }
 	  else { // if path[m] is not null
@@ -312,7 +312,7 @@ class SetOfRingsFinder
   /** prepares a Ring, i.e. a Vector with Nodes from
 	     a Vector with numbers of nodes */
 
-  Ring *prepareRing(QList<Atom *> vec, QVector<Atom *> tempAtomSet)	{
+  Ring *prepareRing(QList<Atom *> vec)	{
       Ring *r = new Ring(QVector<Atom*>::fromList(vec));
 //    for (int f = 0; f < vec.count(); f++){
 //      r[f] = vec.at(f);
@@ -323,7 +323,7 @@ class SetOfRingsFinder
 
   /** removes from the connection table all connections to
 	    node n, leaving this node with degree zero.*/
-  void trim(Atom *n, QVector<Atom *> tempAtomSet){
+  void trim(Atom *n){
     Atom *conn;
     for (int f = 0; f < n->degree; f++){
       conn = n->nodeTable[f];
@@ -345,7 +345,7 @@ class SetOfRingsFinder
   }
 
   /** Eliminate the last bond of this node from the connectiontable*/
-  void breakBond(Atom *thisNode, QVector<Atom *> tempAtomSet){
+  void breakBond(Atom *thisNode){
     int degree = thisNode->degree;
     if (degree == 0) {
       qDebug() << "breakBond: invalid node" ;
@@ -371,7 +371,7 @@ class SetOfRingsFinder
   }
 
   /** Eliminate the bond between these two atom */
-  void breakBond(Atom *from, Atom *to,  QVector<Atom *> tempAtomSet){
+  void breakBond(Atom *from, Atom *to){
     int degree, f;
     for (f = 0; f < from->degree; f++){
       if (from->nodeTable[f] == to){
@@ -398,7 +398,7 @@ class SetOfRingsFinder
 
   /** Restores a bond betwenn nodes 'from' and 'to' of an array of
 	    nodes 'tempAtomSet' */
-  void restoreBond(Atom *from, Atom *to,  QVector<Atom *> tempAtomSet){
+  void restoreBond(Atom *from, Atom *to){
     from->nodeTable.insert(from->degree, to);
     from->degree ++;
     to->nodeTable.insert(to->degree, from);
@@ -420,14 +420,14 @@ class SetOfRingsFinder
     int f;
     for (f = 0; f < ring->size(); f++){
       edge = ring->getEdge(f);
-      breakBond(edge[0], edge[1], tempAtomSet);
+      breakBond(edge[0], edge[1]);
       r1 = findSRing(edge[0], tempAtomSet);
       r2 = findSRing(edge[1], tempAtomSet);
       if(r1->size() > r2->size())
 	tempSoR.addElement(r1);
       else
 	tempSoR.addElement(r1);
-      restoreBond(edge[0], edge[1], tempAtomSet);
+      restoreBond(edge[0], edge[1]);
 
     }
     minMaxSize = (tempSoR[0])->size();
