@@ -2000,10 +2000,10 @@ void Render2D::createGrid()
 {
     grid = QPixmap( renderWidth, renderHeight );
     grid.fill( bgcolor );
-    QPainter *gridPainter = new QPainter( &grid );
+    QPainter gridPainter ( &grid );
 
     ///TODO: make that an option
-    gridPainter->setRenderHint( QPainter::Antialiasing, true );
+    gridPainter.setRenderHint( QPainter::Antialiasing, true );
 
     int i1, cl1;
 
@@ -2012,15 +2012,15 @@ void Render2D::createGrid()
         // int width = parentWidget()->size().width();
         // int height = parentWidget()->size().height();
 
-        gridPainter->setPen( QPen( QColor( 128, 128, 128 ), 1, Qt::DotLine ) );
+        gridPainter.setPen( QPen( QColor( 128, 128, 128 ), 1, Qt::DotLine ) );
         // draw horizontal
         for ( cl1 = i1; cl1 < renderHeight; cl1 += i1 ) {
-            gridPainter->drawLine( 0, cl1, renderWidth, cl1 );
+            gridPainter.drawLine( 0, cl1, renderWidth, cl1 );
         }
 
         // draw vertical
         for ( cl1 = i1; cl1 < renderWidth; cl1 += i1 ) {
-            gridPainter->drawLine( cl1, 0, cl1, renderHeight );
+            gridPainter.drawLine( cl1, 0, cl1, renderHeight );
         }
     } else if ( preferences.getDrawGrid() == GRID_HEX ) {
         bool hexoffset = true;
@@ -2031,7 +2031,7 @@ void Render2D::createGrid()
         float hexelevation = hexhoriz * 1.73205;
         float hex_initx, hex_rightx;
 
-        gridPainter->setPen( QPen( QColor( 128, 128, 128 ), 1, Qt::DotLine ) );
+        gridPainter.setPen( QPen( QColor( 128, 128, 128 ), 1, Qt::DotLine ) );
         for ( float hex_y = 0.0; hex_y < renderHeight; hex_y += hexelevation ) {
             if ( hexoffset )
                 hex_initx = hexhoriz;
@@ -2039,9 +2039,9 @@ void Render2D::createGrid()
                 hex_initx = hexgap;
             for ( float hex_x = hex_initx; hex_x < renderWidth; hex_x += hexgap ) {
                 hex_rightx = hex_x + i1;
-                gridPainter->drawLine( hex_x, hex_y, hex_rightx, hex_y );
-                gridPainter->drawLine( hex_x, hex_y, hex_x - hexhoriz, hex_y + hexelevation );
-                gridPainter->drawLine( hex_rightx, hex_y, hex_rightx + hexhoriz, hex_y + hexelevation );
+                gridPainter.drawLine( hex_x, hex_y, hex_rightx, hex_y );
+                gridPainter.drawLine( hex_x, hex_y, hex_x - hexhoriz, hex_y + hexelevation );
+                gridPainter.drawLine( hex_rightx, hex_y, hex_rightx + hexhoriz, hex_y + hexelevation );
                 hex_x = hex_rightx;
             }
             hexoffset = !hexoffset;
