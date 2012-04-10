@@ -45,60 +45,10 @@
 #include "application.h"
 #include "colorbutton.h"
 
-// main window icon
-//#include "xdc.xpm"
-
-
-// top toolbar
-#include "filesave.xpm"
-#include "fileopen.xpm"
-#include "fileprint.xpm"
-#include "cuttool.xpm"
-#include "copytool.xpm"
-#include "pastetool.xpm"
-
-// line thicknesses
 #include "lines.h"
-
-// text operation buttons
-#include "boldtool.xpm"
-#include "italictool.xpm"
-#include "underlinetool.xpm"
-#include "superscript.xpm"
-#include "subscript.xpm"
-#include "justifytools.h"
-#include "magnifytools.h"
-
-// left side toolbar
-#include "selecttool.xpm"
-#include "lassotool.xpm"
-#include "erasetool.xpm"
-#include "linetool.xpm"
-#include "dashtool.xpm"
-#include "chaintool.xpm"
-#include "uptool.xpm"
-#include "downtool.xpm"
-#include "wavytool.xpm"
-#include "texttool.xpm"
-#include "arrowtool.xpm"
-#include "curvearrowtool.xpm"
-#include "brackettool.xpm"
-#include "ringtool.xpm"
-#include "symboltool.xpm"
-
-// predefined toolbar
-#include "rings.h"
-
 // Brackets
 #include "brackets.h"
 // end brackets
-
-// Symbols
-#include "symbol_xpm.h"
-#include "newman.xpm"
-#include "newman-anti.xpm"
-#include "newman-eclipse.xpm"
-// end symbols
 
 // Arrows
 #include "arrows.h"
