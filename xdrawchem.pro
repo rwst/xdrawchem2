@@ -72,9 +72,7 @@ HEADERS = xdrawchem/aa_xpm.h \
           xdrawchem/helpwindow.h \
           xdrawchem/http.h \
           xdrawchem/ioiface.h \
-          xdrawchem/justifytools.h \
           xdrawchem/lines.h \
-          xdrawchem/magnifytools.h \
           xdrawchem/moldata.h \
           xdrawchem/molecule.h \
           xdrawchem/molecule_sssr.h \
@@ -95,7 +93,6 @@ HEADERS = xdrawchem/aa_xpm.h \
           xdrawchem/renderarea.h \
           xdrawchem/ringdialog.h \
           xdrawchem/ring.h \
-          xdrawchem/rings.h \
           xdrawchem/ring_xpm.h \
           xdrawchem/sdg.h \
           xdrawchem/setofrings.h \
