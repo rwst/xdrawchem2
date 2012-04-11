@@ -85,80 +85,80 @@ QMenu *ApplicationWindow::BuildNewRingMenu()
     QMenu *genericSub = new QMenu( tr( "Rings" ), ringSub );
     ring3Action = genericSub->addAction( QIcon( QPixmap( r_cyclopropane ) ), tr( "[*] Cyclopropane") );
     ring4Action = genericSub->addAction( QIcon( QPixmap( r_cyclobutane ) ), tr( "[*] Cyclobutane") );
-    ring5Action = genericSub->addAction( QIcon( QPixmap( r_cyclopentane ) ), tr( "[*] Cyclopentane" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringImidazoleAction = genericSub->addAction( QIcon( QPixmap( r_imidazole ) ), tr( "Imidazole" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringCyclopentadieneAction = genericSub->addAction( QIcon( QPixmap( r_cyclopentadiene ) ), tr( "[*] Cyclopentadiene" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ring6Action = genericSub->addAction( QIcon( QPixmap( r_6flat ) ), tr( "[*] Cyclohexane (flat)" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ring6BoatAction = genericSub->addAction( QIcon( QPixmap( r_6boat ) ), tr( "Cyclohexane (boat)" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ring6ChairAction = genericSub->addAction( QIcon( QPixmap( r_6chair ) ), tr( "Cyclohexane (chair)" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringBenzeneAction = genericSub->addAction( QIcon( QPixmap( r_benzene ) ), tr( "[*] Benzene" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringPyrimidineAction = genericSub->addAction( QIcon( QPixmap( r_pyrimidine ) ), tr( "Pyrimidine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ring7Action = genericSub->addAction( QIcon( QPixmap( ring7 ) ), tr( "[*] Cycloheptane" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ring8Action = genericSub->addAction( QIcon( QPixmap( ring8 ) ), tr( "[*] Cyclooctane" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringIndoleAction = genericSub->addAction( QIcon( QPixmap( r_indole ) ), tr( "Indole" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringPurineAction = genericSub->addAction( QIcon( QPixmap( r_purine ) ), tr( "Purine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringNaphAction = genericSub->addAction( QIcon( QPixmap( naphthalene_xpm ) ), tr( "Naphthalene" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringBiphenylAction = genericSub->addAction( QIcon( QPixmap( biphenyl_xpm ) ), tr( "Biphenyl" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringAnthraAction = genericSub->addAction( QIcon( QPixmap( anthracene_xpm ) ), tr( "Anthracene" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    ringSteroidAction = genericSub->addAction( QIcon( QPixmap( r_steroid ) ), tr( "Steroid (fused ring template)" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
+    ring5Action = genericSub->addAction( QIcon( QPixmap( r_cyclopentane ) ), tr( "[*] Cyclopentane" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringImidazoleAction = genericSub->addAction( QIcon( QPixmap( r_imidazole ) ), tr( "Imidazole" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringCyclopentadieneAction = genericSub->addAction( QIcon( QPixmap( r_cyclopentadiene ) ), tr( "[*] Cyclopentadiene" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ring6Action = genericSub->addAction( QIcon( QPixmap( r_6flat ) ), tr( "[*] Cyclohexane (flat)" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ring6BoatAction = genericSub->addAction( QIcon( QPixmap( r_6boat ) ), tr( "Cyclohexane (boat)" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ring6ChairAction = genericSub->addAction( QIcon( QPixmap( r_6chair ) ), tr( "Cyclohexane (chair)" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringBenzeneAction = genericSub->addAction( QIcon( QPixmap( r_benzene ) ), tr( "[*] Benzene" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringPyrimidineAction = genericSub->addAction( QIcon( QPixmap( r_pyrimidine ) ), tr( "Pyrimidine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ring7Action = genericSub->addAction( QIcon( QPixmap( ring7 ) ), tr( "[*] Cycloheptane" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ring8Action = genericSub->addAction( QIcon( QPixmap( ring8 ) ), tr( "[*] Cyclooctane" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringIndoleAction = genericSub->addAction( QIcon( QPixmap( r_indole ) ), tr( "Indole" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringPurineAction = genericSub->addAction( QIcon( QPixmap( r_purine ) ), tr( "Purine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringNaphAction = genericSub->addAction( QIcon( QPixmap( naphthalene_xpm ) ), tr( "Naphthalene" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringBiphenylAction = genericSub->addAction( QIcon( QPixmap( biphenyl_xpm ) ), tr( "Biphenyl" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringAnthraAction = genericSub->addAction( QIcon( QPixmap( anthracene_xpm ) ), tr( "Anthracene" ), this, SLOT( FromNewRingMenu() ), 0 );
+    ringSteroidAction = genericSub->addAction( QIcon( QPixmap( r_steroid ) ), tr( "Steroid (fused ring template)" ), this, SLOT( FromNewRingMenu() ), 0 );
 
     ringSub->addMenu( genericSub );
 
     // make amino acid list
     QMenu *aaSub = new QMenu( tr( "Amino acids" ), this );
-    aaSub->addAction( QIcon( QPixmap( aa_ala ) ), tr( "Alanine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_arg ) ), tr( "Arginine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_asn ) ), tr( "Asparagine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_asp ) ), tr( "Aspartic acid" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_cys ) ), tr( "Cysteine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_glu ) ), tr( "Glutamic acid" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_gln ) ), tr( "Glutamine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_gly ) ), tr( "Glycine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_his ) ), tr( "Histidine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_ile ) ), tr( "Isoleucine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_leu ) ), tr( "Leucine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_lys ) ), tr( "Lysine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_met ) ), tr( "Methionine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_nph ) ), tr( "Nitrophenylalanine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_phe ) ), tr( "Phenylalanine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_pro ) ), tr( "Proline" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_ser ) ), tr( "Serine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_statine ) ), tr( "Statine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_thr ) ), tr( "Threonine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_trp ) ), tr( "Tryptophan" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_tyr ) ), tr( "Tyrosine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    aaSub->addAction( QIcon( QPixmap( aa_val ) ), tr( "Valine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_ala ) ), tr( "Alanine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_arg ) ), tr( "Arginine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_asn ) ), tr( "Asparagine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_asp ) ), tr( "Aspartic acid" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_cys ) ), tr( "Cysteine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_glu ) ), tr( "Glutamic acid" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_gln ) ), tr( "Glutamine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_gly ) ), tr( "Glycine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_his ) ), tr( "Histidine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_ile ) ), tr( "Isoleucine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_leu ) ), tr( "Leucine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_lys ) ), tr( "Lysine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_met ) ), tr( "Methionine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_nph ) ), tr( "Nitrophenylalanine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_phe ) ), tr( "Phenylalanine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_pro ) ), tr( "Proline" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_ser ) ), tr( "Serine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_statine ) ), tr( "Statine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_thr ) ), tr( "Threonine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_trp ) ), tr( "Tryptophan" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_tyr ) ), tr( "Tyrosine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    aaSub->addAction( QIcon( QPixmap( aa_val ) ), tr( "Valine" ), this, SLOT( FromNewRingMenu() ), 0 );
 
     ringSub->addMenu( aaSub );
 
     // make nucleic acid list
     QMenu *naSub = new QMenu( tr( "Nucleic acids" ), this );
-    naAdenineAction = naSub->addAction( QIcon( QPixmap( na_adenine ) ), tr( "Adenine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    naCytosineAction = naSub->addAction( QIcon( QPixmap( na_cytosine ) ), tr( "Cytosine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    naGuanineAction = naSub->addAction( QIcon( QPixmap( na_guanine ) ), tr( "Guanine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    naThymineAction = naSub->addAction( QIcon( QPixmap( na_thymine ) ), tr( "Thymine" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    naUracilAction = naSub->addAction( QIcon( QPixmap( na_uracil ) ), tr( "Uracil" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
+    naAdenineAction = naSub->addAction( QIcon( QPixmap( na_adenine ) ), tr( "Adenine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    naCytosineAction = naSub->addAction( QIcon( QPixmap( na_cytosine ) ), tr( "Cytosine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    naGuanineAction = naSub->addAction( QIcon( QPixmap( na_guanine ) ), tr( "Guanine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    naThymineAction = naSub->addAction( QIcon( QPixmap( na_thymine ) ), tr( "Thymine" ), this, SLOT( FromNewRingMenu() ), 0 );
+    naUracilAction = naSub->addAction( QIcon( QPixmap( na_uracil ) ), tr( "Uracil" ), this, SLOT( FromNewRingMenu() ), 0 );
 
     ringSub->addMenu( naSub );
 
     // make sugar list
     QMenu *sugarSub = new QMenu( tr( "Sugars" ), this );
-    srAction = sugarSub->addAction( QIcon( QPixmap( s_ribose ) ), tr( "Ribose" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    sdAction = sugarSub->addAction( QIcon( QPixmap( s_deoxyribose ) ), tr( "Deoxyribose" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    sfAction = sugarSub->addAction( QIcon( QPixmap( s_d_fructose ) ), tr( "D-fructose" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    sgAction = sugarSub->addAction( QIcon( QPixmap( s_d_glucose ) ), tr( "D-glucose" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
+    srAction = sugarSub->addAction( QIcon( QPixmap( s_ribose ) ), tr( "Ribose" ), this, SLOT( FromNewRingMenu() ), 0 );
+    sdAction = sugarSub->addAction( QIcon( QPixmap( s_deoxyribose ) ), tr( "Deoxyribose" ), this, SLOT( FromNewRingMenu() ), 0 );
+    sfAction = sugarSub->addAction( QIcon( QPixmap( s_d_fructose ) ), tr( "D-fructose" ), this, SLOT( FromNewRingMenu() ), 0 );
+    sgAction = sugarSub->addAction( QIcon( QPixmap( s_d_glucose ) ), tr( "D-glucose" ), this, SLOT( FromNewRingMenu() ), 0 );
 
     ringSub->addMenu( sugarSub );
 
     // make function group list
     QMenu *fgSub = new QMenu( tr( "Useful groups" ), this );
-    fgSub->addAction( tr( "[*] FMOC" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    fgSub->addAction( tr( "[*] BOC" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    fgSub->addAction( tr( "[*] DABCYL" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    fgSub->addAction( tr( "[*] DABSYL" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    fgSub->addAction( tr( "[*] DANSYL" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    fgSub->addAction( tr( "[*] EDANS" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
-    fgSub->addAction( tr( "[*] Biotin" ), this, SLOT( FromNewRingMenu( int ) ), 0 );
+    fgSub->addAction( tr( "[*] FMOC" ), this, SLOT( FromNewRingMenu() ), 0 );
+    fgSub->addAction( tr( "[*] BOC" ), this, SLOT( FromNewRingMenu() ), 0 );
+    fgSub->addAction( tr( "[*] DABCYL" ), this, SLOT( FromNewRingMenu() ), 0 );
+    fgSub->addAction( tr( "[*] DABSYL" ), this, SLOT( FromNewRingMenu() ), 0 );
+    fgSub->addAction( tr( "[*] DANSYL" ), this, SLOT( FromNewRingMenu() ), 0 );
+    fgSub->addAction( tr( "[*] EDANS" ), this, SLOT( FromNewRingMenu() ), 0 );
+    fgSub->addAction( tr( "[*] Biotin" ), this, SLOT( FromNewRingMenu() ), 0 );
 
     ringSub->addMenu( fgSub );
 
@@ -197,6 +197,8 @@ void ApplicationWindow::FromNewRingMenu( int x )
     //c->SetTopLeft(sv->viewportToContents(QPoint(0,0)));
     QString fname;
 
+    if ( x == 0 )
+        fname = "benzene.cml";
     if ( x == RING_3 )
         fname = "cyclopropane.cml";
     if ( x == RING_4 )

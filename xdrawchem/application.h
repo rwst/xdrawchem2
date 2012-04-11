@@ -77,7 +77,7 @@ public slots:
     void BackgroundColor();
     void SetThick( int );
     void FromRingMenu( int );
-    void FromNewRingMenu( int ); // in application_ring.cpp
+    void FromNewRingMenu( int = 0 ); // in application_ring.cpp
     void FromRingToolbar( QString );
     void FromSymbolMenu( QAction * );
     void FromArrowMenu( QAction * );
