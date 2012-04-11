@@ -1087,7 +1087,7 @@ void Text::MoveCursor( DPoint * target )
     selectMin = -1;
     selectMax = -1;
     double mindist = 99999.0, ldist;
-    int newcur;
+    int newcur = -1;
     DPoint *e = new DPoint;
 
     qDebug() << "Move";
@@ -1124,7 +1124,7 @@ void Text::Select( DPoint * e1, DPoint * e2 )
         return;
     qDebug() << "select";
     double mindist = 99999.0, ldist;
-    int newcur;
+    int newcur = -1;
     int cr1 = 0, cr2 = 0;
     QPoint t;
     int i, lx, ly;
