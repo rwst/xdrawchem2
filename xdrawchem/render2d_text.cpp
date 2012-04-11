@@ -554,40 +554,28 @@ QString Render2D::EditText( QPoint origin, QString intext, int justify, bool one
 
 int Render2D::GetTextHeight( QFont fn )
 {
-    QPainter p( this );
-
-    p.setFont( fn );
-    QFontMetrics fm = p.fontMetrics();
+    QFontMetrics fm (fn);
 
     return fm.ascent();
 }
 
 int Render2D::GetTextFullHeight( QFont fn )
 {
-    QPainter p( this );
-
-    p.setFont( fn );
-    QFontMetrics fm = p.fontMetrics();
+    QFontMetrics fm (fn);
 
     return fm.height();
 }
 
 int Render2D::GetCharWidth( QChar ch, QFont fn )
 {
-    QPainter p( this );
-
-    p.setFont( fn );
-    QFontMetrics fm = p.fontMetrics();
+    QFontMetrics fm (fn);
 
     return fm.width( ch );
 }
 
 int Render2D::GetStringWidth( QString ch, QFont fn )
 {
-    QPainter p( this );
-
-    p.setFont( fn );
-    QFontMetrics fm = p.fontMetrics();
+    QFontMetrics fm (fn);
 
     return fm.width( ch );
 }
@@ -601,11 +589,8 @@ QRect Render2D::GetTextDimensions( QString txt, QFont fn )
 
     }
 
-    QPainter p( this );
-
-    p.setFont( fn );
     int maxwidth, lwidth, linecount, height;
-    QFontMetrics fm = p.fontMetrics();
+    QFontMetrics fm (fn);
     QTextStream t( &txt, QIODevice::ReadOnly );
 
     linecount = 1;
