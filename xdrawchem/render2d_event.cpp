@@ -1879,6 +1879,7 @@ void Render2D::paintEvent( QPaintEvent * )
 
     // initialize global painter object
     QPainter p;
+    painter = &p;
     if ( outputDevice == OUTPUT_PRINTER ) {
         qDebug() << "printer";
         p.begin( printer );
@@ -1969,6 +1970,7 @@ void Render2D::paintEvent( QPaintEvent * )
     // now bitBlt buffer onto widget
 //    bitBlt(this, 0, 0, &dbuffer);
     finishedPainting = true;
+    painter = NULL;
     qDebug() << "paintEvent painter end";
 }
 
