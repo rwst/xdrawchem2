@@ -436,7 +436,7 @@ void ChemData::Convert_CML_Lists_To_Native()
         points.append( tmp_atom->toDPoint() );
     }
     // add Bonds
-    DPoint *end1, *end2;        // Bond endpoints
+    DPoint *end1 = 0, *end2 = 0;        // Bond endpoints
 
     foreach ( tmp_bond, CML_Bonds ) {
         // find first atom

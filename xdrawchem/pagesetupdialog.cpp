@@ -67,7 +67,7 @@ PageSetupDialog::PageSetupDialog( QWidget * parent )
     int ph = preferences.getPageHeight();
     int pu = preferences.getUnits();
     int decimals = 2;
-    double pwf, phf;
+    double pwf = 0.0, phf = 0.0;
     QString unitstr, n1;
 
     unitstr = "undef";
@@ -134,7 +134,7 @@ void PageSetupDialog::onSuccessful()
     double pw = paperWidth->value();
     double ph = paperHeight->value();
     int pu = preferences.getUnits();
-    int pwf, phf;
+    int pwf=0, phf=0;
 
     if ( pu == PIXELS ) {
         pwf = ( int ) pw;

@@ -106,7 +106,7 @@ QColor CDXML_Reader::ParseColor( QString ctag )
     QStringList attr;
     QString a1, v1;
     QColor retval;
-    int re, gr, bl;
+    int re = 0, gr = 0, bl = 0;
 
     attr = readAttr( ctag );
     for ( int cc = 0; cc < 5; cc = cc + 2 ) {

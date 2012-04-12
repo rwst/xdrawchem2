@@ -148,7 +148,7 @@ void Molecule::RemoveNMRprotons()
 void Molecule::ProtonEnvironment()
 {
     int adj_protons;
-    DPoint *depth1_pt, *depth2_pt, *depth3_pt;
+    DPoint *depth1_pt = 0, *depth2_pt = 0, *depth3_pt = 0;
 
     QList < DPoint * >search_stack;     // depth 2 atoms
     QString nearest, r1, r2, r3, r_current, depth3_str;
@@ -257,7 +257,7 @@ void Molecule::Multiplicity_1HNMR()
 {
     int adj_protons;
     bool split, chiral;
-    DPoint *depth1_pt, *depth2_pt, *depth3_pt;
+    DPoint *depth1_pt = 0, *depth2_pt = 0, *depth3_pt = 0;
     QString new_magenv;
 
     QList < DPoint * >search_stack;     // depth 2 atoms
@@ -418,7 +418,7 @@ double Molecule::Calc1HShift( QString phc )
 {
     QString substr, nearest, r1, r2, r3;
     int l1, l2, rcount, nearest_code, protons;
-    double base_shift;
+    double base_shift = 0.0;
 
     l1 = phc.indexOf( '+' );
     if ( l1 < 0 )
