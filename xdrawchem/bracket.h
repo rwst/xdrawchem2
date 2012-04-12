@@ -13,6 +13,7 @@
 
 class Bracket : public Drawable
 {
+Q_OBJECT
 public:
     Bracket( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object

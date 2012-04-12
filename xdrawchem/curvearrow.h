@@ -12,6 +12,7 @@
 
 class CurveArrow : public Drawable
 {
+Q_OBJECT
 public:
     CurveArrow( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object

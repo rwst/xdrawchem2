@@ -16,6 +16,7 @@ class Molecule;
 
 class Text : public Drawable
 {
+Q_OBJECT
 public:
     Text( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object

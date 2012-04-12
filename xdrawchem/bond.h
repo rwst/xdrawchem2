@@ -17,6 +17,7 @@
 
 class Bond : public Drawable
 {
+Q_OBJECT
 public:
     Bond( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object

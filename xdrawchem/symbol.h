@@ -9,6 +9,7 @@
 
 class Symbol : public Drawable
 {
+Q_OBJECT
 public:
     Symbol( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object
