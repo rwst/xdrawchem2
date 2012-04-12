@@ -1,3 +1,13 @@
+/*********************************************************************
+ * chemdata_edit.cpp
+ *
+ * Copyright (C)
+ * 2004, 2005 Bryan Herger -- bherger@users.sourceforge.net
+ * 2012 Ralf Stephan -- ralf@ark.in-berlin.de
+ *
+ * LICENSE: GPL v. 2 see GPL.txt
+ *********************************************************************/
+
 #include "drawable.h"
 #include "clipboard.h"
 #include "molecule.h"
@@ -70,20 +80,22 @@ void ChemData::Copy()
 bool ChemData::Paste()
 {
     DeselectAll();
+
+    Drawable *td1;
     QList < DPoint * >oldPoints;
     QList < DPoint * >newPoints;
-    DPoint *n;
-    Bond *b;
-    Text *ot, *t;
 
     // need to deep copy stuff coming off the Clipboard
     // first, find all unique DPoint's
-    foreach ( tmp_draw, clip->objects ) {
-        if ( oldPoints.contains( tmp_draw->Start() ) == 0 )
-            oldPoints.append( tmp_draw->Start() );
-        if ( tmp_draw->End() != 0 ) {
-            if ( oldPoints.contains( tmp_draw->End() ) == 0 )
-                oldPoints.append( tmp_draw->End() );
+    foreach ( td1, clip->objects ) {
+        if (td1->metaObject() == &Drawable::staticMetaObject) {
+            Drawable *tmp = qobject_cast<Drawable *>(td1);
+            if ( oldPoints.contains( tmp->Start() ) == 0 )
+                oldPoints.append( tmp->Start() );
+            if ( tmp->End() != 0 ) {
+                if ( oldPoints.contains( tmp->End() ) == 0 )
+                    oldPoints.append( tmp->End() );
+            }
         }
     }
     qDebug() << oldPoints.count();
@@ -92,43 +104,35 @@ bool ChemData::Paste()
 
     // make new DPoint's which correspond to old DPoint's
     foreach ( tmp_pt, oldPoints ) {
-        n = new DPoint( tmp_pt );
+        DPoint *n = new DPoint( tmp_pt );
         newPoints.append( n );
     }
     // now add all non-TYPE_TEXT objects back to current
-    Drawable *td1;
 
     foreach ( td1, clip->objects ) {
-        if ( td1->Type() == TYPE_ARROW ) {
-            Arrow *tmp_arrow = ( Arrow * ) td1;
-
+        if (td1->metaObject() == &Arrow::staticMetaObject) {
+            Arrow *tmp_arrow = qobject_cast<Arrow *>(td1);
             addArrow( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), tmp_arrow->Style(), true );
         }
-        if ( td1->Type() == TYPE_BRACKET ) {
-            Bracket *tmp_bracket = ( Bracket * ) td1;
-
-            addBracket( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), tmp_bracket->Style(), true );
+        else if (td1->metaObject() == &Bracket::staticMetaObject) {
+            Bracket *tmp_bracket = qobject_cast<Bracket *>(td1);
+            addBracket( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), tmp_bracket->GetColor(), tmp_bracket->Style(), true );
         }
-        if ( td1->Type() == TYPE_BOND ) {
-            b = ( Bond * ) td1;
-            addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), b->Thick(), b->Order(), td1->GetColor(), true );
+        else if (td1->metaObject() == &Bond::staticMetaObject) {
+            Bond *tmp_bond = qobject_cast<Bond *>(td1);
+            addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), tmp_bond->Thick(), tmp_bond->Order(), td1->GetColor(), true );
         }
-        if ( td1->Type() == TYPE_CURVEARROW ) {
-            CurveArrow *tmp_arrow = ( CurveArrow * ) td1;
-
+        else if (td1->metaObject() == &CurveArrow::staticMetaObject) {
+            CurveArrow *tmp_arrow = qobject_cast<CurveArrow *>(td1);
             addCurveArrow( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), tmp_arrow->GetCurve(), true );
         }
-        if ( td1->Type() == TYPE_SYMBOL ) {
-            Symbol *tmp_sym = ( Symbol * ) td1;
-
+        else if (td1->metaObject() == &Symbol::staticMetaObject) {
+            Symbol *tmp_sym = qobject_cast<Symbol *>(td1);
             addSymbol( newPoints.at( oldPoints.indexOf( td1->Start() ) ), tmp_sym->GetSymbol(), true );
         }
-    }
-    //add all TYPE_TEXT objects (ensures bonds and molecules exist before labels)
-    foreach ( td1, clip->objects ) {
-        if ( td1->Type() == TYPE_TEXT ) {
-            ot = ( Text * ) td1;
-            t = new Text( r );
+        else if (td1->metaObject() == &Text::staticMetaObject) {
+            Text *ot = qobject_cast<Text *>(td1);
+            Text *t = new Text( r );
             t->setPoint( newPoints.at( oldPoints.indexOf( td1->Start() ) ) );
             t->setText( ot->getText() );
 //            t->setTextMask( ot->getTextMask() );
@@ -151,11 +155,15 @@ bool ChemData::Paste()
             t->Highlight( true );
             addText( t );
         }
+        else {
+            qDebug() << "Unhandled case in ChemData::Paste()!";
+            exit(1);
+        }
     }
     return true;
 }
 
-void ChemData::StartUndo( int fn, DPoint * s1 )
+void ChemData::StartUndo( int /*fn*/, DPoint * /*s1*/ )
 {
     QString last_undo_file;
 
