@@ -122,7 +122,8 @@ void PreviewWidget::paintEvent( QPaintEvent *qp1 )
     int ofs = 2;
     QPainter p( this );
 
-    if ( type == TYPE_ARROW ) {
+    switch (myType) { // TODO: candidate for subclaassing
+    case ARROW:
         switch ( style ) {
         case ARROW_REGULAR:
             p.drawPixmap( 10, 10, QPixmap( arrow_regular_xpm ) );
@@ -144,8 +145,7 @@ void PreviewWidget::paintEvent( QPaintEvent *qp1 )
             break;
         }
         return;
-    }
-    if ( type == TYPE_BOND ) {
+    case BOND:
         switch ( _or ) {
         case 1:
             if ( da == 1 ) {
@@ -193,8 +193,7 @@ void PreviewWidget::paintEvent( QPaintEvent *qp1 )
             break;
         }
         return;
-    }
-    if ( type == TYPE_BRACKET ) {
+    case: BRACKET:
         switch ( style ) {
         case BRACKET_SQUARE:
             p.drawPixmap( 10, 10, QPixmap( squarebracket_xpm ) );
@@ -213,8 +212,7 @@ void PreviewWidget::paintEvent( QPaintEvent *qp1 )
             break;
         }
         return;
-    }
-    if ( type == TYPE_CURVEARROW ) {
+    case CURVEARROW:
         switch ( style ) {
         case CA_CW90:
             p.drawPixmap( 10, 10, QPixmap( cw90_xpm ) );
@@ -236,8 +234,7 @@ void PreviewWidget::paintEvent( QPaintEvent *qp1 )
             break;
         }
         return;
-    }
-    if ( type == TYPE_SYMBOL ) {
+    case SYMBOL:
         switch ( style ) {
         case SYM_PLUS:
             p.drawPixmap( 10, 10, QPixmap( sym_plus_xpm ) );
@@ -271,6 +268,9 @@ void PreviewWidget::paintEvent( QPaintEvent *qp1 )
             break;
         }
         return;
+    default:
+        qDebug() << "Unhandled case in PreviewWidget!";
+        exit(1);
     }
 }
 
