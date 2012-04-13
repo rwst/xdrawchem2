@@ -982,11 +982,11 @@ void ApplicationWindow::FromCurveArrowMenu( QAction * action )
     } else if ( action == carrowCCW270Action ) {
         m_renderer->setMode_DrawCurveArrow( ccw270Arrow );
     } else if ( action == carrowBezierAction ) {
-        m_renderer->setMode_DrawGraphicObject( TYPE_BEZIER, 0 );
+        m_renderer->setMode_DrawBezier(0);
     } else if ( action == carrowBezierhalfAction ) {
-        m_renderer->setMode_DrawGraphicObject( TYPE_BEZIER, 1 );
+        m_renderer->setMode_DrawBezier(1);
     } else if ( action == carrowBezierfullAction ) {
-        m_renderer->setMode_DrawGraphicObject( TYPE_BEZIER, 2 );
+        m_renderer->setMode_DrawBezier(2);
     } else {
         qDebug() << "unknown action";
     }
@@ -1019,15 +1019,15 @@ void ApplicationWindow::setCurveArrowAction( QAction * action )
         drawCurveArrowButton->setDefaultAction( carrowCCW270Action );
         drawCurveArrowButton->setIcon( QIcon( ccw270_xpm ) );
     } else if ( action == carrowBezierAction ) {
-        m_renderer->setMode_DrawGraphicObject( TYPE_BEZIER, 0 );
+        m_renderer->setMode_DrawBezier(0);
         drawCurveArrowButton->setDefaultAction( carrowBezierAction );
         drawCurveArrowButton->setIcon( QIcon( cbezier_xpm ) );
     } else if ( action == carrowBezierhalfAction ) {
-        m_renderer->setMode_DrawGraphicObject( TYPE_BEZIER, 1 );
+        m_renderer->setMode_DrawBezier(1);
         drawCurveArrowButton->setDefaultAction( carrowBezierhalfAction );
         drawCurveArrowButton->setIcon( QIcon( cbezierhalf_xpm ) );
     } else if ( action == carrowBezierfullAction ) {
-        m_renderer->setMode_DrawGraphicObject( TYPE_BEZIER, 2 );
+        m_renderer->setMode_DrawBezier(2);
         drawCurveArrowButton->setDefaultAction( carrowBezierfullAction );
         drawCurveArrowButton->setIcon( QIcon( cbezierfull_xpm ) );
     } else {
@@ -2026,7 +2026,7 @@ void ApplicationWindow::DrawSquareBracket()
 void ApplicationWindow::CubicBezierTool( int x )
 {
     qDebug() << "Bezier:" << x - 6;
-    m_renderer->setMode_DrawGraphicObject( TYPE_BEZIER, x - 6 );
+    m_renderer->setMode_DrawBezier(x-6);
 }
 
 void ApplicationWindow::setClipboard( Clipboard * clip1 )

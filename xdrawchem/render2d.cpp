@@ -425,21 +425,14 @@ void Render2D::setMode_DrawSymbol( const QString &s )
     update();
 }
 
-void Render2D::setMode_DrawGraphicObject( int g1, int param1 )
+void Render2D::setMode_DrawBezier( int param1 )
 {
-    if ( mode == MODE_TEXT )
-        CleanUpAfterTextTool();
-    if ( mode == MODE_RING )
-        smartplace = 0;
-    qDebug() << g1;
-    bracket_type = g1;
-    if ( g1 == TYPE_BEZIER ) {
-        mode = MODE_DRAWBEZIER;
-        tmp_bezier.resize( 4 );
-        bezier_count = 0;
-        bracket_type = param1;  // none, half, full arrowhead
-        emit SignalSetStatusBar( tr( "Draw graphic object: cubic bezier" ) );
-    }
+    mode = MODE_DRAWBEZIER;
+    tmp_bezier.resize( 4 );
+    bezier_count = 0;
+    bracket_type = param1;  // none, half, full arrowhead
+    emit SignalSetStatusBar( tr( "Draw graphic object: cubic bezier" ) );
+
     startpoint = 0;
     endpoint = 0;
     setCursor( Qt::CrossCursor );

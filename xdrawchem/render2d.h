@@ -52,7 +52,7 @@ public slots:
     void setMode_Erase();
     void setMode_DrawText();
     void setMode_DrawSymbol( const QString & );
-    void setMode_DrawGraphicObject(int, int param1 = 0);
+    void setMode_DrawBezier(int param1);
     void setMode_DrawRing(QString, QString, int sp = 0);
     void setMode_DrawNewmanAnti();
     void setMode_DrawNewmanGauche();
