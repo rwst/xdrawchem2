@@ -5,7 +5,6 @@
 #include <QMessageBox>
 #include <QColorDialog>
 #include <QPrinter>
-#include <QScopedPointer>
 
 #include "render2d.h"
 #include "chemdata.h"
@@ -625,8 +624,6 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
     DPoint *tmp_pt;
     XDC_Event *evt;
     QPoint curqpt = zoomCorrectReverse( e1->pos() );
-    QScopedPointer<QPainter> p(new QPainter(this));
-    painter = p.data();
 
     if ( preferences.getSnapGrid() != GRID_NONE ) {
         curqpt = GridLock( curqpt );
@@ -1224,9 +1221,6 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
 
     if ( ( mode == MODE_DRAWBEZIER ) && mouse1down )
         return;
-
-    QScopedPointer<QPainter> p(new QPainter(this));
-    painter = p.data();
 
     QPoint curqpt = zoomCorrectReverse( e1->pos() );
 
