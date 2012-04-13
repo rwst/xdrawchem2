@@ -167,15 +167,15 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
     }
 
     if ( ( mode == MODE_SELECT_MULTIPLE ) && ( mouse1down ) ) {
-        drawBox( zoomCorrectReverse( selectOrigin ), zoomCorrectReverse( selectPrev ), QColor( 255, 255, 255 ) );
+//      drawBox( zoomCorrectReverse( selectOrigin ), zoomCorrectReverse( selectPrev ), QColor( 255, 255, 255 ) );
         selectPrev = e1->pos();
         c->NewSelectRect( QRect( zoomCorrectReverse( selectOrigin ), zoomCorrectReverse( selectPrev ) ), false );
         update();
-        directdraw = true;
+//        directdraw = true;
 //    painter->begin(this);
-        drawBox( zoomCorrectReverse( selectOrigin ), zoomCorrectReverse( selectPrev ), QColor( 0, 0, 0 ) );
+//        drawBox( zoomCorrectReverse( selectOrigin ), zoomCorrectReverse( selectPrev ), QColor( 0, 0, 0 ) );
 //    painter->end();
-        directdraw = false;
+//        directdraw = false;
     }
 
     if ( ( mode == MODE_SELECT_RESIZE_MULTIPLE ) && ( mouse1down ) ) {

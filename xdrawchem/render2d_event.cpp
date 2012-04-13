@@ -741,7 +741,7 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
         update();
         directdraw = true;
         //      painter->begin(this);
-        drawBox( selectOrigin, selectPrev, QColor( 255, 255, 255 ) );
+        //drawBox( selectOrigin, selectPrev, QColor( 255, 255, 255 ) );
         bool shiftdown = false;
 
         if ( e1->modifiers() == Qt::ShiftModifier )
