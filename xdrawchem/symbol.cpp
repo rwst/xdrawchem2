@@ -469,7 +469,7 @@ void Symbol::Edit()
         lsty = SYM_P_DOUBLE;
     if ( which == "bead" )
         lsty = SYM_BEAD;
-    BondEditDialog be( m_renderer, start, end, TYPE_SYMBOL, 0, 0, 0, lsty, color );
+    BondEditDialog be( m_renderer, start, end, BondEditDialog::SYMBOL, 0, 0, 0, lsty, color );
 
     if ( !be.exec() )
         return;
@@ -495,11 +495,6 @@ void Symbol::Edit()
         SetSymbol( "p_double_orbital" );
     if ( lsty == SYM_BEAD )
         SetSymbol( "bead" );
-}
-
-int Symbol::Type()
-{
-    return TYPE_SYMBOL;
 }
 
 bool Symbol::Find( DPoint * target )

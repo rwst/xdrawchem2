@@ -16,7 +16,9 @@ class BondEditDialog : public QDialog
     Q_OBJECT
 
 public:
-    BondEditDialog( QWidget *parent, DPoint *s, DPoint *e, int ty, int o, int d, int th, int st, QColor c1 );
+    enum type { ARROW=1, BOND, BRACKET, CURVEARROW, SYMBOL } myType;
+
+    BondEditDialog( QWidget *parent, DPoint *s, DPoint *e, type ty, int o, int d, int th, int st, QColor c1 );
     int Style() { return style; }
     int Order() { return order; }
     int Dash() { return dash; }
@@ -65,7 +67,7 @@ private:
     QComboBox *ltList, *dbList;
     DPoint *s1, *e1;
     QColor color;
-    int type;
+
     int order, dash, thick;
     int ahead, style, dbond;
     PreviewWidget *pw;

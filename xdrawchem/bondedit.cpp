@@ -14,12 +14,12 @@
 #include "previewwidget.h"
 #include "defs.h"
 
-BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, int ty, int o, int d, int th, int st, QColor c1 )
+BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, type ty, int o, int d, int th, int st, QColor c1 )
     : QDialog( parent )
 {
     s1 = s;
     e1 = e;
-    type = ty;
+    myType = ty;
     order = o;
     dash = d;
     thick = th;
@@ -61,7 +61,8 @@ BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, int ty,
     connect( colorBtn, SIGNAL( pressed() ), SLOT( GetNewColor() ) );
     mygrid->addWidget( colorBtn, 1, 1 );
 
-    if ( type == TYPE_ARROW ) {
+    switch (myType) { // TODO: candidate for subclassing
+    case ARROW:
         setWindowTitle( tr( "Arrow editor" ) );
         QGroupBox *arrowBtnBox = new QGroupBox( tr( "Style:" ) );
         QVBoxLayout *arrowBtnBoxLayout = new QVBoxLayout();
@@ -126,8 +127,9 @@ BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, int ty,
         connect( ltList, SIGNAL( activated( int ) ), SLOT( setThick( int ) ) );
         ltList->setCurrentIndex( th - 1 );
         mygrid->addWidget( ltList, 2, 1 );
+        break;
 
-    } else if ( type == TYPE_BOND ) {
+    case BOND:
         setWindowTitle( tr( "Bond editor" ) );
         QGroupBox *bondBtnBox = new QGroupBox( tr( "Bond order:" ) );
         QVBoxLayout *bondBtnBoxLayout = new QVBoxLayout();
@@ -224,8 +226,9 @@ BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, int ty,
         connect( dbList, SIGNAL( activated( int ) ), this, SLOT( setDoubleBond( int ) ) );
 
         mygrid->addWidget( dbList, 3, 1 );
+        break;
 
-    } else if ( type == TYPE_BRACKET ) {
+    case BRACKET:
         setWindowTitle( tr( "Bracket editor" ) );
         QGroupBox *bracketBtnBox = new QGroupBox( tr( "Style:" ) );
         QVBoxLayout *bracketBtnBoxLayout = new QVBoxLayout();
@@ -265,8 +268,9 @@ BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, int ty,
         bracketBtnGroup->addButton( ellipseBracketBtn, BRACKET_ELLIPSE );
 
         mygrid->addWidget( bracketBtnBox, 0, 1 );
+        break;
 
-    } else if ( type == TYPE_CURVEARROW ) {
+    case CURVEARROW:
         setWindowTitle( tr( "Curved Arrow editor" ) );
         QGroupBox *curveArrowBtnBox = new QGroupBox( tr( "Style:" ) );
         QVBoxLayout *curveArrowBtnBoxLayout = new QVBoxLayout();
@@ -312,8 +316,9 @@ BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, int ty,
         curveArrowBtnGroup->addButton( ccw270ArrowBtn, CA_CCW270 );
 
         mygrid->addWidget( curveArrowBtnBox, 0, 1 );
+        break;
 
-    } else if ( type == TYPE_SYMBOL ) {
+    case SYMBOL:
         setWindowTitle( tr( "Symbol editor" ) );
         QGroupBox *symbolBtnBox = new QGroupBox( tr( "Style:" ) );
         QVBoxLayout *symbolBtnBoxLayout = new QVBoxLayout();
@@ -383,6 +388,10 @@ BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, int ty,
         symbolBtnGroup->addButton( beadSymbolBtn, SYM_BEAD );
 
         mygrid->addWidget( symbolBtnBox, 0, 1 );
+        break;
+
+    default: qDebug() << "Unhandled case in BondEditDialog!";
+        exit(1);
     }
 
     QHBoxLayout *btnLayout = new QHBoxLayout();

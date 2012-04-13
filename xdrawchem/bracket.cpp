@@ -207,18 +207,13 @@ void Bracket::Render()
 
 void Bracket::Edit()
 {
-    BondEditDialog be( r, start, end, TYPE_BRACKET, 0, 0, 0, style, color );
+    BondEditDialog be( r, start, end, BondEditDialog::BRACKET, 0, 0, 0, style, color );
 
     if ( !be.exec() )
         return;
     qDebug() << "change";
     style = be.Style();
     color = be.Color();
-}
-
-int Bracket::Type()
-{
-    return TYPE_BRACKET;
 }
 
 bool Bracket::Find( DPoint * target )

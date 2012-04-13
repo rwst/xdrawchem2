@@ -149,15 +149,10 @@ void Arrow::Render()
     m_renderer->drawArrow( start->toQPoint(), end->toQPoint(), c1, style, thick );
 }
 
-int Arrow::Type()
-{
-    return TYPE_ARROW;
-}
-
 void Arrow::Edit()
 {
     qDebug() << "edit arrow";
-    BondEditDialog be( m_renderer, start, end, TYPE_ARROW, 0, 0, thick, style, color );
+    BondEditDialog be( m_renderer, start, end, BondEditDialog::ARROW, 0, 0, thick, style, color );
 
     if ( !be.exec() )
         return;

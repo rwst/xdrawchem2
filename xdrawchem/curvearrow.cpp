@@ -112,7 +112,7 @@ void CurveArrow::Edit()
         lsty = CA_CCW180;
     if ( which == "CCW270" )
         lsty = CA_CCW270;
-    BondEditDialog be( r, start, end, TYPE_CURVEARROW, 0, 0, 0, lsty, color );
+    BondEditDialog be( r, start, end, BondEditDialog::CURVEARROW, 0, 0, 0, lsty, color );
 
     if ( !be.exec() )
         return;
@@ -139,11 +139,6 @@ void CurveArrow::Edit()
         which = "CCW270";
         break;
     }
-}
-
-int CurveArrow::Type()
-{
-    return TYPE_CURVEARROW;
 }
 
 bool CurveArrow::Find( DPoint *target )

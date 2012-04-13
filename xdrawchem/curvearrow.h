@@ -17,7 +17,6 @@ public:
     CurveArrow( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object
     void Edit();
-    int Type();  // return type of object
     bool Find( DPoint * ); // does this CurveArrow contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
     Drawable *FindNearestObject( DPoint *, double & );
