@@ -62,7 +62,7 @@ void Bond::Edit()
     int db1 = 0;
 
     qDebug() << "edit bond";
-    BondEditDialog be( r, start, end, BondEditDialog::BOND, order, dashed, thick, 0, color );
+    BondEditDialog be( r, start, end, PreviewWidget::BOND, order, dashed, thick, 0, color );
 
     if ( auto_wside == 0 )
         db1 = wside;

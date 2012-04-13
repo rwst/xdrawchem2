@@ -152,7 +152,7 @@ void Arrow::Render()
 void Arrow::Edit()
 {
     qDebug() << "edit arrow";
-    BondEditDialog be( m_renderer, start, end, BondEditDialog::ARROW, 0, 0, thick, style, color );
+    BondEditDialog be( m_renderer, start, end, PreviewWidget::ARROW, 0, 0, thick, style, color );
 
     if ( !be.exec() )
         return;

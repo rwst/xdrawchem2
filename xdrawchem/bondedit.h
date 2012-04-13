@@ -16,9 +16,9 @@ class BondEditDialog : public QDialog
     Q_OBJECT
 
 public:
-    enum type { ARROW=1, BOND, BRACKET, CURVEARROW, SYMBOL } myType;
+    enum PreviewWidget::type myType;
 
-    BondEditDialog( QWidget *parent, DPoint *s, DPoint *e, type ty, int o, int d, int th, int st, QColor c1 );
+    BondEditDialog( QWidget *parent, DPoint *s, DPoint *e, PreviewWidget::type ty, int o, int d, int th, int st, QColor c1 );
     int Style() { return style; }
     int Order() { return order; }
     int Dash() { return dash; }
@@ -32,7 +32,7 @@ public slots:
     void styleChanged( int s1 )
     {
         style = s1;
-        pw->updateWidget( type, thick, dash, order, style, color );
+        pw->updateWidget( myType, thick, dash, order, style, color );
     }
 
     void orderChanged( int o1 )
@@ -46,14 +46,14 @@ public slots:
         if ( o1 == 7 ) { order = 7; dash = 0; }
         if ( o1 == 11 ) { order = 2; dash = 1; }
         if ( o1 == 12 ) { order = 3; dash = 1; }
-        pw->updateWidget( type, thick, dash, order, style, color );
+        pw->updateWidget( myType, thick, dash, order, style, color );
     }
 
     void setThick( int tnew )
     {
         qDebug() << "setThick: " << tnew;
         thick = tnew + 1;
-        pw->updateWidget( type, thick, dash, order, style, color );
+        pw->updateWidget( myType, thick, dash, order, style, color );
     }
 
     void setDoubleBond( int tnew )

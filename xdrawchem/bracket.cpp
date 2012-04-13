@@ -207,7 +207,7 @@ void Bracket::Render()
 
 void Bracket::Edit()
 {
-    BondEditDialog be( r, start, end, BondEditDialog::BRACKET, 0, 0, 0, style, color );
+    BondEditDialog be( r, start, end, PreviewWidget::BRACKET, 0, 0, 0, style, color );
 
     if ( !be.exec() )
         return;
@@ -227,7 +227,7 @@ bool Bracket::Find( DPoint * target )
 
 // Do not allow connections to this object.
 // Simplest way to do this, I think, is to disallow this function
-DPoint *Bracket::FindNearestPoint( DPoint * target, double &dist )
+DPoint *Bracket::FindNearestPoint( DPoint * /*target*/, double &dist )
 {
     dist = 99999.0;
     return 0;

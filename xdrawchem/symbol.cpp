@@ -469,7 +469,7 @@ void Symbol::Edit()
         lsty = SYM_P_DOUBLE;
     if ( which == "bead" )
         lsty = SYM_BEAD;
-    BondEditDialog be( m_renderer, start, end, BondEditDialog::SYMBOL, 0, 0, 0, lsty, color );
+    BondEditDialog be( m_renderer, start, end, PreviewWidget::SYMBOL, 0, 0, 0, lsty, color );
 
     if ( !be.exec() )
         return;
