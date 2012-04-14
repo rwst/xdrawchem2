@@ -175,7 +175,7 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
   }*/
     qDebug() << "DrawText_mousePressEvent 3.2";
     if (highlightobject) {
-      if (highlightobject->Type() == TYPE_TEXT) {
+      if (highlightobject->metaObject() == &Text::staticMetaObject) {
 	localtext = (Text *)highlightobject;
       } 
     } else {
@@ -230,7 +230,7 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
     return;
 }
 
-void Render2D::DrawText_mouseReleaseEvent( QMouseEvent * e1, QPoint cqp )
+void Render2D::DrawText_mouseReleaseEvent( QMouseEvent * /*e1*/, QPoint /*cqp*/ )
 {
     // short circuit for now!
     return;
@@ -266,7 +266,8 @@ void Render2D::DrawText_mouseMoveEvent( QMouseEvent * e1 )
     }
     // look for place to draw if no current text object
     if ( no != 0 ) {
-        if ( ( no->Type() == TYPE_TEXT ) || ( ( no->Type() == TYPE_BRACKET ) && ( distobj < 8.0 ) ) ) {
+        if ( ( no->metaObject() == &Text::staticMetaObject )
+             || ( ( no->metaObject() == &Bracket::staticMetaObject ) && ( distobj < 8.0 ) ) ) {
             // highlight text if closest, or bracket
             highlightpoint = 0;
             highlightobject = no;
@@ -356,7 +357,7 @@ void Render2D::keyPressEvent( QKeyEvent * k )
                 sub_set = false;
             }
             if ( highlightobject != 0 ) {       // edit existing object
-                if ( highlightobject->Type() == TYPE_BRACKET ) {
+                if ( highlightobject->metaObject() == &Bracket::staticMetaObject ) {
                     delete localtexteditor;
 
                     localtexteditor = 0;
@@ -375,7 +376,7 @@ void Render2D::keyPressEvent( QKeyEvent * k )
                     return;     // a seg fault will occur otherwise!!!
                 }
 
-                if ( highlightobject->Type() != TYPE_TEXT ) {
+                if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
                     hotkeymode = false;
                     mode = hkprevmode;
                     return;
@@ -547,7 +548,7 @@ void Render2D::Underline()
 // intext = text to draw (or blank); return if modified or not
 // justify = how to arrange text around origin
 // oneline = if true (i.e., a label), it's a one-line widget
-QString Render2D::EditText( QPoint origin, QString intext, int justify, bool oneline )
+QString Render2D::EditText( QPoint /* origin */, QString intext, int /* justify */, bool /* oneline */ )
 {
     return intext;
 }

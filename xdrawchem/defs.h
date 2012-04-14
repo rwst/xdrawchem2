@@ -135,22 +135,6 @@ const QString XDC_VERSION = QString::fromLatin1("MacDrawChem ") + VERSION;
 #define RXN_13CNMR 3
 #define RXN_TEST 69
 
-// types (Drawable::Type() and subclasses)
-#define TYPE_DRAWABLE 0
-#define TYPE_MOLECULE 1
-#define TYPE_BOND 10
-#define TYPE_TEXT 11
-#define TYPE_ARROW 12
-#define TYPE_BRACKET 13
-#define TYPE_SYMBOL 14
-#define TYPE_CURVEARROW 15
-#define TYPE_BEZIER 16
-#define TYPE_BIOTOOLS 20
-#define TYPE_GRAPHIC_OBJECT 99
-#define TYPE_GRAPHIC_LINE 100
-#define TYPE_GRAPHIC_ATOMMARK 101
-#define TYPE_GRAPHIC_BONDMARK 102
-
 // bond stereochemistry (Bond::stereo)
 #define STEREO_UNDEFINED 0
 #define STEREO_UP 1

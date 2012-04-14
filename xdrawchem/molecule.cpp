@@ -151,11 +151,6 @@ void Molecule::CalcOffsets()
     }
 }
 
-int Molecule::Type()
-{
-    return TYPE_MOLECULE;
-}
-
 bool Molecule::Find( DPoint * target )
 {
     foreach ( tmp_bond, bonds ) {
@@ -709,7 +704,7 @@ bool Molecule::Erase( Drawable * d )
     int removed;
     bool retval = false;
 
-    if ( d->Type() == TYPE_BOND ) {
+    if ( d->metaObject() == &Bond::staticMetaObject ) {
         tmp_bond = ( Bond * ) d;
         if ( bonds.contains( tmp_bond ) ) {
             if ( ( tmp_bond->Order() == 2 ) || ( tmp_bond->Order() == 3 ) ) {
@@ -727,7 +722,7 @@ bool Molecule::Erase( Drawable * d )
             }
         }
     } else {                    // deleting TEXT or SYMBOL
-        if ( d->Type() == TYPE_TEXT ) {
+        if ( d->metaObject() == &Text::staticMetaObject ) {
             removed = labels.removeAll( ( Text * ) d );
             if ( removed > 0 ) {
                 d->Start()->element = "C";
@@ -735,7 +730,7 @@ bool Molecule::Erase( Drawable * d )
             }
             return removed;
         }
-        if ( d->Type() == TYPE_SYMBOL ) {
+        if ( d->metaObject() == &Symbol::staticMetaObject ) {
             removed = symbols.removeAll( ( Symbol * ) d );
             if ( removed > 0 )
                 delete d;
@@ -808,7 +803,7 @@ QString Molecule::ToXML( QString xml_id )
     // also copy Symbol descriptions
     foreach ( tmp_draw, uo ) {
         tmp_draw->Start()->hit = false;
-        if ( tmp_draw->Type() == TYPE_TEXT ) {
+        if ( tmp_draw->metaObject() == &Text::staticMetaObject ) {
             tmp_text = ( Text * ) tmp_draw;     // is this cheating?
             tmp_text->Start()->element = tmp_text->getText();
             tmp_text->Start()->elementmask = tmp_text->getRichText();
@@ -816,7 +811,7 @@ QString Molecule::ToXML( QString xml_id )
             tmp_text->Start()->font = tmp_text->getFont();
             tmp_text->Start()->hit = true;
         }
-        if ( tmp_draw->Type() == TYPE_SYMBOL ) {
+        if ( tmp_draw->metaObject() == &Symbol::staticMetaObject ) {
             tmp_sym = ( Symbol * ) tmp_draw;
             tmp_sym->Start()->symbol = tmp_sym->GetSymbol();
         }
@@ -891,7 +886,7 @@ QString Molecule::ToXML( QString xml_id )
     // add XML ID's to Bond's, write as we go
     n = 0;
     foreach ( tmp_draw, uo ) {
-        if ( tmp_draw->Type() == TYPE_BOND ) {
+        if ( tmp_draw->metaObject() == &Bond::staticMetaObject ) {
             tmp_bond = ( Bond * ) tmp_draw;     // I ask again, is this cheating?
             n1.setNum( n );
             nfull = QString( "b" ) + n1;
@@ -955,7 +950,7 @@ QString Molecule::ToCDXML( QString xml_id )
 
     // also copy Symbol descriptions
     foreach ( tmp_draw, uo ) {
-        if ( tmp_draw->Type() == TYPE_SYMBOL ) {
+        if ( tmp_draw->metaObject() == &Symbol::staticMetaObject ) {
             tmp_sym = ( Symbol * ) tmp_draw;
             tmp_sym->Start()->symbol = tmp_sym->GetSymbol();
         }
@@ -991,7 +986,7 @@ QString Molecule::ToCDXML( QString xml_id )
 
     // add XML ID's to Bond's, write as we go
     foreach ( tmp_draw, uo ) {
-        if ( tmp_draw->Type() == TYPE_BOND ) {
+        if ( tmp_draw->metaObject() == &Bond::staticMetaObject ) {
             tmp_bond = ( Bond * ) tmp_draw;     // I ask again, is this cheating?
             n1.setNum( n );
             tmp_draw->setID( n1 );

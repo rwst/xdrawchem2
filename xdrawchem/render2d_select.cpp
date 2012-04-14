@@ -2,6 +2,7 @@
 
 #include "render2d.h"
 #include "chemdata.h"
+#include "symbol.h"
 #include "text.h"
 #include "defs.h"
 
@@ -84,7 +85,8 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
         }
         if ( no != 0 ) {
             // highlight text and symbol objects preferentially when MODE_SELECT...
-            if ( ( no->Type() == TYPE_TEXT ) || ( no->Type() == TYPE_SYMBOL ) ) {
+            if ( no->metaObject() == &Text::staticMetaObject
+                 || no->metaObject() == &Symbol::staticMetaObject ) {
                 highlightpoint = 0;
                 highlightobject = no;
                 if ( ( prevhighlightobject != highlightobject ) && ( prevhighlightobject != 0 ) )

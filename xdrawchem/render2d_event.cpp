@@ -125,7 +125,7 @@ void Render2D::molCopy()
 
 void Render2D::bondEdit()
 {
-    if ( highlightobject->Type() == TYPE_TEXT ) {
+    if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
         doubleClickFlag = true;
         prev_mode = mode;
         mode = MODE_TEXT;
@@ -149,7 +149,7 @@ void Render2D::bondInfo()
 
     objinf = tr( "No information." );
 
-    if ( highlightobject->Type() == TYPE_BOND ) {
+    if ( highlightobject->metaObject() == &Bond::staticMetaObject ) {
         objinf = "ID: ";
         objinf.append( ( ( Bond * ) highlightobject )->CName() );
         objinf.append( "\nReactions: " );
@@ -270,26 +270,15 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             // get Drawable of nearest object
             Drawable *no = c->FindNearestObject( e, distobj );
 
-            if ( ( distobj < 5.0 ) && ( no->Type() == TYPE_BRACKET ) )
+            if ( ( distobj < 5.0 ) && ( no->metaObject() == &Bracket::staticMetaObject ) )
                 highlightobject = no;
         }
 
         if ( highlightobject != 0 ) {
             QString rtmt;
 
-            rtmt = tr( "Object" );
-            if ( highlightobject->Type() == TYPE_ARROW )
-                rtmt = tr( "Arrow" );
-            else if ( highlightobject->Type() == TYPE_BOND )
-                rtmt = tr( "Bond" );
-            else if ( highlightobject->Type() == TYPE_BRACKET )
-                rtmt = tr( "Bracket" );
-            else if ( highlightobject->Type() == TYPE_CURVEARROW )
-                rtmt = tr( "Curved Arrow" );
-            else if ( highlightobject->Type() == TYPE_SYMBOL )
-                rtmt = tr( "Symbol" );
-            else if ( highlightobject->Type() == TYPE_TEXT )
-                rtmt = tr( "Text" );
+            rtmt = tr( highlightobject->metaObject()->className() );
+
             QAction *title = new QAction( "test", this );
             title->setEnabled(false);
             QFont f = title->font();
@@ -297,12 +286,12 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             rtclickpopup->addAction( title );
             rtclickpopup->addSeparator();
             rtclickpopup->addAction( tr( "Edit" ), this, SLOT( bondEdit() ) );
-            if ( highlightobject->Type() == TYPE_BOND ) {
+            if ( highlightobject->metaObject() == &Bond::staticMetaObject ) {
                 rtclickpopup->addAction( tr( "Info" ), this, SLOT( bondInfo() ) );
-            } else if ( highlightobject->Type() == TYPE_BRACKET ) {
+            } else if ( highlightobject->metaObject() == &Bracket::staticMetaObject ) {
                 rtclickpopup->addAction( tr( "Fill color..." ), this, SLOT( bracketFill() ) );
                 rtclickpopup->addAction( tr( "No fill" ), this, SLOT( bracketFillOff() ) );
-            } else if ( highlightobject->Type() == TYPE_TEXT ) {
+            } else if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
                 rtclickpopup->addAction( tr( "Shape..." ), this, SLOT( textShape() ) );
             }
             menu_ok = true;
@@ -330,11 +319,11 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             QString rtmt;
 
             rtmt = tr( "Object" );
-            if ( highlightobject->Type() == TYPE_TEXT )
+            if ( highlightobject->metaObject() == &Text::staticMetaObject )
                 rtmt = tr( "Text" );
             rtclickpopup->addAction( rtmt );
             rtclickpopup->addAction( tr( "Edit" ), this, SLOT( bondEdit() ) );
-            if ( highlightobject->Type() == TYPE_TEXT )
+            if ( highlightobject->metaObject() == &Text::staticMetaObject )
                 rtclickpopup->addAction( tr( "Shape..." ), this, SLOT( textShape() ) );
             menu_ok = true;
         }
@@ -402,14 +391,11 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
 
     if ( distobj > 5.0 )
         no = 0;
-    if ( no != 0 ) {
-        if ( ( mode == MODE_DRAWLINE ) && ( no->Type() == TYPE_BOND ) )
-            allowedit = true;
-        if ( ( mode == MODE_DRAWLINE_DASH ) && ( no->Type() == TYPE_BOND ) )
-            allowedit = true;
-        if ( ( mode == MODE_DRAWLINE_UP ) && ( no->Type() == TYPE_BOND ) )
-            allowedit = true;
-        if ( ( mode == MODE_DRAWLINE_DOWN ) && ( no->Type() == TYPE_BOND ) )
+    if ( no != 0 && no->metaObject() == &Bond::staticMetaObject ) {
+        if ( ( mode == MODE_DRAWLINE )
+             || ( mode == MODE_DRAWLINE_DASH )
+             || ( mode == MODE_DRAWLINE_UP )
+             || ( mode == MODE_DRAWLINE_DOWN ))
             allowedit = true;
     }
     // allowedit and BUTTON3: edit item under mouse
@@ -417,7 +403,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
         if ( highlightobject == 0 )
             highlightobject = no;
         if ( highlightobject != 0 ) {
-            if ( highlightobject->Type() == TYPE_TEXT ) {
+            if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
                 setCursor( Qt::IBeamCursor );
                 mode = MODE_TEXT;
                 text_exists = true;
@@ -606,7 +592,7 @@ void Render2D::mouseDoubleClickEvent( QMouseEvent * e1 )
     qDebug() << "mouseDoubleClickEvent received";
 
     if ( highlightobject != 0 ) {
-        if ( highlightobject->Type() == TYPE_TEXT ) {
+        if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
             qDebug() << "Activate text object?";
             doubleClickFlag = true;
             prev_mode = mode;
@@ -619,7 +605,7 @@ void Render2D::mouseDoubleClickEvent( QMouseEvent * e1 )
 
 void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
 {
-    qDebug() << "release MODE: " << mode;
+    //qDebug() << "release MODE: " << mode;
 
     DPoint *tmp_pt;
     XDC_Event *evt;
@@ -1377,7 +1363,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         }
 
         if ( ( no != 0 ) && ( mode == MODE_TOOL_RETRO_BONDNAME ) && ( distobj < 6.0 ) ) {
-            if ( no->Type() == TYPE_BOND ) {
+            if ( no->metaObject() == &Bond::staticMetaObject ) {
                 highlightobject = no;
                 if ( prevhighlightobject != 0 ) {
                     prevhighlightobject->Highlight( false );
@@ -1399,7 +1385,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
             return;
         }
         // highlight text object preferentially when MODE_SELECT...
-        if ( ( no != 0 ) && ( mode == MODE_SELECT ) && ( no->Type() == TYPE_TEXT ) ) {
+        if ( ( no != 0 ) && ( mode == MODE_SELECT ) && ( no->metaObject() == &Text::staticMetaObject ) ) {
             highlightpoint = 0;
             highlightobject = no;
             if ( ( prevhighlightobject != highlightobject ) && ( prevhighlightobject != 0 ) )

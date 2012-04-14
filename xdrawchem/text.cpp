@@ -332,7 +332,7 @@ void Text::SetRichstringFromXML( QString xml_tag )
 }
 
 // get Text::textmask from <textmask> tag
-void Text::SetTextmaskFromXML( QString xml_tag )
+void Text::SetTextmaskFromXML( QString /*xml_tag*/ )
 {
     // not used!!!  either <richstring> or <elementmask> tag used to set display
 
@@ -356,7 +356,7 @@ void Text::SetTextmaskFromXML( QString xml_tag )
      */
 }
 
-bool Text::isWithinRect( QRect n, bool shiftdown )
+bool Text::isWithinRect( QRect n, bool /*shiftdown*/ )
 {
     if ( DPointInRect( start, n ) )
         highlighted = true;
@@ -727,18 +727,13 @@ void Text::Render()
   qDebug() << "Text::Render end";
 }
 
-int Text::Type()
-{
-    return TYPE_TEXT;
-}
-
-bool Text::Find( DPoint * target )
+bool Text::Find( DPoint * /*target*/ )
 {
     //if (start == target) return true;
     return false;
 }
 
-DPoint *Text::FindNearestPoint( DPoint * target, double &dist )
+DPoint *Text::FindNearestPoint( DPoint * /*target*/, double &dist )
 {
     dist = 99999.0;
     return 0;

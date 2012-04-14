@@ -15,11 +15,6 @@ BioTools::BioTools( Render2D *, QObject * parent )
     which = "";
 }
 
-int BioTools::Type()
-{
-    return TYPE_BIOTOOLS;
-}
-
 void BioTools::SetWhich( QString w1 )
 {
     which = w1;

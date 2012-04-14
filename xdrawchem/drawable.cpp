@@ -304,11 +304,6 @@ void Drawable::Edit()
     qDebug() << "Not possible to edit Drawable, only its subclasses";
 }
 
-int Drawable::Type()
-{
-    return TYPE_DRAWABLE;
-}
-
 DPoint *Drawable::FindNearestPoint( DPoint *, double &d )
 {
     d = 99999.0;

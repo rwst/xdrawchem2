@@ -53,7 +53,7 @@ void Tool_2D3D::process()
     Drawable *td1;
 
     foreach ( td1, objs ) {
-        if ( td1->Type() == TYPE_BOND ) {
+        if ( td1->metaObject() == &Bond::staticMetaObject ) {
             b = ( Bond * ) td1;
             new3dmol->addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), b->Thick(), b->Order(), td1->GetColor(), true );
         }
