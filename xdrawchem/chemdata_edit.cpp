@@ -25,7 +25,7 @@ void ChemData::ScaleAll( double bond_length )
     Molecule *tmp_mol;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             tmp_mol = ( Molecule * ) tmp_draw;
             tmp_mol->Scale( bond_length );
         }
@@ -48,7 +48,7 @@ void ChemData::Copy()
     clip->clear();
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() != TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             // Copy to clipboard if selected
             if ( tmp_draw->Highlighted() == true )
                 clip->objects.append( tmp_draw );

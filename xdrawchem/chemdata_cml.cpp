@@ -551,7 +551,7 @@ bool ChemData::save_cml( QString fn )
 
     // Copy text from Text objects to element field in DPoint
     foreach ( tmp_draw, uo ) {
-        if ( tmp_draw->Type() == TYPE_TEXT ) {
+        if ( tmp_draw->metaObject() == &Text::staticMetaObject ) {
             tmp_text = ( Text * ) tmp_draw;     // is this cheating?
             tmp_text->Start()->element = tmp_text->getText();
         }
@@ -580,7 +580,7 @@ bool ChemData::save_cml( QString fn )
     n = 0;
     t << "<bondArray>";
     foreach ( tmp_draw, uo ) {
-        if ( tmp_draw->Type() == TYPE_BOND ) {
+        if ( tmp_draw->metaObject() == &Bond::staticMetaObject ) {
             tmp_bond = ( Bond * ) tmp_draw;     // I ask again, is this cheating?
             n1.setNum( n );
             nfull = QString( "b" ) + n1;

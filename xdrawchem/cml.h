@@ -36,11 +36,10 @@ public:
 class CML_Bond
 {
 public:
-    CML_Bond() { order = 1; type = TYPE_BOND; }
+    CML_Bond() { order = 1; }
     QString id;
     QString a1;
     QString a2;
-    int type;  // for non-line types
     int order;
 };
 

@@ -57,7 +57,7 @@ bool ChemData::save_cdxml( QString fn )
     foreach ( tmp_draw, drawlist ) {
         cur_id.setNum( idcount );
         tmpline = tmp_draw->ToCDXML( cur_id );
-        if ( tmp_draw->Type() == TYPE_MOLECULE )
+        if ( tmp_draw->metaObject() == &Drawable::staticMetaObject )
             idcount += 500;
         else
             idcount += 2;

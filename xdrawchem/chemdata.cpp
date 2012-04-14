@@ -31,7 +31,7 @@ void ChemData::FinishMove()
     Molecule *tmp_mol;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             tmp_mol = ( Molecule * ) tmp_draw;
             tmp_mol->Changed();
         }
@@ -43,7 +43,7 @@ Molecule *ChemData::firstMolecule()
     Molecule *tmp_mol;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             tmp_mol = ( Molecule * ) tmp_draw;
             return tmp_mol;
         }
@@ -167,7 +167,7 @@ void ChemData::addSymbol( DPoint * a, QString symbolfile, bool hl )
         s1->Highlight( true );
     // determine whether point exists or not; if exists, add to Molecule
     foreach ( tmp_draw, drawlist ) {
-        if ( ( tmp_draw->Find( a ) == true ) && ( tmp_draw->Type() == TYPE_MOLECULE ) ) {
+        if ( ( tmp_draw->Find( a ) == true ) && ( tmp_draw->metaObject() == &Molecule::staticMetaObject )) {
             m1 = ( Molecule * ) tmp_draw;
             m1->addSymbol( s1 );
             return;
@@ -182,7 +182,7 @@ Molecule *ChemData::insideMolecule( DPoint * t1 )
 
     //qDebug() << t1->x << "," << t1->y;
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             m1 = ( Molecule * ) tmp_draw;
             //QRect tr1 = m1->BoundingBoxAll();
             //qDebug() << tr1.left() << "," << tr1.top() << ";";
@@ -260,7 +260,7 @@ void ChemData::EraseSelected()
     QList < Drawable * >removelist;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             m = ( Molecule * ) tmp_draw;
             m->EraseSelected();
             // collect empty Molecules for removal
@@ -300,7 +300,7 @@ void ChemData::DetectSplit()
     Drawable *td2;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             tmp_mol = ( Molecule * ) tmp_draw;
             split_list = tmp_mol->MakeSplit();
             if ( split_list.count() > 1 ) {
