@@ -192,12 +192,6 @@ void GraphicObject::Edit()
      */
 }
 
-int GraphicObject::Type()
-{
-    // real type is stored in style
-    return TYPE_GRAPHIC_OBJECT;
-}
-
 bool GraphicObject::Find( DPoint *target )
 {
     if ( start == target )

@@ -11,13 +11,16 @@ class QRect;
 class QString;
 class QPolygon;
 
+#define TYPE_BEZIER 1
+#define TYPE_GRAPHIC_LINE 2
+#define TYPE_GRAPHIC_BONDMARK 3
+
 class GraphicObject : public Drawable
 {
 public:
     GraphicObject( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object
     void Edit();
-    int Type();  // return type of object
     bool Find( DPoint * ); // does this GraphicObject contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
     Drawable *FindNearestObject( DPoint *, double & );
