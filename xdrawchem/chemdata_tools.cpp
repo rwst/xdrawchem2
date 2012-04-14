@@ -73,8 +73,6 @@ public:
 // Determine Molecule clicked, do Tool action
 void ChemData::Tool( DPoint *target, int mode )
 {
-    QClipboard *cb = QApplication::clipboard();
-
     qDebug() << "ChemData::Tool: " << mode;
     Molecule *m = 0;
     NetAccess *na = new NetAccess();
@@ -87,13 +85,12 @@ void ChemData::Tool( DPoint *target, int mode )
     QString tmpname, serverName;
     QStringList choices;
     Bond *tmp_bond;
-    int dret;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             m = ( Molecule * ) tmp_draw;
-	    if ( m->BoundingBoxAll().contains( target->toQPoint(), false ) )
-	      break;
+            if ( m->BoundingBoxAll().contains( target->toQPoint(), false ) )
+                break;
             m = 0;
         }
     }
@@ -241,7 +238,7 @@ void ChemData::Save3D( QString fn3d )
     Molecule *m = 0;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             m = ( Molecule * ) tmp_draw;
             break;
         }
@@ -276,7 +273,7 @@ void ChemData::clearAllGroups()
     QString tmpname;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             m = ( Molecule * ) tmp_draw;
             m->setGroupType( GROUP_NONE );
         }
@@ -296,7 +293,7 @@ void ChemData::AutoLayout()
 
     // first, put Arrows and Molecules into LayoutGroups
     foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Type() == TYPE_ARROW ) {
+        if ( tmp_draw->metaObject() == &Arrow::staticMetaObject ) {
             tmp_lo = new LayoutGroup;
             tmp_lo->items.append( tmp_draw );
             tmp_lo->placed = false;
@@ -306,7 +303,7 @@ void ChemData::AutoLayout()
             tmp_lo->below = 0;
             layout.append( tmp_lo );
         }
-        if ( tmp_draw->Type() == TYPE_MOLECULE ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             tmp_lo = new LayoutGroup;
             tmp_lo->items.append( tmp_draw );
             tmp_lo->placed = false;
@@ -320,10 +317,10 @@ void ChemData::AutoLayout()
     // now, attach Text to Arrows as needed
     foreach ( tmp_lo, layout ) {
         td2 = tmp_lo->items.first();
-        if ( td2->Type() == TYPE_ARROW ) {
+        if ( td2->metaObject() == &Arrow::staticMetaObject ) {
             tmp_arrow = ( Arrow * ) td2;
             foreach ( tmp_draw, drawlist ) {
-                if ( tmp_draw->Type() == TYPE_TEXT ) {
+                if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
                     tmp_text = ( Text * ) tmp_draw;
                     int ns;
                     QPoint amid = tmp_arrow->Midpoint();
@@ -430,7 +427,7 @@ void ChemData::AutoLayout()
     // Place everything
     // Start with things near arrows
     foreach ( tmp_lo, layout ) {
-        if ( tmp_lo->items.first()->Type() == TYPE_ARROW ) {
+        if ( tmp_lo->items.first()->metaObject() == &Arrow::staticMetaObject ) {
             tmp_lo->placed = true;
             tmp_arrow = ( Arrow * ) ( tmp_lo->items.first() );
             if ( tmp_arrow->Orientation() == ARROW_HORIZONTAL ) {
@@ -617,7 +614,8 @@ double ChemData::CalculateRingAttachAngle( DPoint * t1 )
     Molecule *m = 0;
 
     foreach ( tmp_draw, drawlist ) {
-        if ( ( tmp_draw->Type() == TYPE_MOLECULE ) && ( tmp_draw->Find( t1 ) == true ) ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject
+             && ( tmp_draw->Find( t1 ) == true ) ) {
             m = ( Molecule * ) tmp_draw;
             break;
         }
