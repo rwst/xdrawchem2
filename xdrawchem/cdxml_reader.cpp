@@ -323,8 +323,8 @@ QString CDXML_Reader::ParseText( QString ttag )
 
 void CDXML_Reader::ParseGraphic( QString gtag )
 {
-    tmp_obj = new CDXML_Object;
-    tmp_obj->type = TYPE_DRAWABLE;
+    CDXML_Object *tmp_obj = new CDXML_Object;
+    tmp_obj->type = Drawable::drawable;
 
     // tokenize the <graphic> tag
     QStringList tokens;
@@ -354,12 +354,12 @@ void CDXML_Reader::ParseGraphic( QString gtag )
             tmp_obj->end = e1;
         }
         // don't let GraphicType override special types...
-        if ( ( a1.toUpper() == "GRAPHICTYPE" ) && ( tmp_obj->type == TYPE_DRAWABLE ) ) {
+        if ( ( a1.toUpper() == "GRAPHICTYPE" ) && ( tmp_obj->type == Drawable::drawable ) ) {
             if ( v1.toUpper() == "BRACKET" )
-                tmp_obj->type = TYPE_BRACKET;
+                tmp_obj->type = Drawable::bracket;
         }
         if ( a1.toUpper() == "ARROWTYPE" ) {
-            tmp_obj->type = TYPE_ARROW;
+            tmp_obj->type = Drawable::arrow;
             tmp_obj->idata2 = ARROW_REGULAR;
             if ( v1.toUpper() == "RESONANCE" )
                 tmp_obj->idata2 = ARROW_BI1;
@@ -371,13 +371,13 @@ void CDXML_Reader::ParseGraphic( QString gtag )
         if ( a1.toUpper() == "BRACKETTYPE" ) {
             tmp_obj->idata2 = BRACKET_SQUARE;
             if ( v1.toUpper() == "SQUAREPAIR" )
-                tmp_obj->type = TYPE_BRACKET;
+                tmp_obj->type = Drawable::bracket;
             if ( v1.toUpper() == "ROUNDPAIR" ) {
-                tmp_obj->type = TYPE_BRACKET;
+                tmp_obj->type = Drawable::bracket;
                 tmp_obj->idata2 = BRACKET_CURVE;
             }
             if ( v1.toUpper() == "CURLYPAIR" ) {
-                tmp_obj->type = TYPE_BRACKET;
+                tmp_obj->type = Drawable::bracket;
                 tmp_obj->idata2 = BRACKET_BRACE;
             }
         }
@@ -451,8 +451,8 @@ void CDXML_Reader::ParseNode( QString ntag )
 
 void CDXML_Reader::ParseBond( QString btag )
 {
-    tmp_obj = new CDXML_Object;
-    tmp_obj->type = TYPE_BOND;
+    CDXML_Object *tmp_obj = new CDXML_Object;
+    tmp_obj->type = Drawable::bond;
     tmp_obj->idata1 = 1;
 
     // tokenize the <b> tag
@@ -510,7 +510,7 @@ void CDXML_Reader::Build()
 
     // add all non-text objects
     foreach ( tmp_obj, objectlist ) {
-        if ( tmp_obj->type == TYPE_BOND ) {
+        if ( tmp_obj->type == Drawable::bond ) {
             s1 = FindNode( tmp_obj->start_id );
             e1 = FindNode( tmp_obj->end_id );
             bondlength += s1->distanceTo( e1 );
@@ -523,14 +523,14 @@ void CDXML_Reader::Build()
             if ( up.contains( e1 ) )
                 up.append( e1 );
         }
-        if ( tmp_obj->type == TYPE_ARROW ) {
+        if ( tmp_obj->type == Drawable::arrow ) {
             c->addArrow( tmp_obj->end, tmp_obj->start, QColor( 0, 0, 0 ), tmp_obj->idata2, true );
             if ( up.contains( tmp_obj->start ) )
                 up.append( tmp_obj->start );
             if ( up.contains( tmp_obj->end ) )
                 up.append( tmp_obj->end );
         }
-        if ( tmp_obj->type == TYPE_BRACKET ) {
+        if ( tmp_obj->type == Drawable::bracket ) {
             c->addBracket( tmp_obj->start, tmp_obj->end, QColor( 0, 0, 0 ), tmp_obj->idata2, true );
             if ( up.contains( tmp_obj->start ) )
                 up.append( tmp_obj->start );

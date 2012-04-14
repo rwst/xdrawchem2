@@ -33,7 +33,7 @@ public:
     QString end_id;
     DPoint *start; // start and end points for non-bonds
     DPoint *end;
-    int type;
+    Drawable::type type;
     int idata1, idata2;
     double ddata1, ddata2;
     QString sdata;

@@ -21,7 +21,6 @@ public:
     Drawable(QObject *parent = 0);
     virtual void Render();  // draw this object
     virtual void Edit();  // edit this object
-    virtual int Type();  // return type of object
     virtual DPoint *FindNearestPoint(DPoint *, double &);
     virtual Drawable *FindNearestObject(DPoint *, double &);
     virtual bool Find(DPoint *);
@@ -74,6 +73,8 @@ public:
     int Thick() { return thick; }
     void setThick(int t) { thick = t; }
     // more or less everything must be protected so derived classes can use them
+
+    enum type { drawable=0, arrow=1, bond, bracket, curvearrow, symbol };
 
 protected:
     // highlighted?
