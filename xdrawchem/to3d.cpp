@@ -138,24 +138,16 @@ void Molecule::Make3DVersion( QString fn3d )
     //t natoms = up.count();
     QStringList atomEntries;
     QString atomEntry, s1;
-    DPoint *tmp_pt_1, *tmp_pt_2;
-    int lc = 0;
 
     // let's not abandon the idea of doing it ourselves...
     this_sssr.PrintSSSR();
-    DPoint *first_pt, *curr_pt;
 
     QList < DPoint * >placelist;
-    double RMS = 999.0, RMSok;
-    int i = 0, j = 0, chg = 0, iter = 0;
-    int nplaced, ncount;
-    bool inring = false, finished = true;
-    double vecx, vecy, vecz, dst, dstmin, dstmax;
 
     // serialize, and set initial positions
     srand( ( int ) time( 0 ) );
 
-    i = 1;                      // BUILD3D expects the first atom to be 1
+    int i = 1;                      // BUILD3D expects the first atom to be 1
     foreach ( tmp_pt, up ) {
         tmp_pt->serial = i;
         i++;                    // serialize
