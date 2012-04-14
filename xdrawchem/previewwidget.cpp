@@ -2,6 +2,7 @@
 #include <QPen>
 #include <QPixmap>
 #include <QPainter>
+#include <QDebug>
 
 #include "previewwidget.h"
 #include "defs.h"
@@ -117,7 +118,7 @@ PreviewWidget::PreviewWidget( QWidget *parent )
     resize( 50, 50 );
 }
 
-void PreviewWidget::paintEvent( QPaintEvent *qp1 )
+void PreviewWidget::paintEvent( QPaintEvent* /* qp1 */ )
 {
     int ofs = 2;
     QPainter p( this );
@@ -193,7 +194,7 @@ void PreviewWidget::paintEvent( QPaintEvent *qp1 )
             break;
         }
         return;
-    case: BRACKET:
+    case BRACKET:
         switch ( style ) {
         case BRACKET_SQUARE:
             p.drawPixmap( 10, 10, QPixmap( squarebracket_xpm ) );
