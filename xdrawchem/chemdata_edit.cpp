@@ -88,15 +88,12 @@ bool ChemData::Paste()
     // need to deep copy stuff coming off the Clipboard
     // first, find all unique DPoint's
     foreach ( td1, clip->objects ) {
-        if (td1->metaObject() == &Drawable::staticMetaObject) {
-            Drawable *tmp = qobject_cast<Drawable *>(td1);
-            if ( oldPoints.contains( tmp->Start() ) == 0 )
-                oldPoints.append( tmp->Start() );
-            if ( tmp->End() != 0 ) {
-                if ( oldPoints.contains( tmp->End() ) == 0 )
-                    oldPoints.append( tmp->End() );
+            if ( oldPoints.contains( tmp_draw->Start() ) == 0 )
+                oldPoints.append( tmp_draw->Start() );
+            if ( tmp_draw->End() != 0 ) {
+                if ( oldPoints.contains( tmp_draw->End() ) == 0 )
+                    oldPoints.append( tmp_draw->End() );
             }
-        }
     }
     qDebug() << oldPoints.count();
     if ( oldPoints.count() == 0 )
