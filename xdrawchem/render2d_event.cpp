@@ -1572,7 +1572,6 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
 
     // we're probably going to draw something...
     update();
-    directdraw = true;
 
     // MODE_DRAWLINE_DRAWING: draw temporary line
     if ( ( mode == MODE_DRAWLINE_DRAWING ) && mouse1down ) {
@@ -1612,6 +1611,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
     }
     // MODE_DRAWLINE_DASH_DRAWING: draw temporary line
     if ( ( mode == MODE_DRAWLINE_DASH_DRAWING ) && mouse1down ) {
+        painter = new QPainter;
         qDebug() << "mouseMoveEvent: drawing dashed line";
         // if within range of existing point AND the end point is not the same
         // as the start point, snap to that point
@@ -1632,12 +1632,12 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
                 }
             }
         }
-        //    painter->begin(this);
+        painter->begin(this);
         startPoint = startpoint->toQPoint();
         endPoint = endpoint->toQPoint();
         drawLine( startpoint->toQPoint(), endpoint->toQPoint(), 1, currentColor, 1 );
-        directdraw = false;
-        //    painter->end();
+        painter->end();
+        painter = 0;
         return;
     }
     // MODE_DRAWCHAIN_DRAWING: draw temporary aliphatic chain
@@ -1674,7 +1674,8 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         spoint = startpoint->toQPoint();
         ipoint1 = spoint;
         chainPoints.clear();
-        //    painter->begin(this);
+        painter = new QPainter;
+        painter->begin(this);
         for ( n1 = 0; n1 < nseg; n1++ ) {
             ipoint2.setX( qRound( ipoint1.x() + cos( alt_ang1 ) * blen ) );
             ipoint2.setY( qRound( ipoint1.y() + sin( alt_ang1 ) * blen ) );
@@ -1685,8 +1686,9 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
             alt_ang2 = alt_swap;
             ipoint1 = ipoint2;
         }
-        directdraw = false;
-        //    painter->end();
+
+        painter->end();
+        painter = 0;
         return;
     }
     // MODE_DRAWLINE_UP_DRAWING: draw temporary line
@@ -1715,7 +1717,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         endPoint = endpoint->toQPoint();
 //        drawUpLine( startpoint->toQPoint(), endpoint->toQPoint(), currentColor );
         directdraw = false;
-        //    painter->end();
+        //painter->end();
         return;
     }
     // MODE_DRAWLINE_DOWN_DRAWING: draw temporary line
