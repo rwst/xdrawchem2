@@ -31,7 +31,7 @@ class IOIface {
     static const char symbol[110][4];
 
     void setChemData(ChemData* cd);
-    void setOBMol(OBMol* mol);
+    void setOBMol(OpenBabel::OBMol* mol);
     void convertToChemData();
     bool convertToOBMol();
 

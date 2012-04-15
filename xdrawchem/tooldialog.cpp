@@ -3,6 +3,8 @@
 #include "helpwindow.h"
 #include "defs.h"
 
+using namespace OpenBabel;
+
 // defined in main.cpp
 extern QString RingDir;
 

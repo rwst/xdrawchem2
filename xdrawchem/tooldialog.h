@@ -8,8 +8,6 @@
 #include "molecule.h"
 #include "peak.h"
 
-using namespace OpenBabel;
-
 class ToolDialog : public QDialog
 {
     Q_OBJECT
@@ -17,9 +15,9 @@ class ToolDialog : public QDialog
 public:
     ToolDialog( QWidget *parent = 0 );
     void setMolecule( Molecule * );
-    void setMolecule( OBMol * );
+    void setMolecule( OpenBabel::OBMol * );
     void setProductMolecule( Molecule * );
-    void setProductMolecule( OBMol * );
+    void setProductMolecule( OpenBabel::OBMol * );
     virtual void process();
 
 public slots:

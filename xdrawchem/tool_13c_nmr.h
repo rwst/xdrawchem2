@@ -7,8 +7,6 @@
 #include "tooldialog.h"
 #include "ngw.h"
 
-using namespace OpenBabel;
-
 class Tool_13CNMR_Dialog : public ToolDialog
 {
 public:
