@@ -50,7 +50,7 @@ void ChemData::Copy()
     foreach ( tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             // Copy to clipboard if selected
-            if ( tmp_draw->Highlighted() == true )
+            // if ( tmp_draw->Highlighted() == true )
                 clip->objects.append( tmp_draw );
         } else {
             // Get list of objects, then copy to clipboard if selected
@@ -81,13 +81,12 @@ bool ChemData::Paste()
 {
     DeselectAll();
 
-    Drawable *td1;
     QList < DPoint * >oldPoints;
     QList < DPoint * >newPoints;
 
     // need to deep copy stuff coming off the Clipboard
     // first, find all unique DPoint's
-    foreach ( td1, clip->objects ) {
+    foreach ( tmp_draw, clip->objects ) {
             if ( oldPoints.contains( tmp_draw->Start() ) == 0 )
                 oldPoints.append( tmp_draw->Start() );
             if ( tmp_draw->End() != 0 ) {
@@ -95,6 +94,7 @@ bool ChemData::Paste()
                     oldPoints.append( tmp_draw->End() );
             }
     }
+    qDebug() << "ChemData::Paste()";
     qDebug() << oldPoints.count();
     if ( oldPoints.count() == 0 )
         return false;
@@ -105,7 +105,7 @@ bool ChemData::Paste()
         newPoints.append( n );
     }
     // now add all non-TYPE_TEXT objects back to current
-
+    Drawable *td1;
     foreach ( td1, clip->objects ) {
         if (td1->metaObject() == &Arrow::staticMetaObject) {
             Arrow *tmp_arrow = qobject_cast<Arrow *>(td1);
