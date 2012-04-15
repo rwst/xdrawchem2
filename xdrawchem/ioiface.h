@@ -22,12 +22,10 @@
 
 #include <openbabel/mol.h>
 
-using namespace OpenBabel;
-
 class IOIface {
 
   public:
-    IOIface(ChemData* cd=0, OBMol* mol=0);
+    IOIface(ChemData* cd=0, OpenBabel::OBMol* mol=0);
     ~IOIface();
 
     static const char symbol[110][4];
@@ -40,7 +38,7 @@ class IOIface {
   private:
 
     ChemData* chemdata;
-    OBMol* obmol;
+    OpenBabel::OBMol* obmol;
 
 };
 
