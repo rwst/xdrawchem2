@@ -3,11 +3,6 @@
 #ifndef MOLECULE_H
 #define MOLECULE_H
 
-#include <openbabel/mol.h>
-#include <openbabel/obconversion.h>
-
-using namespace OpenBabel;
-
 #include "render2d.h"
 #include "chemdata.h"
 #include "drawable.h"
@@ -19,8 +14,13 @@ using namespace OpenBabel;
 #include "tooldialog.h"
 #include "peak.h"
 
+#include <openbabel/mol.h>
+#include <openbabel/obconversion.h>
+
 class Molecule : public Drawable
 {
+Q_OBJECT
+
 public:
     Molecule( Render2D *, QObject *parent = 0 );
     ~Molecule();
@@ -166,8 +166,8 @@ public:
         return ang3;
     }
 
-    OBMol * convertToOBMol();
-    bool convertFromOBMol(OBMol *);
+    OpenBabel::OBMol * convertToOBMol();
+    bool convertFromOBMol(OpenBabel::OBMol *);
     static const char symbol[110][4];
 
     // not appropriate but best way to handle ToolDialog requests.
