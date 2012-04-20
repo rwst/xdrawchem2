@@ -25,11 +25,10 @@ public:
     virtual Drawable *FindNearestObject(DPoint *, double &);
     virtual bool Find(DPoint *);
     virtual void addBond(DPoint *, DPoint *, int, int, QColor, bool hl = false);
-    virtual void addMolecule(Drawable *);
     virtual void Highlight();
     virtual void Highlight(bool);
     virtual bool Highlighted();
-    virtual bool Erase(Drawable *);
+    virtual bool Erase(QSharedPointer<Drawable>);
     virtual bool isWithinRect( QRect, bool );
     virtual void SelectAll();
     virtual void DeselectAll();
@@ -40,7 +39,6 @@ public:
     virtual void Resize(DPoint *, double);
     virtual QRect BoundingBox();
     virtual QList<DPoint *> AllPoints();
-    virtual QList<Drawable *> AllObjects();
     virtual QString ToXML(QString);
     virtual QString ToCDXML(QString);
     virtual void FromXML(QString);

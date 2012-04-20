@@ -29,12 +29,6 @@ QList < DPoint * >Drawable::AllPoints()
     return l;
 }
 
-QList < Drawable * >Drawable::AllObjects()
-{
-    QList < Drawable * >l;
-    return l;
-}
-
 double Drawable::DistanceBetween( QPoint a, QPoint b )
 {
     double dx = a.x() - b.x();
@@ -326,12 +320,7 @@ void Drawable::addBond( DPoint *, DPoint *, int, int, QColor, bool )
     return;
 }
 
-void Drawable::addMolecule( Drawable * )
-{
-    return;
-}
-
-bool Drawable::Erase( Drawable * )
+bool Drawable::Erase( QSharedPointer<Drawable> )
 {
     return false;
 }

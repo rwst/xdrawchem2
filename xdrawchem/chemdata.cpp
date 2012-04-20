@@ -19,6 +19,7 @@ ChemData::ChemData( QObject *parent )
 void ChemData::drawAll()
 {
     // draw all objects in ChemData
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         qDebug() << "drawAll: " << tmp_draw;
         tmp_draw->Render();
@@ -28,32 +29,32 @@ void ChemData::drawAll()
 // update Molecules after move
 void ChemData::FinishMove()
 {
-    Molecule *tmp_mol;
+    QSharedPointer<Drawable> d;
 
-    foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            tmp_mol = ( Molecule * ) tmp_draw;
-            tmp_mol->Changed();
+    foreach ( d, drawlist ) {
+        if ( d->metaObject() == &Molecule::staticMetaObject ) {
+            (( Molecule * ) d.data())->Changed();
         }
     }
 }
 
-Molecule *ChemData::firstMolecule()
+QSharedPointer<Molecule> ChemData::firstMolecule()
 {
-    Molecule *tmp_mol;
+    QSharedPointer<Drawable> d;
 
-    foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            tmp_mol = ( Molecule * ) tmp_draw;
-            return tmp_mol;
+    foreach ( d, drawlist ) {
+        if ( d->metaObject() == &Molecule::staticMetaObject ) {
+            return d.objectCast<Molecule>();
         }
     }
-    return 0;
+    d.clear();
+    return d.objectCast<Molecule>();
 }
 
 void ChemData::addMolecule( Molecule * m1 )
 {
-    drawlist.append( m1 );
+    QSharedPointer<Drawable> p(m1);
+    drawlist.append( p );
 }
 
 void ChemData::addArrow( DPoint * s, DPoint * e, QColor c, int t, int p2, bool hl )
@@ -66,7 +67,8 @@ void ChemData::addArrow( DPoint * s, DPoint * e, QColor c, int t, int p2, bool h
     a1->setThick( p2 );
     if ( hl )
         a1->Highlight( true );
-    drawlist.append( a1 );
+    QSharedPointer<Drawable> p(a1);
+    drawlist.append( p );
 }
 
 void ChemData::addCurveArrow( DPoint * s, DPoint * e, QColor c, QString s1, bool hl )
@@ -78,7 +80,8 @@ void ChemData::addCurveArrow( DPoint * s, DPoint * e, QColor c, QString s1, bool
     a1->SetCurve( s1 );
     if ( hl )
         a1->Highlight( true );
-    drawlist.append( a1 );
+    QSharedPointer<Drawable> p(a1);
+    drawlist.append( p );
 }
 
 void ChemData::addBracket( DPoint * s, DPoint * e, QColor c, int type, bool hl )
@@ -90,20 +93,22 @@ void ChemData::addBracket( DPoint * s, DPoint * e, QColor c, int type, bool hl )
     a1->SetStyle( type );
     if ( hl )
         a1->Highlight( true );
-    drawlist.append( a1 );
+    QSharedPointer<Drawable> p(a1);
+    drawlist.append( p );
 }
 
-void ChemData::addText( Text * t )
+void ChemData::addText(Text *t )
 {
     qDebug() << "addText";
     if ( t->Justify() == JUSTIFY_TOPLEFT ) {  // add to drawing
-        drawlist.append( t );
+        QSharedPointer<Drawable> p(t);
+        drawlist.append( p );
     } else {                    // add label to specific Molecule
-        foreach ( tmp_draw, drawlist ) {
-            if ( tmp_draw->Find( t->Start() ) == true ) {
-                Molecule *tm = ( Molecule * ) tmp_draw; // this is cheating, I know!
-
-                tm->addText( t );
+        QSharedPointer<Drawable> td;
+        foreach ( td, drawlist ) {
+            if ( td->metaObject() == &Molecule::staticMetaObject
+                 && td->Find( t->Start() ) == true ) {
+                ((Molecule*)td.data())->addText( t );
                 return;
             }
         }
@@ -113,7 +118,8 @@ void ChemData::addText( Text * t )
 
 void ChemData::addGraphicObject( GraphicObject * t )
 {
-    drawlist.append( t );
+    QSharedPointer<Drawable> p(t);
+    drawlist.append( p );
 }
 
 void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, bool hl )
@@ -121,27 +127,31 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
     //qDebug() << "Request to add bond:" ;
     //qDebug() << "(" << s->x << "," << s->y << ")-(" << e->x << "," << e->y << ")";
     //qDebug() ;
-    Drawable *m1 = 0, *m2 = 0;
 
-    foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->Find( s ) == true )
-            m1 = tmp_draw;
-        if ( tmp_draw->Find( e ) == true )
-            m2 = tmp_draw;
-    }
+    QSharedPointer<Drawable> td;
+    QSharedPointer<Molecule> m1, m2;
+    foreach ( td, drawlist )
+        if ( td->metaObject() == &Molecule::staticMetaObject ) {
+            if ( td->Find( s ) == true )
+                m1 = td.objectCast<Molecule>();
+            if ( td->Find( e ) == true )
+                m2 = td.objectCast<Molecule>();
+        }
+
     // neither point exists -- create new Molecule
     if ( ( m1 == 0 ) && ( m2 == 0 ) ) {
         Molecule *m = new Molecule( r );
 
         m->SetChemdata( this );
         m->addBond( s, e, thick, order, c, hl );
-        drawlist.append( m );
+        QSharedPointer<Drawable> d (m);
+        drawlist.append( d );
         return;
     }
     // one point exists, or both in same molecule
     if ( ( m1 == 0 ) && ( m2 != 0 ) ) {
-        m1 = m2;
-        m2 = 0;
+        m2->addBond( s, e, thick, order, c, hl );
+        return;
     }
     if ( ( ( m1 != 0 ) && ( m2 == 0 ) ) || ( m1 == m2 ) ) {
         m1->addBond( s, e, thick, order, c, hl );
@@ -150,48 +160,50 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
     // both points exist in different molecules
     if ( m1 != m2 ) {
         m1->addBond( s, e, thick, order, c, hl );
-        m1->addMolecule( m2 );
+        m1->addMolecule( m2.data() );
         drawlist.removeAll( m2 );
-        delete m2;
     }
 }
 
 void ChemData::addSymbol( DPoint * a, QString symbolfile, bool hl )
 {
-    Molecule *m1;
     Symbol *s1 = new Symbol( r );
-
     s1->setPoint( a );
     s1->SetSymbol( symbolfile );
     if ( hl )
         s1->Highlight( true );
+
     // determine whether point exists or not; if exists, add to Molecule
-    foreach ( tmp_draw, drawlist ) {
-        if ( ( tmp_draw->Find( a ) == true ) && ( tmp_draw->metaObject() == &Molecule::staticMetaObject )) {
-            m1 = ( Molecule * ) tmp_draw;
-            m1->addSymbol( s1 );
+    QSharedPointer<Drawable> td;
+    foreach ( td, drawlist ) {
+        if ( ( td->Find( a ) == true )
+             && ( td->metaObject() == &Molecule::staticMetaObject )) {
+            ((Molecule*)td.data())->addSymbol( s1 );
             return;
         }
     }
-    drawlist.append( s1 );
+
+    // DANGER! Object may exist twice now!!!
+    drawlist.append( sy );
 }
 
-Molecule *ChemData::insideMolecule( DPoint * t1 )
+QSharedPointer<Molecule> ChemData::insideMolecule( DPoint * t1 )
 {
-    Molecule *m1;
-
     //qDebug() << t1->x << "," << t1->y;
-    foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            m1 = ( Molecule * ) tmp_draw;
+
+    QSharedPointer<Drawable> td;
+    foreach ( td, drawlist ) {
+        if ( td->metaObject() == &Molecule::staticMetaObject ) {
             //QRect tr1 = m1->BoundingBoxAll();
             //qDebug() << tr1.left() << "," << tr1.top() << ";";
             //qDebug() << tr1.right() << "," << tr1.bottom();
-            if ( m1->BoundingBoxAll().contains( t1->toQPoint(), false ) )
-                return m1;
+            QSharedPointer<Molecule> m (td.objectCast<Molecule>());
+            if (m->BoundingBoxAll().contains( t1->toQPoint(), false ) )
+                return m;
         }
     }
-    return 0;
+    if (td) td.clear();
+    return td.objectCast<Molecule>();
 }
 
 DPoint *ChemData::FindNearestPoint( DPoint * target, double &dist )
@@ -199,6 +211,7 @@ DPoint *ChemData::FindNearestPoint( DPoint * target, double &dist )
     DPoint *nearest = 0, *d1;
     double mindist = 9999.0, d1dist = 999999.0;
 
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         d1 = tmp_draw->FindNearestPoint( target, d1dist );
         if ( d1dist < mindist ) {
@@ -215,6 +228,7 @@ Drawable *ChemData::FindNearestObject( DPoint * target, double &dist )
     Drawable *nearest = 0, *d1;
     double mindist = 2000.0, d1dist = 999999.0;
 
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         d1 = tmp_draw->FindNearestObject( target, d1dist );
         if ( d1dist < mindist ) {
@@ -226,43 +240,35 @@ Drawable *ChemData::FindNearestObject( DPoint * target, double &dist )
     return nearest;
 }
 
-void ChemData::Erase( Drawable * d )
+void ChemData::Erase( QSharedPointer<Drawable> d )
 {
-    QList<Drawable *> removelist;
-    bool erased = false;
-
     if ( drawlist.removeAll( d ) == false ) {
-        foreach ( tmp_draw, drawlist ) {
-            erased = tmp_draw->Erase( d );
+        qDebug() << "do we get called at all?";
+        QSharedPointer<Drawable> td;
+        foreach ( td, drawlist ) {
+            bool erased = td->Erase( d );
             // collect empty Molecules for removal
-            if ( tmp_draw->Members() == 0 )
-                removelist.append( tmp_draw );
+            if ( td->Members() == 0 )
+                drawlist.removeAll( td );
             qDebug() << "erased:" << erased;
             if ( erased == true )
                 break;          //should only be one instance of d to remove!
         }
     } else {                    // drawlist.remove(d) == true
-        delete d;
+        d.clear();
     }
-    // remove empty Molecules
-    foreach ( tmp_draw, removelist ) {
-        drawlist.removeAll( tmp_draw );
-        delete tmp_draw;
-    }
+
     // Split Molecules as needed
     DetectSplit();
 }
 
 void ChemData::EraseSelected()
 {
-    Molecule *m;
-
-    QList < Drawable * >removelist;
-
+    QList < QSharedPointer<Drawable> >removelist;
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            m = ( Molecule * ) tmp_draw;
-            m->EraseSelected();
+            ((Molecule*)tmp_draw.data())->EraseSelected();
             // collect empty Molecules for removal
             if ( tmp_draw->Members() == 0 )
                 removelist.append( tmp_draw );
@@ -285,7 +291,6 @@ void ChemData::EraseSelected()
            }
          */
         drawlist.removeAll( tmp_draw );
-        delete tmp_draw;
     }
     // Split Molecules as needed
     DetectSplit();
@@ -294,15 +299,12 @@ void ChemData::EraseSelected()
 // Split Molecule's which hold multiple structures (e.g. after delete)
 void ChemData::DetectSplit()
 {
-    QList< Drawable *> removelist;
-    QList< Molecule *> split_list;
-    Molecule *tmp_mol;
-    Drawable *td2;
+    QList<QSharedPointer<Drawable> > removelist;
+    QSharedPointer<Drawable> tmp_draw, td2;
 
     foreach ( tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            tmp_mol = ( Molecule * ) tmp_draw;
-            split_list = tmp_mol->MakeSplit();
+            QList<QSharedPointer<Molecule> > split_list (((Molecule*)tmp_draw.data())->MakeSplit());
             if ( split_list.count() > 1 ) {
                 qDebug() << "Split needed";
                 removelist.append( tmp_draw );
@@ -316,7 +318,6 @@ void ChemData::DetectSplit()
     // remove old Molecules
     foreach ( tmp_draw, removelist ) {
         drawlist.removeAll( tmp_draw );
-        delete tmp_draw;
     }
 }
 
@@ -324,6 +325,7 @@ void ChemData::SelectAll()
 {
     QList < DPoint * >allpts = UniquePoints();
 
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         tmp_draw->SelectAll();
     }
@@ -335,6 +337,7 @@ void ChemData::SelectAll()
 void ChemData::DeselectAll()
 {
     QList < DPoint * >allpts = UniquePoints();
+    QSharedPointer<Drawable> tmp_draw;
 
     foreach ( tmp_draw, drawlist ) {
         tmp_draw->DeselectAll();
@@ -346,30 +349,35 @@ void ChemData::DeselectAll()
 
 void ChemData::SetColorIfHighlighted( QColor c )
 {
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist )
         tmp_draw->SetColorIfHighlighted( c );
 }
 
 void ChemData::Move( double dx, double dy )
 {
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist )
         tmp_draw->Move( dx, dy );
 }
 
 void ChemData::Resize( DPoint * d1, double dy )
 {
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist )
         tmp_draw->Resize( d1, dy );
 }
 
 void ChemData::Rotate( DPoint * d1, double dy )
 {
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist )
         tmp_draw->Rotate( d1, dy );
 }
 
 void ChemData::Flip( DPoint * d1, int dy )
 {
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist )
         tmp_draw->Flip( d1, dy );
 }
@@ -379,6 +387,7 @@ QRect ChemData::selectionBox()
 {
     int top = 99999, bottom = 0, left = 99999, right = 0;
     QRect tmprect;
+    QSharedPointer<Drawable> tmp_draw;
 
     foreach ( tmp_draw, drawlist ) {
         tmprect = tmp_draw->BoundingBox();
@@ -422,6 +431,7 @@ void ChemData::NewSelectRect( QRect n, bool shiftdown )
         }
     }
 
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         tmp_draw->isWithinRect( n, shiftdown );
     }
@@ -432,6 +442,7 @@ QList < DPoint * >ChemData::UniquePoints()
 {
     QList < DPoint * >up, tp;
 
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         tp = tmp_draw->AllPoints();
         foreach ( tmp_pt, tp )
@@ -442,15 +453,19 @@ QList < DPoint * >ChemData::UniquePoints()
     return up;
 }
 
-QList < Drawable * >ChemData::UniqueObjects()
+QList < QSharedPointer <Drawable> > ChemData::UniqueObjects()
+// TODO: return all Molecule objects or these plus all other Drawables?
 {
-    QList < Drawable * >uo, to;
-    Drawable *td2;
+    QList < QSharedPointer <Drawable> > uo;
+    QSharedPointer <Drawable> td1;
 
-    foreach ( tmp_draw, drawlist ) {
-        to = tmp_draw->AllObjects();
-        foreach ( td2, to )
-            uo.append( td2 );
+    foreach ( td1, drawlist ) {
+        if (td1->metaObject() == &Molecule::staticMetaObject) {
+            QList < QSharedPointer <Drawable> > to (((Molecule*)td1.data())->AllObjects());
+            QSharedPointer <Drawable> td2;
+            foreach ( td2, to )
+                uo.append( td2 );
+        }
     }
 
     qDebug() << uo.count();

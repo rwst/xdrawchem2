@@ -6,6 +6,7 @@
 #include <QString>
 #include <QList>
 #include <QPoint>
+#include <QSharedPointer>
 
 #include "drawable.h"
 #include "bond.h"
@@ -34,7 +35,7 @@ public:
     // defined in chemdata.cpp
     ChemData( QObject *parent = 0 );
     void drawAll();
-    Molecule *firstMolecule();
+    QSharedPointer<Molecule> firstMolecule();
     void addMolecule( Molecule * );
     void addBond( DPoint *, DPoint *, int, int, QColor, bool hl = false );
     void addArrow( DPoint *, DPoint *, QColor, int, int, bool hl = false );
@@ -43,7 +44,7 @@ public:
     void addText( Text *);
     void addGraphicObject( GraphicObject *);
     void addSymbol( DPoint *, QString, bool hl = false );
-    void Erase( Drawable * );
+    void Erase( QSharedPointer<Drawable> );
     void EraseSelected();
     void DetectSplit();
     DPoint *FindNearestPoint( DPoint *, double & );
@@ -59,9 +60,9 @@ public:
     void FinishMove();
     QRect selectionBox();
     QList<DPoint *> UniquePoints();
-    QList<Drawable *> UniqueObjects();
+    QList<QSharedPointer<Drawable> > UniqueObjects();
     void SetTopLeft(QPoint p) { RenderTopLeft = p; }
-    Molecule *insideMolecule( DPoint * );
+    QSharedPointer<Molecule> insideMolecule( DPoint * );
 
     // defined in chemdata_edit.cpp
     void Cut();
@@ -150,10 +151,8 @@ private:
     QPoint RenderTopLeft;
     // Application clipboard
     Clipboard *clip;
-    // temporary/current Drawable (temporary DPoint *tmp_pt defined below)
-    Drawable *tmp_draw;
     // list of Drawable objects we are tracking
-    QList<Drawable *> drawlist;
+    QList<QSharedPointer<Drawable> > drawlist;
     // Variables for reading CML/CDXML/XML files
     QString MoleculeTitle;
     QString MoleculeId;
@@ -162,7 +161,7 @@ private:
     QList<CML_Bond *> CML_Bonds;
     QList<CML_Bond *> CML_Bonds_Sub;
     QList<int *> TagStack;
-    QList<Drawable *> CDXML_Objects;
+    QList<QSharedPointer<Drawable> > CDXML_Objects;
     DPoint *tmp_pt;
     CML_Atom *tmp_atom;
     CML_Bond *tmp_bond;

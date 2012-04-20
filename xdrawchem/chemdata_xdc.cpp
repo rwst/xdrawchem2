@@ -82,7 +82,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<arrow" );
             d2 = wholefile.indexOf( "</arrow>" );
             thistag = wholefile.mid( d1, d2 - d1 + 8 );
-            Arrow *a1 = new Arrow( r );
+            QSharedPointer<Arrow> a1 ( new Arrow( r ));
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -94,7 +94,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<graphicobject" );
             d2 = wholefile.indexOf( "</graphicobject>" );
             thistag = wholefile.mid( d1, d2 - d1 + 16 );
-            GraphicObject *a1 = new GraphicObject( r );
+            QSharedPointer<GraphicObject> a1 ( new GraphicObject( r ));
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -106,7 +106,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<curvearrow" );
             d2 = wholefile.indexOf( "</curvearrow>" );
             thistag = wholefile.mid( d1, d2 - d1 + 13 );
-            CurveArrow *a1 = new CurveArrow( r );
+            QSharedPointer<CurveArrow> a1 ( new CurveArrow( r ));
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -118,7 +118,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<text" );
             d2 = wholefile.indexOf( "</text>" );
             thistag = wholefile.mid( d1, d2 - d1 + 7 );
-            Text *a1 = new Text( r );
+            QSharedPointer<Text> a1 ( new Text( r ));
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -130,7 +130,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<bracket" );
             d2 = wholefile.indexOf( "</bracket>" );
             thistag = wholefile.mid( d1, d2 - d1 + 10 );
-            Bracket *a1 = new Bracket( r );
+            QSharedPointer<Bracket> a1 ( new Bracket( r ));
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -142,7 +142,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<symbol" );
             d2 = wholefile.indexOf( "</symbol>" );
             thistag = wholefile.mid( d1, d2 - d1 + 9 );
-            Symbol *a1 = new Symbol( r );
+            QSharedPointer<Symbol> a1 ( new Symbol( r ));
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -154,7 +154,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<molecule" );
             d2 = wholefile.indexOf( "</molecule>" );
             thistag = wholefile.mid( d1, d2 - d1 + 11 );
-            Molecule *a1 = new Molecule( r );
+            QSharedPointer<Molecule> a1 ( new Molecule( r ));
 
             a1->SetChemdata( this );
             a1->FromXML( thistag );
@@ -227,7 +227,7 @@ bool ChemData::save_native( QString fn )
     t << bc1.green() << " ";
     t << bc1.blue() << "</bgcolor>";
 
-    foreach ( tmp_draw, drawlist ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         n1.setNum( n );
         nfull = QString( "obj" ) + n1;
         t << tmp_draw->ToXML( nfull );

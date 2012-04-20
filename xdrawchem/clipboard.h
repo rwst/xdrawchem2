@@ -9,7 +9,7 @@ class Clipboard
 {
 public:
     Clipboard() {}
-    QList<Drawable *> objects;
+    QList<QSharedPointer<Drawable> > objects;
     void clear() { objects.clear(); }
 };
 

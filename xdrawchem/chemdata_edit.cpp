@@ -22,12 +22,10 @@
 
 void ChemData::ScaleAll( double bond_length )
 {
-    Molecule *tmp_mol;
-
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            tmp_mol = ( Molecule * ) tmp_draw;
-            tmp_mol->Scale( bond_length );
+            (( Molecule * ) tmp_draw.data())->Scale( bond_length );
         }
     }
 }
@@ -40,19 +38,22 @@ void ChemData::Cut()
 
 void ChemData::Copy()
 {
-    QList < Drawable * >unique;
-    QList < DPoint * >oldPoints, newPoints;
-    Drawable *td2, *tdx;
-    DPoint *n;
-
     clip->clear();
 
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             // Copy to clipboard if selected
             // if ( tmp_draw->Highlighted() == true )
                 clip->objects.append( tmp_draw );
         } else {
+            qDebug() << "Object other than Molecule in ChemData::Copy()!";
+            exit(1);
+            /*
+            QList < Drawable * >unique;
+            QList < DPoint * >oldPoints, newPoints;
+            Drawable *td2, *tdx;
+            DPoint *n;
             // Get list of objects, then copy to clipboard if selected
             unique = tmp_draw->AllObjects();
             oldPoints = tmp_draw->AllPoints();
@@ -73,6 +74,7 @@ void ChemData::Copy()
                     clip->objects.append( tdx );
                 }
             }
+            */
         }
     }
 }
@@ -86,7 +88,8 @@ bool ChemData::Paste()
 
     // need to deep copy stuff coming off the Clipboard
     // first, find all unique DPoint's
-    foreach ( tmp_draw, clip->objects ) {
+
+    foreach ( QSharedPointer<Drawable> tmp_draw, clip->objects ) {
             if ( oldPoints.contains( tmp_draw->Start() ) == 0 )
                 oldPoints.append( tmp_draw->Start() );
             if ( tmp_draw->End() != 0 ) {
@@ -105,31 +108,25 @@ bool ChemData::Paste()
         newPoints.append( n );
     }
     // now add all non-TYPE_TEXT objects back to current
-    Drawable *td1;
-    foreach ( td1, clip->objects ) {
+    foreach ( QSharedPointer<Drawable> td1, clip->objects ) {
         if (td1->metaObject() == &Arrow::staticMetaObject) {
-            Arrow *tmp_arrow = qobject_cast<Arrow *>(td1);
-            addArrow( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), tmp_arrow->Style(), true );
+            addArrow( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), ((Arrow*)td1.data())->Style(), true );
         }
         else if (td1->metaObject() == &Bracket::staticMetaObject) {
-            Bracket *tmp_bracket = qobject_cast<Bracket *>(td1);
-            addBracket( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), tmp_bracket->GetColor(), tmp_bracket->Style(), true );
+            addBracket( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), ((Bracket*)td1.data())->Style(), true );
         }
         else if (td1->metaObject() == &Bond::staticMetaObject) {
-            Bond *tmp_bond = qobject_cast<Bond *>(td1);
-            addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), tmp_bond->Thick(), tmp_bond->Order(), td1->GetColor(), true );
+            addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), ((Bond*)td1.data())->Thick(), ((Bond*)td1.data())->Order(), td1->GetColor(), true );
         }
         else if (td1->metaObject() == &CurveArrow::staticMetaObject) {
-            CurveArrow *tmp_arrow = qobject_cast<CurveArrow *>(td1);
-            addCurveArrow( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), tmp_arrow->GetCurve(), true );
+            addCurveArrow( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), td1->GetColor(), ((CurveArrow*)td1.data())->GetCurve(), true );
         }
         else if (td1->metaObject() == &Symbol::staticMetaObject) {
-            Symbol *tmp_sym = qobject_cast<Symbol *>(td1);
-            addSymbol( newPoints.at( oldPoints.indexOf( td1->Start() ) ), tmp_sym->GetSymbol(), true );
+            addSymbol( newPoints.at( oldPoints.indexOf( td1->Start() ) ), ((Symbol*)td1.data())->GetSymbol(), true );
         }
         else if (td1->metaObject() == &Text::staticMetaObject) {
-            Text *ot = qobject_cast<Text *>(td1);
-            Text *t = new Text( r );
+            Text *ot = ((Text *)td1.data());
+            Text *t ( new Text(r) );
             t->setPoint( newPoints.at( oldPoints.indexOf( td1->Start() ) ) );
             t->setText( ot->getText() );
 //            t->setTextMask( ot->getTextMask() );

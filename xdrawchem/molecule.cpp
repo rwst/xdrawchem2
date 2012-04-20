@@ -16,6 +16,7 @@ Molecule::Molecule( Render2D * r1, QObject * parent )
     text_formula = 0;
     group_type = GROUP_NONE;
     showPC = false;
+
     //peaklist.setAutoDelete(true);
     //bonds.setAutoDelete(true);
     //labels.setAutoDelete(true);
@@ -251,19 +252,18 @@ bool Molecule::WithinBounds( DPoint * target )
 // Determine if split is necessary (e.g., if this structure contains two
 // or more fragments).  Return empty list if not, return new Molecule's
 // if needed
-QList < Molecule * >Molecule::MakeSplit()
+QList < QSharedPointer <Molecule> > Molecule::MakeSplit()
 {
 //  QList<DPoint *> up;
     QList < DPoint * >pointqueue;
     QList < Bond * >uo;
     QList < Bond * >removequeue;
-    QList < Molecule * >molecules;
-    Molecule *nm;
+    QList < QSharedPointer<Molecule> >molecules;
     DPoint *current;
 
     uo = bonds;
     // Start with first Bond...
-    nm = new Molecule( r );
+    QSharedPointer<Molecule> nm ( new Molecule( r ));
     nm->SetChemdata( cd );
     tmp_bond = uo.first();
     nm->addBond( tmp_bond );
@@ -289,7 +289,9 @@ QList < Molecule * >Molecule::MakeSplit()
         if ( uo.count() > 0 ) {
             // Still bonds left, make new Molecule
             molecules.append( nm );
-            nm = new Molecule( r );
+            nm.clear();
+            QSharedPointer<Molecule> nm1 ( new Molecule( r ));
+            nm = nm1;
             nm->SetChemdata( cd );
             tmp_bond = uo.first();
             nm->addBond( tmp_bond );
@@ -363,11 +365,9 @@ QList < DPoint * >Molecule::AllPoints()
 }
 
 // Create and return a list of all unique Drawable's in this Molecule
-QList < Drawable * >Molecule::AllObjects()
+QList<QSharedPointer<Drawable> > Molecule::AllObjects()
 {
-    QList < Drawable * >dl;
-
-    up = AllPoints();
+    QList < QSharedPointer <Drawable> > dl;
 
     foreach ( tmp_bond, bonds ) {
         dl.append( ( Drawable * ) tmp_bond );
@@ -684,8 +684,8 @@ void Molecule::addSymbol( Symbol * s )
     Changed();
 }
 
-// add a molecule to this one.  The Drawable passed had better be a Molecule!
-void Molecule::addMolecule( Drawable *m1 )
+// add a molecule to this one.
+void Molecule::addMolecule( Molecule *m1 )
 {
     qDebug() << "Uh-oh!  Need to merge";
     for ( tmp_bond = m1->bondsFirst(); tmp_bond != 0; tmp_bond = m1->bondsNext() ) {
@@ -1230,6 +1230,10 @@ void Molecule::Changed()
     // add hydrogens and correct labels
     //qDebug() << "changed" ;
     AddHydrogens();
+
+    QRect r = BoundingBox();
+    start = new DPoint (r.topLeft());
+    end = new DPoint (start->x + r.width(), start->y + r.height());
     return;
 }
 

@@ -23,9 +23,9 @@ void ChemData::ReactionAnalysis( int flags )
 
     Molecule *tmp_mol;
 
-    foreach ( tmp_draw, drawlist ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            tmp_mol = ( Molecule * ) tmp_draw;
+            Molecule *tmp_mol = qobject_cast<Molecule*> (tmp_draw.data());
             if ( tmp_mol->groupType() == GROUP_REACTANT )
                 reactantList.append( tmp_mol );
             if ( tmp_mol->groupType() == GROUP_PRODUCT )

@@ -25,8 +25,7 @@
 class LayoutGroup
 {
 public:
-    Drawable * tmp_draw;
-    QList < Drawable * >items;
+    QList < QSharedPointer<Drawable> > items;
     LayoutGroup *left;
     LayoutGroup *right;
     LayoutGroup *above;
@@ -35,7 +34,7 @@ public:
     void Move( double x, double y )
     {
         qDebug() << "MOVE:" << x << " " << y;
-        foreach ( tmp_draw, items )
+        foreach ( QSharedPointer<Drawable> tmp_draw, items )
         {
             tmp_draw->SelectAll();
             tmp_draw->Move( x, y );
@@ -47,7 +46,7 @@ public:
         int top = 99999, bottom = 0, left = 99999, right = 0;
         QRect tmprect;
 
-        foreach ( tmp_draw, items ) {
+        foreach ( QSharedPointer<Drawable> tmp_draw, items ) {
             tmp_draw->SelectAll();
             tmprect = tmp_draw->BoundingBox();
             tmp_draw->DeselectAll();
@@ -86,12 +85,13 @@ void ChemData::Tool( DPoint *target, int mode )
     QStringList choices;
     Bond *tmp_bond;
 
-    foreach ( tmp_draw, drawlist ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            m = ( Molecule * ) tmp_draw;
+            m = (( Molecule * ) tmp_draw.data());
             if ( m->BoundingBoxAll().contains( target->toQPoint(), false ) )
                 break;
-            m = 0;
+            else
+                m = 0;
         }
     }
     if ( m == 0 )
@@ -127,20 +127,26 @@ void ChemData::Tool( DPoint *target, int mode )
         //delete mi;
         break;
     case MODE_TOOL_CALCMW:
-        tt = m->CalcMW();
+    {
+        QSharedPointer<Text> tt (m->CalcMW());
         if ( tt != 0 )
             drawlist.append( tt );
         break;
+    }
     case MODE_TOOL_CALCEF:
-        tt = m->CalcEmpiricalFormula();
+    {
+        QSharedPointer<Text> tt (m->CalcEmpiricalFormula());
         if ( tt != 0 )
             drawlist.append( tt );
         break;
+    }
     case MODE_TOOL_CALCEA:
-        tt = m->CalcElementalAnalysis();
+    {
+        QSharedPointer<Text> tt (m->CalcElementalAnalysis());
         if ( tt != 0 )
             drawlist.append( tt );
         break;
+    }
     case MODE_TOOL_13CNMR:
         tool13cnmr = new Tool_13CNMR_Dialog;
         tool13cnmr->setMolecule( m );
@@ -237,9 +243,9 @@ void ChemData::Save3D( QString fn3d )
     // save 3D image of first molecule
     Molecule *m = 0;
 
-    foreach ( tmp_draw, drawlist ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            m = ( Molecule * ) tmp_draw;
+            m = (( Molecule * ) tmp_draw.data());
             break;
         }
     }
@@ -258,24 +264,29 @@ void ChemData::returnFromMID()
     Q_CHECK_PTR( tt_ef );
     Q_CHECK_PTR( tt_ea );
     if ( mi->isMWChecked() )
-        drawlist.append( tt_mw );
+    {
+        QSharedPointer<Text> tt (tt_mw);
+        drawlist.append( tt );
+    }
     if ( mi->isEFChecked() )
-        drawlist.append( tt_ef );
+    {
+        QSharedPointer<Text> tt (tt_ef);
+        drawlist.append( tt );
+    }
     if ( mi->isEAChecked() )
-        drawlist.append( tt_ea );
+    {
+        QSharedPointer<Text> tt (tt_ea);
+        drawlist.append( tt );
+    }
     mi->hide();
     delete mi;
 }
 
 void ChemData::clearAllGroups()
 {
-    Molecule *m = 0;
-    QString tmpname;
-
-    foreach ( tmp_draw, drawlist ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            m = ( Molecule * ) tmp_draw;
-            m->setGroupType( GROUP_NONE );
+            ((Molecule*)tmp_draw.data())->setGroupType( GROUP_NONE );
         }
     }
 }
@@ -287,12 +298,9 @@ void ChemData::AutoLayout()
     QList < LayoutGroup * >layout;
     LayoutGroup *tmp_lo, *tl, *tr, *ta, *tb, *tl1;
     int dista, distb, distl, distr, d1, d2, d3, d4, ds;
-    Text *tmp_text;
-    Arrow *tmp_arrow;
-    Drawable *td2;
 
     // first, put Arrows and Molecules into LayoutGroups
-    foreach ( tmp_draw, drawlist ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Arrow::staticMetaObject ) {
             tmp_lo = new LayoutGroup;
             tmp_lo->items.append( tmp_draw );
@@ -316,12 +324,12 @@ void ChemData::AutoLayout()
     }
     // now, attach Text to Arrows as needed
     foreach ( tmp_lo, layout ) {
-        td2 = tmp_lo->items.first();
+        QSharedPointer<Drawable> td2 = tmp_lo->items.first();
         if ( td2->metaObject() == &Arrow::staticMetaObject ) {
-            tmp_arrow = ( Arrow * ) td2;
-            foreach ( tmp_draw, drawlist ) {
+            Arrow *tmp_arrow = ((Arrow*)td2.data());
+            foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
                 if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-                    tmp_text = ( Text * ) tmp_draw;
+                    QSharedPointer<Text> tmp_text (tmp_draw.objectCast<Text>());
                     int ns;
                     QPoint amid = tmp_arrow->Midpoint();
                     QPoint tcenter = tmp_text->NearestCenter( amid,
@@ -350,7 +358,7 @@ void ChemData::AutoLayout()
                                 tmp_text->ForceMove( -dx, -dy );
                             }
                         }
-                        tmp_lo->items.append( tmp_text );       // add Text to LayoutGroup
+                       tmp_lo->items.append( tmp_text );       // add Text to LayoutGroup
                     }           // if (dist...)
                 }               // if (...TYPE_TEXT)
             }                   // for (...)
@@ -429,7 +437,7 @@ void ChemData::AutoLayout()
     foreach ( tmp_lo, layout ) {
         if ( tmp_lo->items.first()->metaObject() == &Arrow::staticMetaObject ) {
             tmp_lo->placed = true;
-            tmp_arrow = ( Arrow * ) ( tmp_lo->items.first() );
+            QSharedPointer<Arrow> tmp_arrow ( tmp_lo->items.first().objectCast<Arrow>() );
             if ( tmp_arrow->Orientation() == ARROW_HORIZONTAL ) {
                 // adjust position according to already placed Molecule or Arrow
                 if ( tmp_lo->left != 0 ) {
@@ -501,7 +509,7 @@ void ChemData::AutoLayout()
 
 void ChemData::fromSMILES( QString sm )
 {
-    Molecule *m1 = new Molecule( r );
+    QSharedPointer<Molecule> m1 (new Molecule( r ));
 
     m1->FromSMILES( sm );
     m1->SelectAll();
@@ -515,8 +523,10 @@ void ChemData::SmartPlace( QString sf, DPoint * t1 )
     double ang1 = -CalculateRingAttachAngle( t1 ) + 1.5708;
 
     load( sf );
-    tmp_draw = drawlist.last();
-    Molecule *m1 = ( Molecule * ) tmp_draw;
+    QSharedPointer<Drawable> tmp_draw = drawlist.last();
+    Molecule *m1 = 0;
+    if (tmp_draw->metaObject() == &Molecule::staticMetaObject)
+        m1 = (( Molecule * ) tmp_draw.data());
 
     if ( fabs( ang1 ) < 0.1 ) {
         ang1 = 3.14159;
@@ -545,8 +555,10 @@ void ChemData::SmartPlaceToo( QString sf, DPoint * t1 )
     double ang1 = -CalculateRingAttachAngle( t1 ) + 3.14159;
 
     load( sf );
-    tmp_draw = drawlist.last();
-    Molecule *m1 = ( Molecule * ) tmp_draw;
+    QSharedPointer<Drawable> tmp_draw = drawlist.last();
+    Molecule *m1 = 0;
+    if (tmp_draw->metaObject() == &Molecule::staticMetaObject)
+        m1 = (( Molecule * ) tmp_draw.data());
 
     qDebug() << "angle = " << ( ang1 * 180.0 / 3.14159 ) << " degrees!";
     //tmp_pt = m1->GetRingAttachPoint();
@@ -580,8 +592,10 @@ void ChemData::SmartPlaceThree( QString sf, DPoint * t1 )
     double ang1 = -CalculateRingAttachAngle( t1 );
 
     load( sf );
-    tmp_draw = drawlist.last();
-    Molecule *m1 = ( Molecule * ) tmp_draw;
+    QSharedPointer<Drawable> tmp_draw = drawlist.last();
+    Molecule *m1 = 0;
+    if (tmp_draw->metaObject() == &Molecule::staticMetaObject)
+        m1 = (( Molecule * ) tmp_draw.data());
 
     qDebug() << "angle = " << ( ang1 * 180.0 / 3.14159 ) << " degrees!";
     //tmp_pt = m1->GetRingAttachPoint();
@@ -613,10 +627,10 @@ double ChemData::CalculateRingAttachAngle( DPoint * t1 )
     double a1;
     Molecule *m = 0;
 
-    foreach ( tmp_draw, drawlist ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject
              && ( tmp_draw->Find( t1 ) == true ) ) {
-            m = ( Molecule * ) tmp_draw;
+            m = (( Molecule * ) tmp_draw.data());
             break;
         }
     }
@@ -641,10 +655,10 @@ bool ChemData::SelectWithinLoop( QVector<QPoint> tmp_lasso )
     QPoint tmp_bb;
     DPoint *t1, *t2;
 
-    QList<Drawable *> obj_list = UniqueObjects();
+    QList<QSharedPointer<Drawable> > obj_list = UniqueObjects();
     retval = false;
 
-    foreach ( tmp_draw, obj_list ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, obj_list ) {
         side_up = 0;
         side_down = 0;
         side_left = 0;

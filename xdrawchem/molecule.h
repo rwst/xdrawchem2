@@ -34,10 +34,10 @@ public:
     void addBond( DPoint *, DPoint *, int, int, QColor, bool hl = false );
     void addBond( Bond * );
     void addText( Text * );
-    void addSymbol( Symbol * );
+    void addSymbol( QSharedPointer<Symbol> );
     void CopyTextToDPoint();
     void CalcOffsets();
-    void addMolecule( Drawable * );
+    void addMolecule( Molecule * );
     Bond *bondsFirst() { return bonds.first(); }
     //   Bond *bondsNext() { return bonds.next(); }
 
@@ -65,9 +65,9 @@ public:
     QRect BoundingBox();
     QRect BoundingBoxAll();
     QList<DPoint *> AllPoints();
-    QList<Drawable *> AllObjects();
+    QList<QSharedPointer<Drawable> > AllObjects();
     QList<Bond *> AllBonds();
-    QList<Molecule *> MakeSplit();
+    QList<QSharedPointer<Molecule> > MakeSplit();
     int Members() { return bonds.count(); }
     QString ToXML( QString );
     QString ToCDXML( QString );

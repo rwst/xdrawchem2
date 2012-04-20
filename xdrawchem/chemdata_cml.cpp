@@ -490,6 +490,7 @@ void ChemData::Convert_CML_Lists_To_Native()
     double sf = curfixed / avglen;
 
     qDebug() << sf;
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, CDXML_Objects ) {
         points.append( tmp_draw->Start() );
         points.append( tmp_draw->End() );
@@ -518,9 +519,8 @@ void ChemData::Convert_CML_Lists_To_Native()
 bool ChemData::save_cml( QString fn )
 {
     QList < DPoint * >up;
-    QList < Drawable * >uo;
-    Text *tmp_text;
-    Bond *tmp_bond;
+    QList < QSharedPointer< Drawable > > uo;
+
     QString n1, nfull;
     int n = 0;
 
@@ -550,10 +550,11 @@ bool ChemData::save_cml( QString fn )
     t << "<string title=\"GenerationSoftware\">" << XDC_VERSION << "</string>" << endl;
 
     // Copy text from Text objects to element field in DPoint
-    foreach ( tmp_draw, uo ) {
-        if ( tmp_draw->metaObject() == &Text::staticMetaObject ) {
-            tmp_text = ( Text * ) tmp_draw;     // is this cheating?
-            tmp_text->Start()->element = tmp_text->getText();
+    QSharedPointer<Drawable> td;
+    foreach ( td, uo ) {
+        if ( td->metaObject() == &Text::staticMetaObject ) {
+            Text* tt = (Text *) td.data();
+            tt->Start()->element = tt->getText();
         }
     }
     // Add XML ID's to DPoint's, write as we go
@@ -579,22 +580,23 @@ bool ChemData::save_cml( QString fn )
     // add XML ID's to Bond's, write as we go
     n = 0;
     t << "<bondArray>";
-    foreach ( tmp_draw, uo ) {
-        if ( tmp_draw->metaObject() == &Bond::staticMetaObject ) {
-            tmp_bond = ( Bond * ) tmp_draw;     // I ask again, is this cheating?
+    foreach ( td, uo ) {
+        if ( td->metaObject() == &Bond::staticMetaObject ) {
+            Drawable* d = td.data();
+            Bond* tb = qobject_cast<Bond *> (d);
             n1.setNum( n );
             nfull = QString( "b" ) + n1;
-            tmp_draw->setID( nfull );
+            td->setID( nfull );
             n++;
-            t << "<bond id=\"" << tmp_bond->getID() << "\">";
-            t << "<string builtin=\"atomRef\">" << tmp_bond->Start()->id << "</string>";
-            t << "<string builtin=\"atomRef\">" << tmp_bond->End()->id << "</string>";
-            t << "<string builtin=\"order\">" << tmp_bond->Order()
+            t << "<bond id=\"" << tb->getID() << "\">";
+            t << "<string builtin=\"atomRef\">" << tb->Start()->id << "</string>";
+            t << "<string builtin=\"atomRef\">" << tb->End()->id << "</string>";
+            t << "<string builtin=\"order\">" << tb->Order()
                 << "</string>";
-            if ( tmp_bond->Order() == 5 ) {   // stereo-up bonds
+            if ( tb->Order() == 5 ) {   // stereo-up bonds
                 t << "<string builtin=\"stereo\" convention=\"MDLMol\">W</string>";
             }
-            if ( tmp_bond->Order() == 7 ) {   // stereo-down bonds
+            if ( tb->Order() == 7 ) {   // stereo-down bonds
                 t << "<string builtin=\"stereo\" convention=\"MDLMol\">H</string>";
             }
             t << "</bond>";

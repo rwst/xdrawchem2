@@ -7,7 +7,7 @@
 bool ChemData::save_cdx( QString fn )
 {
     QList < DPoint * >up;
-    QList < Drawable * >uo;
+    QList < QSharedPointer <Drawable> >uo;
     QString tmpline;
 
     // get all unique points and objects
@@ -54,6 +54,7 @@ bool ChemData::save_cdxml( QString fn )
     t << "<page>";
 
     // save document here
+    QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         cur_id.setNum( idcount );
         tmpline = tmp_draw->ToCDXML( cur_id );
