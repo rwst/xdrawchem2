@@ -17,6 +17,8 @@ class QPolygon;
 
 class GraphicObject : public Drawable
 {
+Q_OBJECT
+
 public:
     GraphicObject( Render2D *, QObject *parent = 0 );
     void Render();  // draw this object
