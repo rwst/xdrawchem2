@@ -253,7 +253,7 @@ bool IOIface::convertToOBMol()
     // formats can only save one molecule.  So, let's get the first molecule
     // from the ChemData and do that.
 
-    this_mol = chemdata->firstMolecule();
+    this_mol = chemdata->firstMolecule().data();
     allpoints = this_mol->AllPoints();
     allbonds = this_mol->AllBonds();
 
