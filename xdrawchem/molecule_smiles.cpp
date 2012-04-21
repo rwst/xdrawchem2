@@ -61,7 +61,7 @@ void Molecule::SDG( bool coord )
     // rebuild neighbors list (usually mangled by MakeSSSR)
     foreach ( tmp_pt, up ) {
         tmp_pt->neighbors.clear();
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) == true ) {
                 tmp_pt->neighbors.append( tmp_bond->otherPoint( tmp_pt ) );
                 tmp_pt->bondorder[( tmp_pt->neighbors.count() - 1 )] = tmp_bond->Order();
@@ -279,7 +279,7 @@ void Molecule::FromSMILES( QString sm )
         thisDPoint->elementmask = tmp_element_mask;
 
         if ( tmp_element != "C" ) {
-            Text *nt = new Text( r );
+            QSharedPointer<Text> nt ( new Text( r ));
 
             nt->setPoint( thisDPoint );
             nt->setJustify( JUSTIFY_CENTER );

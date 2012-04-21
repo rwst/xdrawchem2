@@ -109,7 +109,6 @@ void IOIface::convertToChemData()
     OBAtom *atom1, *atom2;
     DPoint *s, *e;
     Point point;
-    Text *text;
 
     std::vector < OBBond * >::iterator bonditr;
     std::map < Point, DPoint *, pt_cmp > points;
@@ -210,7 +209,7 @@ void IOIface::convertToChemData()
 
         if ( !atom1->IsCarbon() ) {
 
-            text = new Text( chemdata->getRender2D() );
+            QSharedPointer<Text> text ( new Text( chemdata->getRender2D() ));
             QString str = IOIface::symbol[atom1->GetAtomicNum() - 1];
 
             text->setPoint( s );
@@ -223,7 +222,7 @@ void IOIface::convertToChemData()
 
         if ( !atom2->IsCarbon() ) {
 
-            text = new Text( chemdata->getRender2D() );
+            QSharedPointer<Text> text ( new Text( chemdata->getRender2D() ));
             QString str = IOIface::symbol[atom2->GetAtomicNum() - 1];
 
             text->setPoint( e );
@@ -244,9 +243,8 @@ void IOIface::convertToChemData()
 bool IOIface::convertToOBMol()
 {
     QList < DPoint * >allpoints;
-    QList < Bond * >allbonds;
+    QList <QSharedPointer<Bond> >allbonds;
     DPoint *tmp_atom;
-    Bond *tmp_bond;
     Molecule *this_mol;
 
     // now, this might not always do what the user wants but most file
@@ -283,7 +281,7 @@ bool IOIface::convertToOBMol()
 
     int start, end, order, flag, bst;
 
-    foreach ( tmp_bond, allbonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, allbonds ) {
         flag = 0;
         start = allpoints.indexOf( tmp_bond->Start() ) + 1;
         end = allpoints.indexOf( tmp_bond->End() ) + 1;

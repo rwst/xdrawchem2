@@ -64,9 +64,8 @@ void SSSR::PrintSSSR()
 }
 
   // identify aromatic rings (just benzene for now)
-void SSSR::FindAromatic( QList < Bond * >bl )
+void SSSR::FindAromatic( QList <QSharedPointer<Bond> >bl )
 {
-    Bond *tmp_bond;
     bool o1, o2, goodring;
 
     foreach ( tmp_ring, sssr ) {
@@ -78,7 +77,7 @@ void SSSR::FindAromatic( QList < Bond * >bl )
         foreach ( tmp_pt, *tmp_ring ) {
             o1 = false;
             o2 = false;
-            foreach ( tmp_bond, bl ) {
+            foreach ( QSharedPointer<Bond> tmp_bond, bl ) {
                 if ( tmp_bond->Find( tmp_pt ) == true ) {
                     if ( tmp_bond->Order() == 1 )
                         o1 = true;

@@ -41,14 +41,14 @@ public:
     void addArrow( DPoint *, DPoint *, QColor, int, int, bool hl = false );
     void addCurveArrow( DPoint *, DPoint *, QColor, QString, bool hl = false );
     void addBracket( DPoint *, DPoint *, QColor, int, bool hl = false );
-    void addText( Text *);
+    void addText(QSharedPointer<Text>);
     void addGraphicObject( GraphicObject *);
     void addSymbol( DPoint *, QString, bool hl = false );
     void Erase( QSharedPointer<Drawable> );
     void EraseSelected();
     void DetectSplit();
     DPoint *FindNearestPoint( DPoint *, double & );
-    Drawable *FindNearestObject( DPoint *, double & );
+    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
     void NewSelectRect( QRect, bool );
     void SelectAll();
     void DeselectAll();

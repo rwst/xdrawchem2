@@ -97,7 +97,7 @@ void ChemData::addBracket( DPoint * s, DPoint * e, QColor c, int type, bool hl )
     drawlist.append( p );
 }
 
-void ChemData::addText(Text *t )
+void ChemData::addText(QSharedPointer<Text> t )
 {
     qDebug() << "addText";
     if ( t->Justify() == JUSTIFY_TOPLEFT ) {  // add to drawing
@@ -167,7 +167,7 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
 
 void ChemData::addSymbol( DPoint * a, QString symbolfile, bool hl )
 {
-    Symbol *s1 = new Symbol( r );
+    QSharedPointer<Symbol> s1 ( new Symbol( r ));
     s1->setPoint( a );
     s1->SetSymbol( symbolfile );
     if ( hl )
@@ -184,7 +184,7 @@ void ChemData::addSymbol( DPoint * a, QString symbolfile, bool hl )
     }
 
     // DANGER! Object may exist twice now!!!
-    drawlist.append( sy );
+    drawlist.append( s1 );
 }
 
 QSharedPointer<Molecule> ChemData::insideMolecule( DPoint * t1 )
@@ -223,14 +223,13 @@ DPoint *ChemData::FindNearestPoint( DPoint * target, double &dist )
     return nearest;
 }
 
-Drawable *ChemData::FindNearestObject( DPoint * target, double &dist )
+QSharedPointer<Drawable> ChemData::FindNearestObject( DPoint * target, double &dist )
 {
-    Drawable *nearest = 0, *d1;
     double mindist = 2000.0, d1dist = 999999.0;
 
-    QSharedPointer<Drawable> tmp_draw;
-    foreach ( tmp_draw, drawlist ) {
-        d1 = tmp_draw->FindNearestObject( target, d1dist );
+    QSharedPointer<Drawable> nearest;
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
+        QSharedPointer<Drawable> d1 = tmp_draw->FindNearestObject( target, d1dist );
         if ( d1dist < mindist ) {
             mindist = d1dist;
             nearest = d1;

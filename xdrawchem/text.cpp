@@ -739,7 +739,7 @@ DPoint *Text::FindNearestPoint( DPoint * /*target*/, double &dist )
     return 0;
 }
 
-Drawable *Text::FindNearestObject( DPoint * target, double &dist )
+QSharedPointer<Drawable> Text::FindNearestObject( DPoint * target, double &dist )
 {
     if ( WithinBounds( target ) )
         dist = 0.01;

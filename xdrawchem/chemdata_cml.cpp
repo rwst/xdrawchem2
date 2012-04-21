@@ -59,7 +59,7 @@ bool ChemData::NewLoadCMLFile( QString fn )
 
     foreach ( tmp_pt, parsedPoints ) {
         if ( tmp_pt->element != "C" ) {
-            Text *nt = new Text( r );
+            QSharedPointer<Text> nt ( new Text( r ));
 
             nt->setPoint( tmp_pt );
             nt->setJustify( JUSTIFY_CENTER );
@@ -461,7 +461,7 @@ void ChemData::Convert_CML_Lists_To_Native()
     foreach ( tmp_pt, points ) {
         if ( tmp_pt->element != QString( "C" ) ) {
             qDebug() << tmp_pt->element;
-            Text *nt = new Text( r );
+            QSharedPointer<Text> nt ( new Text( r ));
 
             nt->setPoint( tmp_pt );
             nt->setJustify( JUSTIFY_CENTER );
@@ -490,8 +490,8 @@ void ChemData::Convert_CML_Lists_To_Native()
     double sf = curfixed / avglen;
 
     qDebug() << sf;
-    QSharedPointer<Drawable> tmp_draw;
-    foreach ( tmp_draw, CDXML_Objects ) {
+
+    foreach ( QSharedPointer<Drawable> tmp_draw, CDXML_Objects ) {
         points.append( tmp_draw->Start() );
         points.append( tmp_draw->End() );
     }
@@ -499,7 +499,7 @@ void ChemData::Convert_CML_Lists_To_Native()
         tmp_pt->x *= sf;
         tmp_pt->y *= sf;
     }
-    foreach ( tmp_draw, CDXML_Objects ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, CDXML_Objects ) {
         drawlist.append( tmp_draw );
     }
 

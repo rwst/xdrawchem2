@@ -36,7 +36,7 @@ public:
     int IsInRing(DPoint *);
     int InSameRing(DPoint *, DPoint *, DPoint *);
     void PrintSSSR();
-    void FindAromatic(QList<Bond *>);
+    void FindAromatic(QList<QSharedPointer<Bond> >);
     void BuildSSSR(QList<DPoint *>);
     void Add(QList<DPoint *> *);
     int CommonPoints(QList<DPoint *> *, QList<DPoint *> *);

@@ -268,7 +268,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             double distobj;
 
             // get Drawable of nearest object
-            Drawable *no = c->FindNearestObject( e, distobj );
+            QSharedPointer<Drawable> no = c->FindNearestObject( e, distobj );
 
             if ( ( distobj < 5.0 ) && ( no->metaObject() == &Bracket::staticMetaObject ) )
                 highlightobject = no;

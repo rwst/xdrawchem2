@@ -22,7 +22,7 @@ void Molecule::Scale( double bond_length )
     int nbonds = 0;
 
     // calculate current average bond length
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         bond_sum += tmp_bond->Length();
         nbonds++;
     }
@@ -51,7 +51,7 @@ QList < DPoint * >Molecule::BreakRingBonds( DPoint * target1 )
 {
     QList < DPoint * >bb;
 
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( target1 ) == true ) {
             tmp_pt = tmp_bond->otherPoint( target1 );
             tmp_pt->new_order = tmp_bond->Order();
@@ -75,7 +75,7 @@ DPoint *Molecule::GetAttachPoint( QString sf )
                 break;
             }
         }
-        foreach ( tmp_text, labels ) {
+        foreach ( QSharedPointer<Text> tmp_text, labels ) {
             if ( tmp_text->Start() == tmp_pt ) {
                 qDebug() << "removed";
                 labels.removeAll( tmp_text );
@@ -94,7 +94,7 @@ DPoint *Molecule::GetAttachPoint( QString sf )
                 break;
             }
         }
-        foreach ( tmp_text, labels ) {
+        foreach ( QSharedPointer<Text> tmp_text, labels ) {
             if ( tmp_text->Start() == tmp_pt ) {
                 qDebug() << "removed";
                 labels.removeAll( tmp_text );
@@ -113,7 +113,7 @@ DPoint *Molecule::GetAttachPoint( QString sf )
                 break;
             }
         }
-        foreach ( tmp_text, labels ) {
+        foreach ( QSharedPointer<Text> tmp_text, labels ) {
             if ( tmp_text->Start() == tmp_pt ) {
                 qDebug() << "removed";
                 labels.removeAll( tmp_text );
@@ -140,7 +140,7 @@ DPoint *Molecule::GetAttachPoint( QString sf )
         }
     }
     ymaxpt->element = "C";
-    foreach ( tmp_text, labels ) {
+    foreach ( QSharedPointer<Text> tmp_text, labels ) {
         if ( tmp_text->Start() == ymaxpt ) {
             qDebug() << "removed";
             labels.removeAll( tmp_text );
@@ -171,7 +171,7 @@ double Molecule::CalculateRingAttachAngle( DPoint * t1 )
 {
     double dx = 0.0, dy = 0.0;
 
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( t1 ) == true ) {
             tmp_pt = tmp_bond->otherPoint( t1 );
             dx = dx + ( tmp_pt->x - t1->x );
@@ -193,7 +193,7 @@ double Molecule::SumBondEnthalpy()
 {
     double dh = 0.0;
 
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         dh += tmp_bond->Enthalpy();
     }
 
@@ -220,7 +220,7 @@ void Molecule::AllNeighbors()
         tmp_pt->neighbors.clear();
         tmp_pt->aromatic = false;
         tmp_pt->inring = false;
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) == true ) {
                 if ( tmp_bond->Order() == 1 )
                     n1++;
@@ -274,7 +274,7 @@ double Molecule::CalcPartialCharge( QString atomtype )
     return 0.0;
 }
 
-Text *Molecule::CalcEmpiricalFormula( bool from_mw )
+QSharedPointer<Text> Molecule::CalcEmpiricalFormula( bool from_mw )
 {
     QList < DPoint * >up;
     QString ef;
@@ -352,7 +352,7 @@ Text *Molecule::CalcEmpiricalFormula( bool from_mw )
 
         //qDebug() << "CalcEF:" << tmp_pt->element;
         possible_h = MolData::Hydrogens( tmp_pt->element );
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) )
                 possible_h -= tmp_bond->Order();
         }
@@ -470,7 +470,7 @@ Text *Molecule::CalcEmpiricalFormula( bool from_mw )
     ny = nr.top() - 16.0;
     nx = ( nr.left() + nr.right() ) / 2.0;
 
-    tmp_text = new Text( r );
+    QSharedPointer<Text> tmp_text ( new Text( r ));
     tmp_pt = new DPoint( nx, ny );
     tmp_text->setPoint( tmp_pt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
@@ -492,11 +492,9 @@ Text *Molecule::CalcEmpiricalFormula( bool from_mw )
     return tmp_text;
 }
 
-Text *Molecule::CalcMW( bool from_change )
+QSharedPointer<Text> Molecule::CalcMW( bool from_change )
 {
-    Text *tmp_txt1, *tmp_text;
-
-    tmp_txt1 = CalcEmpiricalFormula( true );
+    QSharedPointer<Text> tt = CalcEmpiricalFormula( true );
 
     double nx, ny;
 
@@ -505,7 +503,7 @@ Text *Molecule::CalcMW( bool from_change )
     ny = nr.bottom() + 5.0;
     nx = ( nr.left() + nr.right() ) / 2.0;
 
-    tmp_text = new Text( r );
+    QSharedPointer<Text> tmp_text ( new Text( r ));
     tmp_pt = new DPoint( nx, ny );
     tmp_text->setPoint( tmp_pt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
@@ -526,12 +524,11 @@ Text *Molecule::CalcMW( bool from_change )
     return tmp_text;
 }
 
-Text *Molecule::CalcElementalAnalysis( bool show_dialog )
+QSharedPointer<Text> Molecule::CalcElementalAnalysis( bool show_dialog )
 {
     QString ea, n1;
 
     // calc empirical formula and total molecular weight
-    tmp_text = CalcMW();
     nc *= 12.011;
     nh *= 1.00794;
     nn *= 14.0067;
@@ -576,10 +573,7 @@ Text *Molecule::CalcElementalAnalysis( bool show_dialog )
     ny = nr.top() + 8.0;
     nx = nr.right() + 16.0;
 
-    delete tmp_text;
-
-    tmp_text = new Text( r );
-    //CHECK_PTR(tmp_text);
+    QSharedPointer<Text> tmp_text ( new Text( r ));
     tmp_pt = new DPoint( nx, ny );
     tmp_text->setPoint( tmp_pt );
     //qDebug() << ea;
@@ -627,7 +621,7 @@ void Molecule::AddHydrogens( bool to_carbon )
     foreach ( tmp_pt, up ) {
         // find order of bonds
         least_hindered_side = 0;
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) ) {
                 dx = tmp_pt->x - tmp_bond->otherPoint( tmp_pt )->x;
                 if ( dx > 0.5 )
@@ -640,7 +634,7 @@ void Molecule::AddHydrogens( bool to_carbon )
         tmp_pt->substituents = sumbonds;
         tmp_pt->C13_shift = least_hindered_side;
         // update Text, if it exists, with least hindered side
-        foreach ( tmp_text, labels ) {
+        foreach ( QSharedPointer<Text> tmp_text, labels ) {
             if ( tmp_text->Start() == tmp_pt ) {
                 if ( least_hindered_side < 0 )
                     tmp_text->CheckAlignment( 2 );      // left hindered
@@ -713,7 +707,7 @@ void Molecule::AddHydrogens( bool to_carbon )
         QString elbackup;
 
         if ( orig_element != tmp_pt->element ) {
-            foreach ( tmp_text, labels ) {
+            foreach ( QSharedPointer<Text> tmp_text, labels ) {
                 if ( tmp_text->Start() == tmp_pt ) {
                     elbackup = tmp_pt->element;
                     qDebug() << tmp_pt->element;
@@ -768,7 +762,7 @@ void Molecule::Reactivity( int react_type )
     }
     qDebug() << "Calc total charge: " << sumcharge;
     qDebug() << "Atom count: " << atomRxns.count();
-    foreach ( Bond * tmp_bondRxns, bonds ) {
+    foreach ( QSharedPointer<Bond>  tmp_bondRxns, bonds ) {
         if ( tmp_bondRxns->isCHBond() == false ) {
             bondRxns.append( RetroBondName( tmp_bondRxns ) );
             tmp_bondRxns->setCName( RetroBondName( tmp_bondRxns ) );

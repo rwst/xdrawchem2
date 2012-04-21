@@ -19,7 +19,7 @@ public:
     void Edit();
     bool Find( DPoint * ); // does this CurveArrow contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
-    Drawable *FindNearestObject( DPoint *, double & );
+    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
     void setPoints( DPoint *, DPoint * );
     QRect BoundingBox();
     bool isWithinRect( QRect, bool );

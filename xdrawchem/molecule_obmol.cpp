@@ -56,7 +56,6 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
     OBAtom *atom1, *atom2;
     DPoint *s, *e;
     Point point;
-    Text *text;
 
     std::vector < OBEdgeBase * >::iterator bonditr;
     std::map < Point, DPoint *, pt_cmp > points;
@@ -157,7 +156,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
 
         if ( !atom1->IsCarbon() ) {
 
-            text = new Text( r );
+            QSharedPointer<Text> text ( new Text( r ));
             QString str = symbol[atom1->GetAtomicNum() - 1];
 
             text->setText( str );
@@ -169,7 +168,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
 
         if ( !atom2->IsCarbon() ) {
 
-            text = new Text( r );
+            QSharedPointer<Text> text ( new Text( r ));
             QString str = symbol[atom2->GetAtomicNum() - 1];
 
             text->setText( str );
@@ -191,14 +190,12 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
 OBMol *Molecule::convertToOBMol()
 {
     QList < DPoint * >allpoints;
-    QList < Bond * >allbonds;
+    QList <QSharedPointer<Bond> >allbonds (AllBonds());
     DPoint *tmp_atom;
-    Bond *tmp_bond;
 //    Molecule *this_mol;
     OBMol *obmol = new OBMol;
 
     allpoints = AllPoints();
-    allbonds = AllBonds();
 
     // adapted from openbabel/mdl.cpp, most similar format to this...
     // (i.e., MDL is atom list followed by bond list)
@@ -225,7 +222,7 @@ OBMol *Molecule::convertToOBMol()
 
     int start, end, order, flag, bst;
 
-    foreach ( tmp_bond, allbonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, allbonds ) {
         flag = 0;
         start = allpoints.indexOf( tmp_bond->Start() ) + 1;
         end = allpoints.indexOf( tmp_bond->End() ) + 1;

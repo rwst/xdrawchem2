@@ -31,9 +31,9 @@ public:
 
     bool Find( DPoint * ); // does this Bond contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
-    Drawable *FindNearestObject( DPoint *, double & );
+    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
     void setPoints( DPoint *, DPoint * );
-    bool Equals( Bond * );
+    bool Equals( QSharedPointer<Bond> );
     bool isWithinRect( QRect, bool );
     int Order() { return order; }
 

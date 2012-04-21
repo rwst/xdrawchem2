@@ -39,7 +39,7 @@ void Bond::setOrder( int a )
     }
 }
 
-bool Bond::Equals( Bond * a )
+bool Bond::Equals(QSharedPointer<Bond> a )
 {
     if ( ( start == a->Start() ) && ( end == a->End() ) )
         return true;
@@ -300,10 +300,11 @@ DPoint *Bond::FindNearestPoint( DPoint * target, double &dist )
     }
 }
 
-Drawable *Bond::FindNearestObject( DPoint * target, double &dist )
+QSharedPointer<Drawable> Bond::FindNearestObject( DPoint * target, double &dist )
 {
     dist = DistanceToLine( start, end, target );
-    return this;
+    QSharedPointer<Drawable> td (this);
+    return td;
 }
 
 void Bond::setPoints( DPoint * s, DPoint * e )

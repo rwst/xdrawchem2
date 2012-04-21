@@ -126,7 +126,7 @@ bool ChemData::Paste()
         }
         else if (td1->metaObject() == &Text::staticMetaObject) {
             Text *ot = ((Text *)td1.data());
-            Text *t ( new Text(r) );
+            QSharedPointer<Text> t ( new Text(r) );
             t->setPoint( newPoints.at( oldPoints.indexOf( td1->Start() ) ) );
             t->setText( ot->getText() );
 //            t->setTextMask( ot->getTextMask() );

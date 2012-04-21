@@ -107,7 +107,7 @@ void Molecule::AddNMRprotons()
             }
         }
         // find order of bonds
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) ) {
                 if ( tmp_bond->Order() < 4 )
                     sumbonds += tmp_bond->Order();
@@ -119,7 +119,7 @@ void Molecule::AddNMRprotons()
         if ( h < 0 )
             h = 0;
         for ( ct = 0; ct < h; ct++ ) {
-            tmp_bond = new Bond( r );
+            QSharedPointer<Bond> tmp_bond ( new Bond( r ));
             new_proton = new DPoint;
             new_proton->element = "H";
             new_proton->nmr_proton = true;
@@ -133,12 +133,9 @@ void Molecule::AddNMRprotons()
 
 void Molecule::RemoveNMRprotons()
 {
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->End()->nmr_proton == true ) {
             bonds.removeAll( tmp_bond );
-            delete tmp_bond;
-
-            tmp_bond = bonds.first();
         }
     }
 }
@@ -171,7 +168,7 @@ void Molecule::ProtonEnvironment()
         if ( tmp_pt->element != "H" )
             continue;
         /// first, find atom this proton is connected to (depth 1)
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) ) {
                 depth1_pt = tmp_bond->otherPoint( tmp_pt );
                 nearest = depth1_pt->baseElement();
@@ -183,7 +180,7 @@ void Molecule::ProtonEnvironment()
             }
         }
         /// now, find depth 2 atoms and put in list
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( depth1_pt ) ) {
                 depth2_pt = tmp_bond->otherPoint( depth1_pt );
                 //qDebug() << "DEPTH2: "<< depth2_pt->element ;
@@ -204,7 +201,7 @@ void Molecule::ProtonEnvironment()
             if ( depth2_pt->aromatic == true )
                 r_current.append( "A" );
             depth3list.clear();
-            foreach ( tmp_bond, bonds ) {
+            foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
                 if ( tmp_bond->Find( depth2_pt ) ) {
                     depth3_pt = tmp_bond->otherPoint( depth2_pt );
                     if ( depth3_pt == depth1_pt )
@@ -276,14 +273,14 @@ void Molecule::Multiplicity_1HNMR()
         if ( tmp_pt->element != "H" )
             continue;
         /// first, find atom this proton is connected to (depth 1)
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) ) {
                 depth1_pt = tmp_bond->otherPoint( tmp_pt );
                 break;
             }
         }
         /// now, find depth 2 atoms and put in list
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( depth1_pt ) ) {
                 depth2_pt = tmp_bond->otherPoint( depth1_pt );
                 //qDebug() << "DEPTH2: "<< depth2_pt->element ;
@@ -296,7 +293,7 @@ void Molecule::Multiplicity_1HNMR()
         //qDebug() << "Stack: " << search_stack.count() ;
         /// now find depth 3 protons
         foreach ( depth2_pt, search_stack ) {
-            foreach ( tmp_bond, bonds ) {
+            foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
                 if ( tmp_bond->Find( depth2_pt ) ) {
                     depth3_pt = tmp_bond->otherPoint( depth2_pt );
                     //qDebug() << "DEPTH3: "<< depth3_pt->element ;

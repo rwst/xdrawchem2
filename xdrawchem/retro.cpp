@@ -122,7 +122,7 @@ QString Molecule::RetroAtomName( DPoint * latom )
     return rval;
 }
 
-QString Molecule::RetroBondName( Bond * lbond, bool runsssr )
+QString Molecule::RetroBondName(QSharedPointer<Bond> lbond, bool runsssr )
 {
     // hopefully only need to do this once per retro/reactivity operation!
     if ( runsssr )

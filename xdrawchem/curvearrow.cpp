@@ -158,10 +158,11 @@ DPoint *CurveArrow::FindNearestPoint( DPoint * target, double &dist )
     return 0;
 }
 
-Drawable *CurveArrow::FindNearestObject( DPoint *target, double &dist )
+QSharedPointer<Drawable> CurveArrow::FindNearestObject( DPoint *target, double &dist )
 {
     dist = DistanceToLine( start, end, target );
-    return this;
+    QSharedPointer<Drawable>  td (this);
+    return td;
 }
 
 void CurveArrow::setPoints( DPoint *s, DPoint *e )

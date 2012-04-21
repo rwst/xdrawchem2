@@ -90,7 +90,6 @@ bool ChemData::load_legacy( QString fn )
 
     QList < DPoint * >points;
     DPoint *tp;
-    Text *mt;
 
     do {
         ln = t.readLine();
@@ -129,7 +128,7 @@ bool ChemData::load_legacy( QString fn )
         if ( ln.left( 4 ) == QString( "TEXT" ) ) {
             QTextStream( &ln ) >> tmpline >> i1;
             tmpline = ln.mid( ln.indexOf( '`' ) + 1 );
-            mt = new Text( r );
+            QSharedPointer<Text> mt ( new Text( r ));
             mt->setPoint( points.at( i1 ) );
             mt->setJustify( JUSTIFY_TOPLEFT );
             mt->SetColor( QColor( 0, 0, 0 ) );
@@ -142,7 +141,7 @@ bool ChemData::load_legacy( QString fn )
         if ( ln.left( 5 ) == QString( "LABEL" ) ) {
             QTextStream( &ln ) >> tmpline >> i1;
             tmpline = ln.mid( ln.indexOf( '`' ) + 1 );
-            mt = new Text( r );
+            QSharedPointer<Text> mt ( new Text( r ));
             mt->setPoint( points.at( i1 ) );
             mt->setJustify( JUSTIFY_CENTER );
             mt->SetColor( QColor( 0, 0, 0 ) );

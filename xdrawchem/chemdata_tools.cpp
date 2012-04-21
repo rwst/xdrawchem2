@@ -83,7 +83,6 @@ void ChemData::Tool( DPoint *target, int mode )
     Tool_2D3D tool2d3d;
     QString tmpname, serverName;
     QStringList choices;
-    Bond *tmp_bond;
 
     foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
@@ -101,9 +100,9 @@ void ChemData::Tool( DPoint *target, int mode )
     switch ( mode ) {
     case MODE_TOOL_MOLECULE_INFO:
         mi = new MolInfoDialog( r );
-        tt_mw = m->CalcMW();
-        tt_ef = m->CalcEmpiricalFormula();
-        tt_ea = m->CalcElementalAnalysis();
+        tt_mw = m->CalcMW().data();
+        tt_ef = m->CalcEmpiricalFormula().data();
+        tt_ea = m->CalcElementalAnalysis().data();
         mi->setMW( tt_mw->getText() );
         mi->setEF( tt_ef->getText() );
         mi->setEA( tt_ea->getText() );
@@ -176,7 +175,7 @@ void ChemData::Tool( DPoint *target, int mode )
         break;
     case MODE_TOOL_REACTIVITY_RETRO:
         m->Reactivity( mode );
-        for ( tmp_bond = m->bondsFirst(); tmp_bond != 0; tmp_bond = m->bondsNext() ) {
+        for ( QSharedPointer<Bond> tmp_bond = m->bondsFirst(); tmp_bond != 0; tmp_bond = m->bondsNext() ) {
             if ( tmp_bond->getReactions().length() > 2 ) {
                 tmp_bond->SetColor( QColor( 124, 252, 0 ) );
             }
@@ -577,7 +576,7 @@ void ChemData::SmartPlaceToo( QString sf, DPoint * t1 )
     // need to put back N if EDANS
     if ( sf.contains( "edans" ) > 0 ) {
         t1->element = "NH";
-        Text *nt = new Text( r );
+        QSharedPointer<Text> nt ( new Text( r ));
 
         nt->setPoint( t1 );
         nt->setJustify( JUSTIFY_CENTER );
@@ -613,7 +612,7 @@ void ChemData::SmartPlaceThree( QString sf, DPoint * t1 )
     }
     // need to put back N
     t1->element = "NH";
-    Text *nt = new Text( r );
+    QSharedPointer<Text> nt ( new Text( r ));
 
     nt->setPoint( t1 );
     nt->setJustify( JUSTIFY_CENTER );

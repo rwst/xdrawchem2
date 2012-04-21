@@ -501,7 +501,6 @@ void CDXML_Reader::Build()
 {
     QList < DPoint * >up;
     DPoint *s1, *e1;
-    Text *nt;
     double bondlength = 0.0;
     int nbonds = 0;
 
@@ -541,7 +540,7 @@ void CDXML_Reader::Build()
     // add text
     foreach ( tmp_node, nodelist ) {
         if ( tmp_node->element != "C" ) {
-            nt = new Text( c->getRender2D() );
+            QSharedPointer<Text> nt ( new Text( c->getRender2D() ));
             nt->setPoint( tmp_node );
             if ( up.contains( tmp_node ) )
                 up.append( tmp_node );

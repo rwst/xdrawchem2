@@ -22,7 +22,7 @@ public:
     virtual void Render();  // draw this object
     virtual void Edit();  // edit this object
     virtual DPoint *FindNearestPoint(DPoint *, double &);
-    virtual Drawable *FindNearestObject(DPoint *, double &);
+    virtual QSharedPointer<Drawable> FindNearestObject(DPoint *, double &);
     virtual bool Find(DPoint *);
     virtual void addBond(DPoint *, DPoint *, int, int, QColor, bool hl = false);
     virtual void Highlight();
@@ -44,10 +44,10 @@ public:
     virtual void FromXML(QString);
     virtual int Members();
     // needed only to merge Molecules; see molecule.cpp, addMolecule()
-    virtual Bond *bondsFirst() { return 0; }
-    virtual Bond *bondsNext() { return 0; }
-    virtual Text *labelsFirst() { return 0; }
-    virtual Text *labelsNext() { return 0; }
+    virtual QSharedPointer<Bond> bondsFirst() { return QSharedPointer<Bond> (); }
+    virtual QSharedPointer<Bond> bondsNext() { return QSharedPointer<Bond> (); }
+    virtual QSharedPointer<Text> labelsFirst() { return QSharedPointer<Text> (); }
+    virtual QSharedPointer<Text> labelsNext() { return QSharedPointer<Text> (); }
     // stuff that all Drawables should know about
     static double getAngle(DPoint *, DPoint *);
     double DistanceToLine(DPoint *, DPoint *, DPoint *);

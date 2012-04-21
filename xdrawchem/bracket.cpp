@@ -233,7 +233,7 @@ DPoint *Bracket::FindNearestPoint( DPoint * /*target*/, double &dist )
     return 0;
 }
 
-Drawable *Bracket::FindNearestObject( DPoint * target, double &dist )
+QSharedPointer<Drawable> Bracket::FindNearestObject( DPoint * target, double &dist )
 {
     DPoint *tl = new DPoint;
     DPoint *tr = new DPoint;
@@ -275,7 +275,8 @@ Drawable *Bracket::FindNearestObject( DPoint * target, double &dist )
     delete bl;
     delete br;
 
-    return this;
+    QSharedPointer<Drawable> td (this);
+    return td;
 }
 
 void Bracket::setPoints( DPoint * s, DPoint * e )

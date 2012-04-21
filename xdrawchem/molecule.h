@@ -30,27 +30,27 @@ public:
     int Type();  // return type of object
     bool Find( DPoint * );   // is this DPoint present in this Molecule?
     DPoint *FindNearestPoint( DPoint *, double & );
-    Drawable *FindNearestObject( DPoint *, double & );
+    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
     void addBond( DPoint *, DPoint *, int, int, QColor, bool hl = false );
-    void addBond( Bond * );
-    void addText( Text * );
+    void addBond( QSharedPointer<Bond> );
+    void addText( QSharedPointer<Text> );
     void addSymbol( QSharedPointer<Symbol> );
     void CopyTextToDPoint();
     void CalcOffsets();
     void addMolecule( Molecule * );
-    Bond *bondsFirst() { return bonds.first(); }
+    QSharedPointer<Bond> bondsFirst() { return bonds.first(); }
     //   Bond *bondsNext() { return bonds.next(); }
 
-    Text *labelsFirst()
+    QSharedPointer<Text> labelsFirst()
     {
         if ( !labels.isEmpty() )
             return labels.first();
         else
-            return 0;
+            return QSharedPointer<Text> ();
     }
 
     //   Text *labelsNext() { return labels.next(); }
-    bool Erase( Drawable * );
+    bool Erase(QSharedPointer<Drawable> );
     void EraseSelected();
     bool isWithinRect( QRect, bool );
     bool WithinBounds( DPoint * );
@@ -66,7 +66,7 @@ public:
     QRect BoundingBoxAll();
     QList<DPoint *> AllPoints();
     QList<QSharedPointer<Drawable> > AllObjects();
-    QList<Bond *> AllBonds();
+    QList<QSharedPointer<Bond> > AllBonds();
     QList<QSharedPointer<Molecule> > MakeSplit();
     int Members() { return bonds.count(); }
     QString ToXML( QString );
@@ -75,7 +75,7 @@ public:
     void FromXML( QString );
     void Changed();
     // defined in molecule_tools.cpp
-    Bond * FindBond( DPoint *, DPoint * );
+    QSharedPointer<Bond> FindBond( DPoint *, DPoint * );
     int OrderOfBond( DPoint *, DPoint * );
     void Reactivity( int );  // molecule_tools_2.cpp for now
     QList<DPoint *> BreakRingBonds( DPoint * );
@@ -84,9 +84,9 @@ public:
     double CalculateRingAttachAngle( DPoint * );
     void FindHybridization();
     void setGroupType( int );
-    Text *CalcMW( bool from_change = false );
-    Text *CalcEmpiricalFormula( bool from_mw = false );
-    Text *CalcElementalAnalysis( bool show_dialog = true );
+    QSharedPointer<Text> CalcMW( bool from_change = false );
+    QSharedPointer<Text> CalcEmpiricalFormula( bool from_mw = false );
+    QSharedPointer<Text> CalcElementalAnalysis( bool show_dialog = true );
     QStringList Calc13CNMR( bool show_dialog = true );
     void CalcIR();
     QString CalcName();  // actually returns canonical SMILES
@@ -122,7 +122,7 @@ public:
     int Retro();
     QString RetroTraverseBonds(DPoint *, DPoint *, Bond *, int);
     QString RetroAtomName(DPoint *);
-    QString RetroBondName(Bond *, bool runsssr = false);
+    QString RetroBondName(QSharedPointer<Bond>, bool runsssr = false);
     bool RetroMatch(QString, QString);
     bool RetroTreeMatch(QString, QString, QString, QString);
     // defined here:
@@ -134,7 +134,7 @@ public:
     int groupType() { return group_type; }
     void FormulaLabelDeleted() { qDebug() << "FLD" ; text_formula = 0; }
     void MWLabelDeleted() { text_mw = 0; }
-    double Angle(Bond *a1, Bond *b1)
+    double Angle(QSharedPointer<Bond> &a1, QSharedPointer<Bond> &b1)
     {
         // from Bond a1 to Bond b1
         // determine endpoints
@@ -179,18 +179,12 @@ private:
     Render2D *r;
     // ChemData
     ChemData *cd;
-    // current/temporary Bond
-    Bond *tmp_bond;
-    // current/temporary Text
-    Text *tmp_text;
-    // current/temporary Symbol
-    Symbol *tmp_sym;
     // current/temporary DPoint
     DPoint *tmp_pt;
     // list of elements which make up this molecule
-    QList<Bond *> bonds;
-    QList<Text *> labels;
-    QList<Symbol *> symbols;
+    QList<QSharedPointer<Bond> > bonds;
+    QList<QSharedPointer<Text> > labels;
+    QList<QSharedPointer<Symbol> > symbols;
     // Text objects which hold MW and formula
     Text *text_mw, *text_formula;
     // list of unique points used by Move(), Resize(), Rotate(), and

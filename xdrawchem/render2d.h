@@ -304,9 +304,7 @@ private:
     QPoint lasso1, lasso2;
     // QPopupMenu for right clicks
     QMenu *rtclickpopup;
-    Molecule *targetmol;
-    // current/temporary Molecule
-    Molecule *tmp_molecule;
+    QSharedPointer<Molecule> targetmol;
     // kludge for PNG/BMP generation
     bool font_size_kludge;
     // track last known pointer position

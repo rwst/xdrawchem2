@@ -25,7 +25,7 @@ public:
     void Edit();
     bool Find( DPoint * ); // does this GraphicObject contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
-    Drawable *FindNearestObject( DPoint *, double & );
+    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
     void setPoints( DPoint *, DPoint * );
     void setPointArray( QPolygon );
     bool isWithinRect( QRect, bool );

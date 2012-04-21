@@ -203,10 +203,11 @@ DPoint *Arrow::FindNearestPoint( DPoint */*target*/, double &dist )
     return 0;
 }
 
-Drawable *Arrow::FindNearestObject( DPoint * target, double &dist )
+QSharedPointer<Drawable> Arrow::FindNearestObject( DPoint * target, double &dist )
 {
     dist = DistanceToLine( start, end, target );
-    return this;
+    QSharedPointer<Drawable> td ((Drawable*)this);
+    return td;
 }
 
 void Arrow::setPoints( DPoint * s, DPoint * e )

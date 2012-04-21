@@ -34,7 +34,7 @@ void Molecule::MakeSSSR()
 
 int Molecule::OrderOfBond( DPoint * e1, DPoint * e2 )
 {
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( e1 ) == true ) {
             tmp_pt = tmp_bond->otherPoint( e1 );
             if ( tmp_pt == e2 )
@@ -45,9 +45,9 @@ int Molecule::OrderOfBond( DPoint * e1, DPoint * e2 )
     return 0;
 }
 
-Bond *Molecule::FindBond( DPoint * e1, DPoint * e2 )
+QSharedPointer<Bond> Molecule::FindBond( DPoint * e1, DPoint * e2 )
 {
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( e1 ) == true ) {
             tmp_pt = tmp_bond->otherPoint( e1 );
             if ( tmp_pt == e2 )
@@ -55,7 +55,8 @@ Bond *Molecule::FindBond( DPoint * e1, DPoint * e2 )
         }
     }
 
-    return 0;
+    QSharedPointer<Bond> empty;
+    return empty;
 }
 
 QString Molecule::CalcName()
@@ -99,7 +100,7 @@ QStringList Molecule::Calc13CNMR( bool show_dialog )
     // Scan for keto groups
     foreach ( tmp_pt, up ) {
         tmp_pt->ketos = 0;
-        foreach ( tmp_bond, bonds ) {
+        foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
             if ( tmp_bond->Find( tmp_pt ) == true ) {
                 tmp_pt2 = tmp_bond->otherPoint( tmp_pt );
                 if ( ( tmp_pt2->element == "O" ) && ( tmp_bond->Order() == 2 ) )
@@ -110,7 +111,7 @@ QStringList Molecule::Calc13CNMR( bool show_dialog )
     // Determine atoms surrounding each atom and build HOSE code list
     foreach ( tmp_pt, up ) {
         if ( tmp_pt->element == "C" ) { // only look at carbons
-            foreach ( tmp_bond, bonds ) {
+            foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
                 if ( tmp_bond->Find( tmp_pt ) == true ) {
                     tmp_str = "";
                     hs = 0;
@@ -313,7 +314,7 @@ void Molecule::CalcIR()
     GraphDialog *g = new GraphDialog( r, tr( "Predicted IR" ) );
 
     // iterate thru all Bonds in Molecule
-    foreach ( tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         // check for 'obvious' cases
         // rules for atoms and groups
         lorder = tmp_bond->Order();
@@ -480,7 +481,6 @@ double Molecule::CalcKOW()
     double ri = 0.0, qi = 0.0, dg = 0.0, fkow;
 
     DPoint *alt_pt1, *alt_pt2, *alt_pt3;
-    int testcount;
 
     foreach ( tmp_pt, up ) {
         if ( tmp_pt->hit )
