@@ -175,7 +175,7 @@ void ChemData::Tool( DPoint *target, int mode )
         break;
     case MODE_TOOL_REACTIVITY_RETRO:
         m->Reactivity( mode );
-        for ( QSharedPointer<Bond> tmp_bond = m->bondsFirst(); tmp_bond != 0; tmp_bond = m->bondsNext() ) {
+        foreach ( QSharedPointer<Bond> tmp_bond , m->bonds ) {
             if ( tmp_bond->getReactions().length() > 2 ) {
                 tmp_bond->SetColor( QColor( 124, 252, 0 ) );
             }

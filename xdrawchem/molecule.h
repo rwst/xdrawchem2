@@ -38,18 +38,7 @@ public:
     void CopyTextToDPoint();
     void CalcOffsets();
     void addMolecule( Molecule * );
-    QSharedPointer<Bond> bondsFirst() { return bonds.first(); }
-    //   Bond *bondsNext() { return bonds.next(); }
 
-    QSharedPointer<Text> labelsFirst()
-    {
-        if ( !labels.isEmpty() )
-            return labels.first();
-        else
-            return QSharedPointer<Text> ();
-    }
-
-    //   Text *labelsNext() { return labels.next(); }
     bool Erase(QSharedPointer<Drawable> );
     void EraseSelected();
     bool isWithinRect( QRect, bool );
@@ -173,6 +162,9 @@ public:
     // not appropriate but best way to handle ToolDialog requests.
     QList<Peak *> peaklist;
     Peak *tmp_peak;
+    QList<QSharedPointer<Bond> > bonds;
+    QList<QSharedPointer<Text> > labels;
+    QList<QSharedPointer<Symbol> > symbols;
 
 private:
     // Renderer
@@ -182,9 +174,6 @@ private:
     // current/temporary DPoint
     DPoint *tmp_pt;
     // list of elements which make up this molecule
-    QList<QSharedPointer<Bond> > bonds;
-    QList<QSharedPointer<Text> > labels;
-    QList<QSharedPointer<Symbol> > symbols;
     // Text objects which hold MW and formula
     Text *text_mw, *text_formula;
     // list of unique points used by Move(), Resize(), Rotate(), and

@@ -10,9 +10,6 @@
 
 #include "dpoint.h"
 
-class Bond;
-class Text;
-
 class Drawable : public QObject
 {
     Q_OBJECT
@@ -43,11 +40,6 @@ public:
     virtual QString ToCDXML(QString);
     virtual void FromXML(QString);
     virtual int Members();
-    // needed only to merge Molecules; see molecule.cpp, addMolecule()
-    virtual QSharedPointer<Bond> bondsFirst() { return QSharedPointer<Bond> (); }
-    virtual QSharedPointer<Bond> bondsNext() { return QSharedPointer<Bond> (); }
-    virtual QSharedPointer<Text> labelsFirst() { return QSharedPointer<Text> (); }
-    virtual QSharedPointer<Text> labelsNext() { return QSharedPointer<Text> (); }
     // stuff that all Drawables should know about
     static double getAngle(DPoint *, DPoint *);
     double DistanceToLine(DPoint *, DPoint *, DPoint *);

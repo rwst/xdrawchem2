@@ -686,10 +686,10 @@ void Molecule::addSymbol( QSharedPointer<Symbol> s )
 void Molecule::addMolecule( Molecule *m1 )
 {
     qDebug() << "Uh-oh!  Need to merge";
-    for ( QSharedPointer<Bond> tmp_bond = m1->bondsFirst(); tmp_bond != 0; tmp_bond = m1->bondsNext() ) {
+    foreach ( QSharedPointer<Bond> tmp_bond , m1->bonds ) {
         bonds.append( tmp_bond );
     }
-    for ( QSharedPointer<Text> tmp_text = m1->labelsFirst(); tmp_text != 0; tmp_text = m1->labelsNext() ) {
+    foreach ( QSharedPointer<Text> tmp_text , m1->labels ) {
         tmp_text->setMolecule( this );
         labels.append( tmp_text );
     }
