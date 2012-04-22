@@ -248,7 +248,7 @@ private:
     // highlighted point, if any
     DPoint *highlightpoint;
     // highlighted object, if any
-    Drawable *highlightobject;
+    QSharedPointer<Drawable> highlightobject;
     // current input/output/drawing mode
     int mode, prev_mode;
     // temporary Bezier curve
