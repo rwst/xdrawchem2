@@ -793,7 +793,7 @@ void Molecule::Reactivity( int react_type )
         qDebug() << "--- list ends ---";
         // we will also have to consider R group substitution here.
         // call Molecule::Retro() (in retro.cpp) to do matching
-        int nr = Retro();
+        (void)Retro();
     }
     if ( react_type == MODE_TOOL_CHARGES ) {
         // just look at atom types and assign AMBER-like partial charges
