@@ -15,13 +15,13 @@
 #include "cml.h"
 #include "xdc_event.h"
 #include "molinfodialog.h"
+#include "clipboard.h"
 
 #include "prefs.h"
 
 extern Preferences preferences;
 
 class Render2D;
-class Clipboard;
 
 class ChemData : public QObject
 {

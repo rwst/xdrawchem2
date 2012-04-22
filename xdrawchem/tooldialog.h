@@ -3,10 +3,12 @@
 
 #include <QString>
 #include <QList>
+#include <QDialog>
 
 #include <openbabel/mol.h>
-#include "molecule.h"
 #include "peak.h"
+
+class Molecule;
 
 class ToolDialog : public QDialog
 {

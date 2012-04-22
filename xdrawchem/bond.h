@@ -6,7 +6,6 @@
 #include <QRect>
 #include <QPoint>
 
-#include "render2d.h"
 #include "drawable.h"
 #include "dpoint.h"
 #include "moldata.h"
@@ -14,6 +13,8 @@
 #define BOND_LEFT 0
 #define BOND_RIGHT 1
 #define BOND_CENTER 2
+
+class Render2D;
 
 class Bond : public Drawable
 {

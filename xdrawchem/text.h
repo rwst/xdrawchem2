@@ -3,7 +3,6 @@
 #ifndef TEXT_H
 #define TEXT_H
 
-#include "render2d.h"
 #include "drawable.h"
 #include "dpoint.h"
 
@@ -12,6 +11,7 @@
 #define TEXT_CALIGN 2
 #define TEXT_RALIGN 3
 
+class Render2D;
 class Molecule;
 
 class Text : public Drawable
@@ -29,7 +29,7 @@ public:
     void setJustify( int a) { justify = a; }
     bool WithinBounds( DPoint * );
     bool isWithinRect( QRect, bool );
-    void InsertCharacter( QKeyEvent * );
+    void InsertCharacter( class QKeyEvent * );
     void InsertString( QString );
     void DeleteKeyPressed();
     QPoint GetTopLeftPoint();  // get real top left point, based on justify

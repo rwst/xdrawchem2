@@ -4,7 +4,6 @@
 #define MOLECULE_H
 
 #include "render2d.h"
-#include "chemdata.h"
 #include "drawable.h"
 #include "dpoint.h"
 #include "bond.h"
@@ -13,9 +12,12 @@
 #include "molecule_sssr.h"
 #include "tooldialog.h"
 #include "peak.h"
+#include "defs.h"
 
 #include <openbabel/mol.h>
 #include <openbabel/obconversion.h>
+
+class ChemData;
 
 class Molecule : public Drawable
 {
