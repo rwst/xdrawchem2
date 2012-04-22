@@ -9,6 +9,8 @@
 #include <QProcess>
 
 #include "drawable.h"
+#include "molecule.h"
+#include "text.h"
 #include "paintable.h"
 #include "dpoint.h"
 #include "prefs.h"
@@ -16,8 +18,6 @@
 #include "xdc_event.h"
 
 class ChemData;
-class Text;
-class Molecule;
 
 extern Preferences preferences;
 
@@ -278,8 +278,7 @@ private:
     QList<Paintable *> paintqueue;
     QPrinter *printer;
     QPainter *painter;
-    // Text object, temp string to use when creating/editing text
-    Text *localtext;
+    QSharedPointer<Text> localtext;
     QTextEdit *localtexteditor;
     QString localstring;
     bool text_exists;  // does this text object exist?
