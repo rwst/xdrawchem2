@@ -563,7 +563,6 @@ DPoint *Molecule::FindNearestPoint( DPoint * target, double &dist )
             } else {
                 already_found = true;
                 nearest->other = tmp_bond->otherPoint( nearest );
-                nearest->otherBond = tmp_bond.data();
             }
         }
     }

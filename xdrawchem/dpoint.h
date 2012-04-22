@@ -13,8 +13,6 @@
 #include <QTextDocument>
 #include <QDebug>
 
-class Bond;
-
 class DPoint
 {
 public:
@@ -38,7 +36,6 @@ public:
     bool hit;
     int substituents;  // how many bonds to this atom (sum of order)
     DPoint *other;  // other end of single bond.  See molecule.cpp
-    Bond *otherBond;  // single Bond containing this DPoint
     // for SDG and SSSR
     DPoint *source;
     int serial;
@@ -97,7 +94,6 @@ public:
         hit = op->hit;
         substituents = op->substituents;
         other = op->other;
-        otherBond = op->otherBond;
         serial = op->serial;
         bondorder.resize(6);
     }
