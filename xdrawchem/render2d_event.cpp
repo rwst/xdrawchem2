@@ -134,7 +134,7 @@ void Render2D::bondEdit()
     }
     highlightobject->Edit();
     highlightobject->Highlight( false );
-    highlightobject = 0;
+    highlightobject.clear();
     if ( mode == MODE_SELECT )
         setCursor( Qt::ArrowCursor );
     else
@@ -150,12 +150,13 @@ void Render2D::bondInfo()
     objinf = tr( "No information." );
 
     if ( highlightobject->metaObject() == &Bond::staticMetaObject ) {
+        Bond *b = (Bond*) highlightobject.data();
         objinf = "ID: ";
-        objinf.append( ( ( Bond * ) highlightobject )->CName() );
+        objinf.append( b->CName() );
         objinf.append( "\nReactions: " );
-        objinf.append( ( ( Bond * ) highlightobject )->getReactions() );
+        objinf.append( b->getReactions() );
         // make it easier to add to retro.txt
-        qDebug() << "ID:" << ( ( Bond * ) highlightobject )->CName();
+        qDebug() << "ID:" << b->CName();
     }
 
     QMessageBox::information( 0, tr( "Object information" ), objinf );
@@ -163,37 +164,37 @@ void Render2D::bondInfo()
 
 void Render2D::textShape()
 {
-    localtext = ( Text * ) highlightobject;
+    if (highlightobject->metaObject() != &Text::staticMetaObject)
+        return;
+    Text *ltext = (Text*) highlightobject.data();
     TextShapeDialog *tsd = new TextShapeDialog( this );
 
-    tsd->set_stype( localtext->getShape() );
-    tsd->setBorderCheck( localtext->getBorder() );
-    tsd->setFillCheck( localtext->getFill() );
-    tsd->setBorderColor( localtext->getBorderColor() );
-    tsd->setFillColor( localtext->getFillColor() );
-    tsd->setWidth( localtext->getShapeWidth() );
-    tsd->setHeight( localtext->getShapeHeight() );
+    tsd->set_stype( ltext->getShape() );
+    tsd->setBorderCheck( ltext->getBorder() );
+    tsd->setFillCheck( ltext->getFill() );
+    tsd->setBorderColor( ltext->getBorderColor() );
+    tsd->setFillColor( ltext->getFillColor() );
+    tsd->setWidth( ltext->getShapeWidth() );
+    tsd->setHeight( ltext->getShapeHeight() );
 
     if ( tsd->exec() ) {
         qDebug() << "textShape OK";
     }
 
-    localtext->setShape( tsd->get_stype() );
-    localtext->setBorder( tsd->getBorderCheck() );
-    localtext->setFill( tsd->getFillCheck() );
-    localtext->setBorderColor( tsd->getBorderColor() );
-    localtext->setFillColor( tsd->getFillColor() );
-    localtext->setShapeWidth( tsd->getWidth() );
-    localtext->setShapeHeight( tsd->getHeight() );
+    ltext->setShape( tsd->get_stype() );
+    ltext->setBorder( tsd->getBorderCheck() );
+    ltext->setFill( tsd->getFillCheck() );
+    ltext->setBorderColor( tsd->getBorderColor() );
+    ltext->setFillColor( tsd->getFillColor() );
+    ltext->setShapeWidth( tsd->getWidth() );
+    ltext->setShapeHeight( tsd->getHeight() );
 
     delete tsd;
-
-    localtext = 0;
 }
 
 void Render2D::bracketFill()
 {
-    Bracket *lbracket = ( Bracket * ) highlightobject;
+    Bracket *lbracket = ( Bracket * ) highlightobject.data();
     QColor b1color = lbracket->getFillColor();
 
     b1color = QColorDialog::getColor( b1color );
@@ -206,7 +207,7 @@ void Render2D::bracketFill()
 
 void Render2D::bracketFillOff()
 {
-    Bracket *lbracket = ( Bracket * ) highlightobject;
+    Bracket *lbracket = ( Bracket * ) highlightobject.data();
 
     lbracket->setFill( false );
 }
@@ -361,7 +362,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             } else {
                 if ( highlightpoint->other != 0 ) {
                     mode = MODE_DRAWLINE_DRAWING;
-                    savedBondOrder = highlightpoint->otherBond->Order();
+/*                    savedBondOrder = highlightpoint->otherBond->Order();
                     c->Erase( highlightpoint->otherBond );
                     if ( savedBondOrder == 2 )
                         c->Erase( highlightpoint->otherBond );
@@ -369,7 +370,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
                         c->Erase( highlightpoint->otherBond );
                     startpoint = highlightpoint->other;
                     endpoint = 0;
-                    highlightpoint = 0;
+                    highlightpoint = 0; */
                     prev_mode = MODE_SELECT;
                 } else {
                     mode = MODE_SELECT_MOVE_POINT;
