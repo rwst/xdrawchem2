@@ -41,7 +41,7 @@ Render2D::Render2D( QWidget * parent )
     moved = false;
 
     highlightpoint = 0;
-    localtext = 0;
+    localtext.clear();
     localtexteditor = 0;
 
     thick = 1;
@@ -399,7 +399,7 @@ void Render2D::setMode_Erase()
     mode = MODE_ERASE;
     startpoint = 0;
     endpoint = 0;
-    localtext = 0;
+    localtext.clear();
     setCursor( skullcursor );
     c->DeselectAll();
     emit SignalSetStatusBar( tr( "Erase mode: left click to erase object" ) );

@@ -408,7 +408,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
                 setCursor( Qt::IBeamCursor );
                 mode = MODE_TEXT;
                 text_exists = true;
-                localtext = ( Text * ) highlightobject;
+                localtext = highlightobject.objectCast<Text>();
                 emit textOn( localtext->getFont() );
 
                 update();
@@ -417,7 +417,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             qDebug() << "Will edit";
             highlightobject->Edit();
             highlightobject->Highlight( false );
-            highlightobject = 0;
+            highlightobject.clear();
             if ( mode == MODE_SELECT )
                 setCursor( Qt::ArrowCursor );
             else
@@ -562,7 +562,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
         if ( highlightobject == 0 )
             return;
         c->Erase( highlightobject );
-        highlightobject = 0;
+        highlightobject.clear();
         update();
     }
 }
@@ -693,9 +693,9 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
         // retro_bondname handled by Molecule containing this bond
         if ( highlightobject != 0 ) {
             qDebug() << "invoke";
-            qDebug() << c->insideMolecule( highlightobject->Start() )->RetroBondName( ( Bond * ) highlightobject, true );
+            //qDebug() << c->insideMolecule( highlightobject->Start() )->RetroBondName( (( Bond * ) highlightobject, true );
             highlightobject->Highlight( false );
-            highlightobject = 0;
+            highlightobject.clear();
             update();
             setMode_Select();
         }
@@ -1201,7 +1201,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
     }
 
     if ( mode == MODE_DRAWBRACKET )
-        highlightobject = 0;
+        highlightobject.clear();
 
     if ( ( mode == MODE_RING ) && mouse1down )
         return;
@@ -1220,13 +1220,10 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
     moved = true;
 
     DPoint tmp_pt( curqpt.x(), curqpt.y() );
-    Molecule *tmp_mol;
-
-    tmp_molecule = 0;
 
     // Tools
     if ( ( mode >= 600 ) && ( mode < 698 ) ) {
-        tmp_molecule = c->insideMolecule( &tmp_pt );
+        QSharedPointer<Molecule> tmp_molecule = c->insideMolecule( &tmp_pt );
         if ( tmp_molecule != 0 ) {
             QRect mr = tmp_molecule->BoundingBoxAll();
             mr.setLeft( mr.left() - 2 );
@@ -1242,11 +1239,10 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
 
     if ( mode == MODE_TOOL_CALCMW ) {
         // check if we're over a molecule
-        tmp_mol = c->insideMolecule( &tmp_pt );
+        QSharedPointer<Molecule> tmp_mol = c->insideMolecule( &tmp_pt );
         if ( tmp_mol != 0 ) {
-            Text *tmp_txt = tmp_mol->CalcMW();
+            QSharedPointer<Text> tmp_txt = tmp_mol->CalcMW();
             emit SignalSetStatusBar( tmp_txt->getText() + tr( ", click to paste into drawing" ) );
-            delete tmp_txt;
         } else {
             emit SignalSetStatusBar( tr( "Click on a molecule to calculate its molecular weight" ) );
         }
@@ -1255,11 +1251,10 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
 
     if ( mode == MODE_TOOL_CALCEF ) {
         // check if we're over a molecule
-        tmp_mol = c->insideMolecule( &tmp_pt ); // doesn't copy pointer
+        QSharedPointer<Molecule> tmp_mol = c->insideMolecule( &tmp_pt ); // doesn't copy pointer
         if ( tmp_mol != 0 ) {
-            Text *tmp_txt = tmp_mol->CalcEmpiricalFormula();
+            QSharedPointer<Text> tmp_txt = tmp_mol->CalcEmpiricalFormula();
             emit SignalSetStatusBar( tmp_txt->getText() + tr( ", click to paste into drawing" ) );
-            delete tmp_txt;
         } else {
             emit SignalSetStatusBar( tr( "Click on a molecule to calculate its empirical formula" ) );
         }
@@ -1322,7 +1317,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
     double ang, len;
     QString sang, slen;
     DPoint *prevhighlight = highlightpoint;
-    Drawable *prevhighlightobject = highlightobject;
+    QSharedPointer<Drawable> prevhighlightobject = highlightobject;
 
     // Create DPoint of current pointer position
     DPoint *e = new DPoint;
@@ -1335,7 +1330,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
     // Get DPoint of nearest point
     nearestPoint = c->FindNearestPoint( e, dist );
     // get Drawable of nearest object
-    Drawable *no = c->FindNearestObject( e, distobj );
+    QSharedPointer<Drawable> no = c->FindNearestObject( e, distobj );
 
     // no buttons down
     if ( ( mouse1down == false ) && ( mouse3down == false ) ) {
@@ -1355,7 +1350,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // unhighlight object if no object close
         if ( ( mode == MODE_ERASE ) && ( no == 0 || distobj >= 6.0 ) ) {
             // Clear highlighted object
-            highlightobject = 0;
+            highlightobject.clear();
             if ( prevhighlightobject != 0 )
                 prevhighlightobject->Highlight( false );
             if ( prevhighlightobject != highlightobject )
@@ -1378,7 +1373,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // unhighlight object if no object close
         if ( ( mode == MODE_TOOL_RETRO_BONDNAME ) && ( no == 0 || distobj >= 6.0 ) ) {
             // Clear highlighted object
-            highlightobject = 0;
+            highlightobject.clear();
             if ( prevhighlightobject != 0 )
                 prevhighlightobject->Highlight( false );
             if ( prevhighlightobject != highlightobject )
@@ -1411,7 +1406,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // unhighlight object if no object close
         if ( ( mode == MODE_SELECT ) && ( no == 0 || distobj >= 6.0 ) ) {
             // Clear highlighted object
-            highlightobject = 0;
+            highlightobject.clear();
             if ( prevhighlightobject != 0 )
                 prevhighlightobject->Highlight( false );
             if ( prevhighlightobject != highlightobject )
@@ -1421,7 +1416,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // unhighlight object if point close
         if ( ( mode == MODE_SELECT ) && ( dist < 8.0 ) ) {
             // Clear highlighted object
-            highlightobject = 0;
+            highlightobject.clear();
             if ( prevhighlightobject != 0 )
                 prevhighlightobject->Highlight( false );
             if ( prevhighlightobject != highlightobject )
@@ -1904,7 +1899,7 @@ void Render2D::paintEvent( QPaintEvent * )
 
     // draw box if over molecule in Tool modes
     if ( ( mode >= 600 ) && ( mode < 698 ) ) {
-      if (tmp_molecule != 0) {
+     /* if (tmp_molecule != 0)*/ {
 	qDebug() << "tool mode";
 	drawBox( ( selectionBox.topLeft() ), ( selectionBox.bottomRight() ), QColor( 0, 0, 255 ) );
       }

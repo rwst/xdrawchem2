@@ -106,12 +106,12 @@ void Render2D::DrawText_FinishText()
         localtexteditor->hide();
         localstring = "XDC_DELETE_ME";
     }
-    localtext = 0;
+    localtext.clear();
     highlightpoint = 0;
     if ( highlightobject != 0 ) {
         highlightobject->Highlight( false );
     }
-    highlightobject = 0;
+    highlightobject.clear();
     if ( doubleClickFlag ) {
         mode = prev_mode;
         doubleClickFlag = false;
@@ -176,7 +176,7 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
     qDebug() << "DrawText_mousePressEvent 3.2";
     if (highlightobject) {
       if (highlightobject->metaObject() == &Text::staticMetaObject) {
-	localtext = (Text *)highlightobject;
+          localtext = highlightobject.objectCast<Text>();
       } 
     } else {
       localtexteditor->setPlainText( "" );
@@ -196,7 +196,8 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
     } else {
         text_exists = false;
         localtexteditor->move( e1->pos() );
-        localtext = new Text( this );
+        QSharedPointer<Text> tt ( new Text( this ));
+        localtext = tt;
         localtext->setFont( currentFont );
         localtext->SetColor( currentColor );
         if ( highlightpoint ) {
@@ -241,7 +242,7 @@ void Render2D::DrawText_mouseMoveEvent( QMouseEvent * e1 )
 {
     //bool update;
     DPoint *prevhighlight = highlightpoint;
-    Drawable *prevhighlightobject = highlightobject;
+    QSharedPointer<Drawable> prevhighlightobject = highlightobject;
 
     // Create DPoint of current pointer position
     DPoint *e = new DPoint;
@@ -254,7 +255,7 @@ void Render2D::DrawText_mouseMoveEvent( QMouseEvent * e1 )
     // Get DPoint of nearest point
     np = c->FindNearestPoint( e, dist );
     // get Drawable of nearest object
-    Drawable *no = c->FindNearestObject( e, distobj );
+    QSharedPointer<Drawable> no = c->FindNearestObject( e, distobj );
 
     if ( localtext != 0 ) {     // handle moves when there is a current object
         if ( text_drag == true ) {
@@ -279,7 +280,7 @@ void Render2D::DrawText_mouseMoveEvent( QMouseEvent * e1 )
             return;
         } else {                // deselect and check for points
             // Clear highlighted object
-            highlightobject = 0;
+            highlightobject.clear();
             if ( prevhighlightobject != 0 )
                 prevhighlightobject->Highlight( false );
             if ( prevhighlightobject != highlightobject )
@@ -289,7 +290,7 @@ void Render2D::DrawText_mouseMoveEvent( QMouseEvent * e1 )
     // clear highlighted object (if any)
     if ( prevhighlightobject != 0 ) {
         prevhighlightobject->Highlight( false );
-        highlightobject = 0;
+        highlightobject.clear();
         update();
     }
     // check points

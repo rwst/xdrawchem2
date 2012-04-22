@@ -23,7 +23,7 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
     }
     //bool update;
     DPoint *prevhighlight = highlightpoint;
-    Drawable *prevhighlightobject = highlightobject;
+    QSharedPointer<Drawable> prevhighlightobject (highlightobject);
 
     // Create DPoint of current pointer position
     QPoint curqpt = zoomCorrectReverse( e1->pos() );
@@ -35,7 +35,7 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
     // Get DPoint of nearest point
     np = c->FindNearestPoint( &e, dist );
     // get Drawable of nearest object
-    Drawable *no = c->FindNearestObject( &e, distobj );
+    QSharedPointer<Drawable> no ( c->FindNearestObject( &e, distobj ));
 
     //qDebug() << "np = " << dist << " no = " << distobj;
     //if (np == 0) qDebug() << " (np = 0)";
@@ -114,7 +114,7 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
             // unhighlight object if no object close
             if ( distobj >= 6.0 ) {
                 // Clear highlighted object
-                highlightobject = 0;
+                highlightobject.clear();
                 if ( prevhighlightobject != 0 )
                     prevhighlightobject->Highlight( false );
                 if ( prevhighlightobject != highlightobject )
@@ -124,7 +124,7 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
             // unhighlight object if point close
             if ( dist < 8.0 ) {
                 // Clear highlighted object
-                highlightobject = 0;
+                highlightobject.clear();
                 if ( prevhighlightobject != 0 )
                     prevhighlightobject->Highlight( false );
                 if ( prevhighlightobject != highlightobject )
@@ -134,7 +134,7 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
         }
         if ( np == 0 ) {
             highlightpoint = 0;
-            highlightobject = 0;
+            highlightobject.clear();
             if ( prevhighlightobject != 0 ) {
                 prevhighlightobject->Highlight( false );
                 update();
@@ -154,7 +154,7 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
                 // Clear object, if any
                 if ( prevhighlightobject != 0 ) {
                     prevhighlightobject->Highlight( false );
-                    highlightobject = 0;
+                    highlightobject.clear();
                     update();
                 }
                 // Clear highlighted point
