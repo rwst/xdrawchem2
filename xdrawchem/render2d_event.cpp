@@ -388,10 +388,10 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     e->x = curqpt.x();
     e->y = curqpt.y();
     double distobj;
-    Drawable *no = c->FindNearestObject( e, distobj );
+    QSharedPointer<Drawable> no = c->FindNearestObject( e, distobj );
 
     if ( distobj > 5.0 )
-        no = 0;
+        no.clear();
     if ( no != 0 && no->metaObject() == &Bond::staticMetaObject ) {
         if ( ( mode == MODE_DRAWLINE )
              || ( mode == MODE_DRAWLINE_DASH )
