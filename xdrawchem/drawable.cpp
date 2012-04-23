@@ -304,13 +304,6 @@ DPoint *Drawable::FindNearestPoint( DPoint *, double &d )
     return 0;
 }
 
-QSharedPointer<Drawable> Drawable::FindNearestObject( DPoint *, double &d )
-{
-    d = 99999.0;
-    QSharedPointer<Drawable> td;
-    return td;
-}
-
 bool Drawable::Find( DPoint * )
 {
     return false;

@@ -19,7 +19,7 @@ public:
     virtual void Render();  // draw this object
     virtual void Edit();  // edit this object
     virtual DPoint *FindNearestPoint(DPoint *, double &);
-    virtual QSharedPointer<Drawable> FindNearestObject(DPoint *, double &);
+    virtual double distanceTo (DPoint *) = 0;
     virtual bool Find(DPoint *);
     virtual void addBond(DPoint *, DPoint *, int, int, QColor, bool hl = false);
     virtual void Highlight();

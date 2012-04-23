@@ -32,7 +32,7 @@ public:
 
     bool Find( DPoint * ); // does this Bond contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
-    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
+    double distanceTo ( DPoint * );
     void setPoints( DPoint *, DPoint * );
     bool Equals( QSharedPointer<Bond> );
     bool isWithinRect( QRect, bool );

@@ -229,10 +229,12 @@ QSharedPointer<Drawable> ChemData::FindNearestObject( DPoint * target, double &d
 
     QSharedPointer<Drawable> nearest;
     foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
-        QSharedPointer<Drawable> d1 = tmp_draw->FindNearestObject( target, d1dist );
+//        if (tmp_draw->metaObject() == &Arrow::staticMetaObject)
+
+        d1dist = tmp_draw.data()->distanceTo( target );
         if ( d1dist < mindist ) {
             mindist = d1dist;
-            nearest = d1;
+            nearest = tmp_draw;
         }
     }
     dist = mindist;

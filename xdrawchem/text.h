@@ -22,8 +22,8 @@ public:
     void Render();  // draw this object
     int Type();  // return type of object
     bool Find( DPoint * ); // does this Text contain this DPoint?
-    DPoint *FindNearestPoint( DPoint *, double & );
-    QSharedPointer<Drawable> FindNearestObject(DPoint *, double & );
+    double distanceTo ( DPoint *);
+    DPoint *FindNearestPoint( DPoint * target, double &dist );
     void setPoint( DPoint * );
     int Justify() { return justify; }
     void setJustify( int a) { justify = a; }

@@ -209,12 +209,9 @@ DPoint *GraphicObject::FindNearestPoint( DPoint * /*target*/, double &dist )
     return 0;
 }
 
-QSharedPointer<Drawable> GraphicObject::FindNearestObject( DPoint *target, double &dist )
+double GraphicObject::distanceTo ( DPoint * target )
 {
-    DPoint *tl = new DPoint;
-    DPoint *tr = new DPoint;
-    DPoint *bl = new DPoint;
-    DPoint *br = new DPoint;
+    DPoint tl, tr, bl, br;
     double tl_x, tl_y, br_x, br_y, swp, dist1, dist2;
 
     tl_x = start->x;
@@ -231,27 +228,20 @@ QSharedPointer<Drawable> GraphicObject::FindNearestObject( DPoint *target, doubl
         tl_y = br_y;
         br_y = swp;
     }
-    tl->x = tl_x;
-    tl->y = tl_y;
-    bl->x = tl_x;
-    bl->y = br_y;
-    tr->x = br_x;
-    tr->y = tl_y;
-    br->x = br_x;
-    br->y = br_y;
-    dist1 = DistanceToLine( tl, bl, target );
-    dist2 = DistanceToLine( tr, br, target );
+    tl.x = tl_x;
+    tl.y = tl_y;
+    bl.x = tl_x;
+    bl.y = br_y;
+    tr.x = br_x;
+    tr.y = tl_y;
+    br.x = br_x;
+    br.y = br_y;
+    dist1 = DistanceToLine( &tl, &bl, target );
+    dist2 = DistanceToLine( &tr, &br, target );
     if ( dist1 < dist2 )
-        dist = dist1;
+        return dist1;
     else
-        dist = dist2;
-    delete tl;
-    delete tr;
-    delete bl;
-    delete br;
-
-    QSharedPointer<Drawable> td(this);
-    return td;
+        return dist2;
 }
 
 void GraphicObject::setPoints( DPoint *s, DPoint *e )

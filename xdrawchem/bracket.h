@@ -20,7 +20,7 @@ public:
     void Edit();
     bool Find( DPoint * ); // does this Bracket contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
-    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
+    double distanceTo ( DPoint *);
     void setPoints( DPoint *, DPoint * );
     bool isWithinRect( QRect, bool );
     QRect BoundingBox();

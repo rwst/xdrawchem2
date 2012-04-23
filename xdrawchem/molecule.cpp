@@ -574,37 +574,30 @@ DPoint *Molecule::FindNearestPoint( DPoint * target, double &dist )
     return nearest;
 }
 
-QSharedPointer<Drawable> Molecule::FindNearestObject( DPoint * target, double &dist )
+double Molecule::distanceTo ( DPoint * target )
 {
     double mindist = 999999.0, d1dist = 999999.0;
 
     // if on Text label, highlight it...
     foreach ( QSharedPointer<Text> tmp_text, labels ) {
         if ( tmp_text->WithinBounds( target ) ) {
-            QSharedPointer<Drawable> nearest = tmp_text.objectCast<Drawable>();
-            dist = 0.01;
-            return nearest;
+            return 0.01;
         }
     }
     // if on Symbol, highlight it...
     foreach ( QSharedPointer<Symbol> tmp_sym, symbols ) {
         if ( tmp_sym->WithinBounds( target ) ) {
-            QSharedPointer<Drawable> nearest = tmp_sym.objectCast<Drawable>();
-            dist = 0.01;
-            return nearest;
+            return 0.01;
         }
     }
 
     QSharedPointer<Drawable> nearest;
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-        QSharedPointer<Drawable> d1 = tmp_bond->FindNearestObject( target, d1dist );
-        if ( d1dist < mindist ) {
+        d1dist = tmp_bond->distanceTo( target );
+        if ( d1dist < mindist )
             mindist = d1dist;
-            nearest = d1;
-        }
     }
-    dist = mindist;
-    return nearest;
+    return mindist;
 }
 
 void Molecule::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, bool hl )

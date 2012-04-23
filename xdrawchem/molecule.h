@@ -32,7 +32,7 @@ public:
     int Type();  // return type of object
     bool Find( DPoint * );   // is this DPoint present in this Molecule?
     DPoint *FindNearestPoint( DPoint *, double & );
-    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
+    double distanceTo( DPoint * );
     void addBond( DPoint *, DPoint *, int, int, QColor, bool hl = false );
     void addBond( QSharedPointer<Bond> );
     void addText( QSharedPointer<Text> );

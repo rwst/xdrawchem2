@@ -20,7 +20,7 @@ public:
     void Edit();  // edit this object
     bool Find( DPoint * ); // does this Arrow contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
-    QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
+    double distanceTo (DPoint*);
     void setPoints( DPoint *, DPoint * );
     QRect BoundingBox();
     bool isWithinRect( QRect, bool );

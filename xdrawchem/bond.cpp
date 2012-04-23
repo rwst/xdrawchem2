@@ -300,11 +300,9 @@ DPoint *Bond::FindNearestPoint( DPoint * target, double &dist )
     }
 }
 
-QSharedPointer<Drawable> Bond::FindNearestObject( DPoint * target, double &dist )
+double Bond::distanceTo ( DPoint * target )
 {
-    dist = DistanceToLine( start, end, target );
-    QSharedPointer<Drawable> td (this);
-    return td;
+    return DistanceToLine( start, end, target );
 }
 
 void Bond::setPoints( DPoint * s, DPoint * e )
