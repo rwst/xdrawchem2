@@ -37,7 +37,7 @@ public:
     ~CustomRingWidget();
 
     QString getTitle() { return title->text(); }
-    void setMolecule(Molecule* m);
+    void setMolecule(QSharedPointer<Molecule> m);
 
 
 public slots:
@@ -66,7 +66,7 @@ public:
     CustomRingDialog( QWidget *parent=0 );
     ~CustomRingDialog();
 
-    void setMolecule( Molecule *m ) { m_widget->setMolecule(m); }
+    void setMolecule( QSharedPointer<Molecule> m ) { m_widget->setMolecule(m); }
 
 public slots:
     void slotOk();

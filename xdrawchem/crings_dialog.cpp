@@ -85,20 +85,18 @@ void CustomRingWidget::slotTitle( QString & string )
     pixmap.save( string, "PNG" );
 }
 
-void CustomRingWidget::setMolecule( Molecule *m )
+void CustomRingWidget::setMolecule( QSharedPointer<Molecule> m )
 {
     data->addMolecule( m );
-    Render2D *real_render = m->getRender2D();
 
     //QPixmap pixmap=real_render->MakePixmap();
 
-    QPixmap mol = real_render->MakeFullPixmap();
-    QRect rr1 = m->BoundingBoxAll();
+    /*QRect rr1 = m->BoundingBoxAll();
 
     rr1.setLeft( rr1.left() - 4 );
     rr1.setTop( rr1.top() - 4 );
     rr1.setBottom( rr1.bottom() + 4 );
-    rr1.setRight( rr1.right() + 4 );
+    rr1.setRight( rr1.right() + 4 );*/
 //    QPixmap mol1( rr1.size() );
 
 //    bitBlt( &mol1, QPoint( 0, 0 ), &mol, rr1 );
@@ -110,20 +108,20 @@ void CustomRingWidget::setMolecule( Molecule *m )
     //m->SelectAll();
     //QRect rect=m->BoundingBox();
 
-    QPainter painter( widget );
 
     //painter.drawPixmap(QPoint(0,0),pixmap,QRect(0,0,rect.width(),rect.height()));
     //cerr << rect.x() << " " << rect.y() << " " << rect.width() << " " ;
     //bitBlt(widget,QPoint(0,0),&pixmap,rect);
-    painter.drawPixmap( QPoint( 0, 0 ), mol, rr1 );
+    //painter.drawPixmap( QPoint( 0, 0 ), mol, rr1 );
     widget->show();
 }
 
 void CustomRingWidget::paintEvent( QPaintEvent * pe )
 {
     QPainter p( widget );
-
-    p.drawPixmap( QPoint( 0, 0 ), pixmap );
+//    painter = &p;
+    data->drawAll();
+//    painter = 0;
 }
 
 CustomRingDialog::CustomRingDialog( QWidget * parent )
