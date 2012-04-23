@@ -151,6 +151,7 @@ bool ChemData::Paste()
         }
         else {
             qDebug() << "Unhandled case in ChemData::Paste()!";
+            qDebug() << td1->metaObject()->className();
             exit(1);
         }
     }
