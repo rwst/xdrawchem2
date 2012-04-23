@@ -22,17 +22,15 @@ void Tool_2D3D::process()
 {
     new3dmol = new Molecule( 0 );
     // deep copy into new3dmol
-    QList < Drawable * >objs = this_mol->AllObjects();
+    QList <QSharedPointer<Drawable> >objs = this_mol->AllObjects();
 
     QList < DPoint * >oldPoints;
     QList < DPoint * >newPoints;
     DPoint *n, *tmp_pt;
-    Bond *b;
-    Drawable *tmp_draw;
 
     // need to deep copy stuff coming off the Clipboard
     // first, find all unique DPoint's
-    foreach ( tmp_draw, objs ) {
+    foreach ( QSharedPointer<Drawable> tmp_draw, objs ) {
         if ( oldPoints.contains( tmp_draw->Start() ) == 0 )
             oldPoints.append( tmp_draw->Start() );
         if ( tmp_draw->End() != 0 ) {
@@ -50,11 +48,9 @@ void Tool_2D3D::process()
     }
     // now add all TYPE_BOND objects back to current
     // no need to copy TEXT or SYMBOL
-    Drawable *td1;
-
-    foreach ( td1, objs ) {
+    foreach ( QSharedPointer<Drawable> td1, objs ) {
         if ( td1->metaObject() == &Bond::staticMetaObject ) {
-            b = ( Bond * ) td1;
+            Bond *b = (Bond*)td1.data();
             new3dmol->addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), b->Thick(), b->Order(), td1->GetColor(), true );
         }
     }

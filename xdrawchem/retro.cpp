@@ -50,7 +50,7 @@ int Molecule::Retro()
 
     QTextStream tin( &fin );
     QString line, thisbond, norbond, pat, rxn;
-    int i1, i2;
+    int i1;
 
     do {
         line = tin.readLine();
@@ -122,7 +122,7 @@ QString Molecule::RetroAtomName( DPoint * latom )
     return rval;
 }
 
-QString Molecule::RetroBondName(QSharedPointer<Bond> lbond, bool runsssr )
+QString Molecule::RetroBondName(QSharedPointer<Bond> local_tmp_bond, bool runsssr )
 {
     // hopefully only need to do this once per retro/reactivity operation!
     if ( runsssr )
@@ -141,8 +141,7 @@ QString Molecule::RetroBondName(QSharedPointer<Bond> lbond, bool runsssr )
     // within each level.
 
     QStringList innerstrlist1, innerstrlist2, innerstrlist3;
-    Bond *local_tmp_bond, *inner_tmp_bond;
-    DPoint *outer1, *outer2, *inner1, *inner2, *inner3;
+    DPoint *outer1, *outer2, *inner1;
     QString canonicalBond, leveltmpstr, outer1el, outer2el;
 
     canonicalBond == QString();
@@ -151,7 +150,6 @@ QString Molecule::RetroBondName(QSharedPointer<Bond> lbond, bool runsssr )
     // making canonical SMILES-type names into a separate function to
     // facilitate making the database
 
-    local_tmp_bond = lbond;
     outer1 = local_tmp_bond->Start();
     outer2 = local_tmp_bond->End();
     if ( QString::compare( outer1->element, outer2->element ) > 0 ) {
@@ -207,13 +205,12 @@ QString Molecule::RetroBondName(QSharedPointer<Bond> lbond, bool runsssr )
     return canonicalBond;
 }
 
-QString Molecule::RetroTraverseBonds( DPoint * parentNode, DPoint * thisNode, Bond * this_bond, int tlevel )
+QString Molecule::RetroTraverseBonds( DPoint * parentNode, DPoint * thisNode, QSharedPointer<Bond> this_bond, int tlevel )
 {
 /*  QListIterator<Bond *> innerIter1(bonds), innerIter2(bonds), innerIter(bonds),
     outerIter(bonds);*/
     QStringList innerstrlist1, innerstrlist2, innerstrlist3;
-    Bond *local_tmp_bond, *inner_tmp_bond;
-    DPoint *outer1, *outer2, *inner1, *inner2, *inner3;
+    DPoint *outer1, *inner1;
     QString canonicalBond, leveltmpstr, leftMarker, rightMarker, thislevelstr, outer1el, outer2el;
 
     if ( tlevel == 3 ) {
@@ -298,7 +295,7 @@ QString Molecule::RetroTraverseBonds( DPoint * parentNode, DPoint * thisNode, Bo
 ///TODO: check, is this right?
 /*  while ( (inner_tmp_bond = innerIter.current()) != 0 ) {
     ++innerIter;*/
-    foreach ( inner_tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> inner_tmp_bond, bonds ) {
         if ( inner_tmp_bond->Find( outer1 ) == true ) {
             inner1 = inner_tmp_bond->otherPoint( outer1 );
             if ( inner1 != parentNode ) {

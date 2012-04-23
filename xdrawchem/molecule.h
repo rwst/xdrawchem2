@@ -3,12 +3,10 @@
 #ifndef MOLECULE_H
 #define MOLECULE_H
 
-#include "render2d.h"
 #include "drawable.h"
 #include "dpoint.h"
 #include "bond.h"
 #include "text.h"
-#include "symbol.h"
 #include "molecule_sssr.h"
 #include "tooldialog.h"
 #include "peak.h"
@@ -16,8 +14,10 @@
 
 #include <openbabel/mol.h>
 #include <openbabel/obconversion.h>
+#include "symbol.h"
 
 class ChemData;
+class Render2D;
 
 class Molecule : public Drawable
 {
@@ -111,7 +111,7 @@ public:
     // defined in retro.cpp
     QString BuildReactionList(QString);
     int Retro();
-    QString RetroTraverseBonds(DPoint *, DPoint *, Bond *, int);
+    QString RetroTraverseBonds(DPoint *, DPoint *, QSharedPointer<Bond> , int);
     QString RetroAtomName(DPoint *);
     QString RetroBondName(QSharedPointer<Bond>, bool runsssr = false);
     bool RetroMatch(QString, QString);

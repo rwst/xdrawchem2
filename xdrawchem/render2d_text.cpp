@@ -362,7 +362,7 @@ void Render2D::keyPressEvent( QKeyEvent * k )
                     delete localtexteditor;
 
                     localtexteditor = 0;
-                    Bracket *this_bracket = ( Bracket * ) highlightobject;
+                    Bracket *this_bracket = ( Bracket * ) highlightobject.data();
                     bool ok = false;
                     QString btext = QInputDialog::getText( this, tr( "Enter subscript" ),
                                                            tr( "Please type or edit the subscript for this bracket:" ),
@@ -384,8 +384,8 @@ void Render2D::keyPressEvent( QKeyEvent * k )
                 }
 
                 text_exists = true;
-                localtext = ( Text * ) highlightobject;
-                Q_CHECK_PTR( localtext );
+                if ( highlightobject->metaObject() == &Text::staticMetaObject )
+                    localtext = highlightobject.objectCast<Text>();
             }
             localtexteditor->setPlainText( tmpstr );
             if ( localtext != 0 ) {
@@ -402,7 +402,8 @@ void Render2D::keyPressEvent( QKeyEvent * k )
             } else {
                 text_exists = false;
                 localtexteditor->move( highlightpoint->toQPoint() );
-                localtext = new Text( this );
+                QSharedPointer<Text> tt (new Text(this));
+                localtext = tt;
                 localtext->setFont( currentFont );
                 localtext->SetColor( currentColor );
                 if ( highlightpoint ) {

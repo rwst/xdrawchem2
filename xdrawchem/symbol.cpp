@@ -518,7 +518,7 @@ QSharedPointer<Drawable> Symbol::FindNearestObject( DPoint * target, double &dis
         dist = 0.01;
     else
         dist = 99999.0;
-    return this;
+    return QSharedPointer<Drawable> ((Drawable*)this);
 }
 
 bool Symbol::WithinBounds( DPoint * target )

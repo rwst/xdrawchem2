@@ -745,7 +745,7 @@ QSharedPointer<Drawable> Text::FindNearestObject( DPoint * target, double &dist 
         dist = 0.01;
     else
         dist = 99999.0;
-    return this;
+    return QSharedPointer<Drawable> ((Drawable*)this);
 }
 
 void Text::setPoint( DPoint * s )
