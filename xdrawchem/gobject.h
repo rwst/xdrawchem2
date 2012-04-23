@@ -3,13 +3,14 @@
 #ifndef GOBJECT_H
 #define GOBJECT_H
 
-#include "render2d.h"
+#include <QPolygon>
+#include <QRect>
+#include <QString>
+
 #include "drawable.h"
 #include "dpoint.h"
 
-class QRect;
-class QString;
-class QPolygon;
+class Render2D;
 
 #define TYPE_BEZIER 1
 #define TYPE_GRAPHIC_LINE 2

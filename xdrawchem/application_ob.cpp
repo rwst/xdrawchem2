@@ -11,8 +11,8 @@
 #include "molecule.h"
 #include "dpoint.h"
 #include "bond.h"
-
 #include "ioiface.h"
+#include "render2d.h"
 
 using namespace OpenBabel;
 

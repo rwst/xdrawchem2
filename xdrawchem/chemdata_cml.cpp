@@ -1,6 +1,6 @@
 #include <QDateTime>
-#include <QXmlInputSource>
-#include <QXmlSimpleReader>
+//#include <QXmlInputSource>
+//#include <QXmlSimpleReader>
 
 #include "defs.h"
 #include "chemdata.h"

@@ -1,4 +1,4 @@
-#include <QHttp>
+#include <QtNetwork/QHttp>
 #include <QProgressDialog>
 #include <QBuffer>
 #include <QUrl>

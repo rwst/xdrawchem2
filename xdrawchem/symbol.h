@@ -3,9 +3,12 @@
 #ifndef SYMBOL_H
 #define SYMBOL_H
 
-#include "render2d.h"
+#include <QPixmap>
+
 #include "drawable.h"
 #include "dpoint.h"
+
+class Render2D;
 
 class Symbol : public Drawable
 {

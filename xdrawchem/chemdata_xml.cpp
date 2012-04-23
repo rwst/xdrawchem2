@@ -5,6 +5,7 @@
 #include "dpoint.h"
 #include "text.h"
 #include "defs.h"
+#include "render2d.h"
 
 bool ChemData::load_xml( QString fn )
 {

@@ -5,7 +5,7 @@
 
 #include <iostream>
 #include <QtGui>
-#include <QtNetwork>
+#include <QtNetwork/QHttp>
 
 using std::cout;
 using std::endl;

@@ -16,7 +16,7 @@
 #include <q3ptrlist.h>
 */
 
-#include <QXmlDefaultHandler>
+#include <QtXml/QXmlDefaultHandler>
 
 #include "drawable.h"
 #include "dpoint.h"
