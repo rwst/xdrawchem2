@@ -51,10 +51,9 @@ QSharedPointer<Molecule> ChemData::firstMolecule()
     return d.objectCast<Molecule>();
 }
 
-void ChemData::addMolecule( Molecule * m1 )
+void ChemData::addMolecule( QSharedPointer<Molecule> m1 )
 {
-    QSharedPointer<Drawable> p(m1);
-    drawlist.append( p );
+    drawlist.append( m1 );
 }
 
 void ChemData::addArrow( DPoint * s, DPoint * e, QColor c, int t, int p2, bool hl )

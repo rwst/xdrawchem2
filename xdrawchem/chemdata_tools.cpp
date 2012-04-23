@@ -73,7 +73,7 @@ public:
 void ChemData::Tool( DPoint *target, int mode )
 {
     qDebug() << "ChemData::Tool: " << mode;
-    Molecule *m = 0;
+    QSharedPointer<Molecule> m;
     NetAccess *na = new NetAccess();
     CustomRingDialog cr1;
     ToolDialog tool1;
@@ -86,15 +86,16 @@ void ChemData::Tool( DPoint *target, int mode )
 
     foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            m = (( Molecule * ) tmp_draw.data());
+            m = tmp_draw.objectCast<Molecule>();
             if ( m->BoundingBoxAll().contains( target->toQPoint(), false ) )
                 break;
             else
-                m = 0;
+                m.clear();
         }
     }
     if ( m == 0 )
         return;
+
     double kow = 0.0;
 
     switch ( mode ) {
@@ -148,19 +149,19 @@ void ChemData::Tool( DPoint *target, int mode )
     }
     case MODE_TOOL_13CNMR:
         tool13cnmr = new Tool_13CNMR_Dialog;
-        tool13cnmr->setMolecule( m );
+        tool13cnmr->setMolecule( m.data() );
         tool13cnmr->show();
         //m->Calc13CNMR();
         break;
     case MODE_TOOL_1HNMR:
         tool1hnmr = new Tool_1HNMR_Dialog;
-        tool1hnmr->setMolecule( m );
+        tool1hnmr->setMolecule( m.data() );
         tool1hnmr->show();
         //m->Calc1HNMR();
         break;
     case MODE_TOOL_IR:
         toolir = new Tool_IR_Dialog;
-        toolir->setMolecule( m );
+        toolir->setMolecule( m.data() );
         toolir->show();
         //m->CalcIR();
         break;
@@ -168,7 +169,7 @@ void ChemData::Tool( DPoint *target, int mode )
         m->CalcpKa();
         break;
     case MODE_TOOL_RETRO:
-        Retro( m );
+        m->Retro();
         break;
     case MODE_TOOL_REACTIVITY_FORWARD:
         m->Reactivity( mode );
@@ -230,7 +231,7 @@ void ChemData::Tool( DPoint *target, int mode )
         m->setGroupType( GROUP_NONE );
         break;
     case MODE_TOOL_TEST:
-        tool1.setMolecule( m );
+        tool1.setMolecule( m.data() );
         tool1.exec();
         break;
     }

@@ -36,7 +36,7 @@ public:
     ChemData( QObject *parent = 0 );
     void drawAll();
     QSharedPointer<Molecule> firstMolecule();
-    void addMolecule( Molecule * );
+    void addMolecule(QSharedPointer<Molecule> );
     void addBond( DPoint *, DPoint *, int, int, QColor, bool hl = false );
     void addArrow( DPoint *, DPoint *, QColor, int, int, bool hl = false );
     void addCurveArrow( DPoint *, DPoint *, QColor, QString, bool hl = false );
