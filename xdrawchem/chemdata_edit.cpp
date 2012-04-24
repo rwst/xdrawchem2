@@ -83,6 +83,22 @@ bool ChemData::Paste()
 {
     DeselectAll();
 
+    foreach ( QSharedPointer<Drawable> td, clip->objects ) {
+        if (td->metaObject() == &Molecule::staticMetaObject) {
+            QSharedPointer<Molecule> m (new Molecule ((Molecule*)td.data()));
+            addMolecule(m);
+        }
+        else
+            {
+            qDebug() << "Unhandled clip->object in ChemData::Paste()";
+            qDebug() << td->metaObject()->className();
+            exit(EXIT_FAILURE);
+        }
+    }
+    return true;
+}
+
+/*
     QList < DPoint * >oldPoints;
     QList < DPoint * >newPoints;
 
@@ -133,19 +149,6 @@ bool ChemData::Paste()
             t->SetColor( ot->GetColor() );
             t->setFont( ot->getFont() );
             t->setJustify( ot->Justify() );
-            /* need to attach correct point if part of molecule
-               if (t->Justify() == JUSTIFY_CENTER) {
-               DPoint *tp1 = 0;
-               for (tmp_pt = newPoints.first(); tmp_pt != 0;
-               tmp_pt = newPoints.next()) {
-               if (tmp_pt->serial == t->Start()->serial)
-               tp1 = tmp_pt;
-               }
-               if (tp1 != 0) {
-               t->setPoint(tp1);
-               }
-               }
-             */
             t->Highlight( true );
             addText( t );
         }
@@ -155,8 +158,7 @@ bool ChemData::Paste()
             exit(1);
         }
     }
-    return true;
-}
+    */
 
 void ChemData::StartUndo( int /*fn*/, DPoint * /*s1*/ )
 {
