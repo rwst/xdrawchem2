@@ -1082,7 +1082,6 @@ void Text::MoveCursor( DPoint * target )
     selectMax = -1;
     double mindist = 99999.0, ldist;
     int newcur = -1;
-    DPoint *e = new DPoint;
 
     qDebug() << "Move";
     if ( WithinBounds( target ) == false )
@@ -1091,9 +1090,8 @@ void Text::MoveCursor( DPoint * target )
     int lx = t.x(), ly = t.y() + ( r->GetTextFullHeight( font ) / 2 );
 
     for ( int i = 0; i < start->element.length(); i++ ) {
-        e->x = lx;
-        e->y = ly;
-        ldist = e->distanceTo( target );
+        DPoint e(lx,ly);
+        ldist = e.distanceTo( target );
         if ( ldist < mindist ) {
             mindist = ldist;
             newcur = i;
@@ -1106,7 +1104,6 @@ void Text::MoveCursor( DPoint * target )
         }
     }
     cursor = newcur;
-    delete e;
 }
 
 // Select text between endpoints e1 and e2
@@ -1122,15 +1119,13 @@ void Text::Select( DPoint * e1, DPoint * e2 )
     int cr1 = 0, cr2 = 0;
     QPoint t;
     int i, lx, ly;
-    DPoint *e = new DPoint;
 
     t = GetTopLeftPoint();
     lx = t.x();
     ly = t.y() + ( r->GetTextFullHeight( font ) / 2 );
     for ( i = 0; i < start->element.length(); i++ ) {
-        e->x = lx;
-        e->y = ly;
-        ldist = e->distanceTo( e1 );
+        DPoint e(lx,ly);
+        ldist = e.distanceTo( e1 );
         if ( ldist < mindist ) {
             mindist = ldist;
             newcur = i;
@@ -1149,9 +1144,8 @@ void Text::Select( DPoint * e1, DPoint * e2 )
     lx = t.x();
     ly = t.y() + ( r->GetTextFullHeight( font ) / 2 );
     for ( i = 0; i < start->element.length(); i++ ) {
-        e->x = lx;
-        e->y = ly;
-        ldist = e->distanceTo( e2 );
+        DPoint e(lx,ly);
+        ldist = e.distanceTo( e2 );
         if ( ldist < mindist ) {
             mindist = ldist;
             newcur = i;
@@ -1172,7 +1166,6 @@ void Text::Select( DPoint * e1, DPoint * e2 )
         selectMax = swp - 1;
     }
     qDebug() << selectMin << " " << selectMax;
-    delete e;
 }
 
 QPoint Text::GetTopLeftPoint()
