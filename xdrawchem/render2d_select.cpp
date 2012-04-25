@@ -202,11 +202,8 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
     }
 
     if ( ( mode == MODE_SELECT_ROTATE_MULTIPLE ) && ( mouse1down ) ) {
-        //DPoint dp1( rotateOrigin );
-        DPoint *dp1 = new DPoint;
+        DPoint dp1( rotateOrigin );
 
-        dp1->x = rotateOrigin.x();
-        dp1->y = rotateOrigin.y();
         double da = getAngle( rotateOrigin, e1->pos() );
         double db = prevangle - da;
 
@@ -217,10 +214,9 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
         db = db * M_PI / 180.0;
         //qDebug() << db ;
         prevangle = da;
-        c->Rotate( dp1, db );
+        c->Rotate( &dp1, db );
         selectionBox = c->selectionBox();
         update();
-        delete dp1;
     }
 
     if ( ( mode == MODE_SELECT_MOVE_MULTIPLE ) && ( mouse1down ) ) {
