@@ -25,6 +25,7 @@ Q_OBJECT
 
 public:
     Molecule( Render2D *, QObject *parent = 0 );
+    Molecule (Molecule*);
     ~Molecule();
     Render2D *getRender2D() { return r; }
     void SetChemdata( ChemData *cd1 ) { cd = cd1; }

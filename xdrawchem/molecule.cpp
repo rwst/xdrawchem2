@@ -23,6 +23,18 @@ Molecule::Molecule( Render2D * r1, QObject * parent )
     //symbols.setAutoDelete(true);
 }
 
+Molecule::Molecule (Molecule* m)
+{
+    r = m->r;
+    cd = m->cd;
+
+    peaklist = m->peaklist;
+    bonds = m->bonds;
+    labels = m->labels;
+    symbols = m->symbols;
+}
+
+
 // implement more cleanup here
 Molecule::~Molecule()
 {
