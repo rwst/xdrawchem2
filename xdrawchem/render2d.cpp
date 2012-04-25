@@ -691,10 +691,9 @@ void Render2D::Rotate90()
     c->StartUndo( 0, 0 );
     rotateOrigin.setX( ( selectionBox.right() + selectionBox.left() - 2 ) / 2 );
     rotateOrigin.setY( ( selectionBox.bottom() + selectionBox.top() ) / 2 );
-    DPoint *dp1 = new DPoint( rotateOrigin );
 
-    c->Rotate( dp1, -0.5 * M_PI );
-    delete dp1;
+    DPoint dp1 ( rotateOrigin );
+    c->Rotate( &dp1, -0.5 * M_PI );
 
     selectionBox = c->selectionBox();
     update();
