@@ -45,7 +45,8 @@ void ChemData::Copy()
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             // Copy to clipboard if selected
             // if ( tmp_draw->Highlighted() == true )
-                clip->objects.append( tmp_draw );
+            QSharedPointer<Molecule> d (new Molecule ((Molecule*)tmp_draw.data()));
+            clip->objects.append( d );
         } else {
             qDebug() << "Object other than Molecule in ChemData::Copy()!";
             exit(1);
