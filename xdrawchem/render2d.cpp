@@ -704,10 +704,9 @@ void Render2D::Rotate180()
     c->StartUndo( 0, 0 );
     rotateOrigin.setX( ( selectionBox.right() + selectionBox.left() - 2 ) / 2 );
     rotateOrigin.setY( ( selectionBox.bottom() + selectionBox.top() ) / 2 );
-    DPoint *dp1 = new DPoint( rotateOrigin );
 
-    c->Rotate( dp1, M_PI );
-    delete dp1;
+    DPoint dp1 ( rotateOrigin );
+    c->Rotate( &dp1, M_PI );
 
     selectionBox = c->selectionBox();
     update();
@@ -718,10 +717,9 @@ void Render2D::Rotate270()
     c->StartUndo( 0, 0 );
     rotateOrigin.setX( ( selectionBox.right() + selectionBox.left() - 2 ) / 2 );
     rotateOrigin.setY( ( selectionBox.bottom() + selectionBox.top() ) / 2 );
-    DPoint *dp1 = new DPoint( rotateOrigin );
 
-    c->Rotate( dp1, 0.5 * M_PI );
-    delete dp1;
+    DPoint dp1 ( rotateOrigin );
+    c->Rotate( &dp1, 0.5 * M_PI );
 
     selectionBox = c->selectionBox();
     update();
@@ -732,10 +730,9 @@ void Render2D::Flip( int d )
     c->StartUndo( 0, 0 );
     rotateOrigin.setX( ( selectionBox.right() + selectionBox.left() - 2 ) / 2 );
     rotateOrigin.setY( ( selectionBox.bottom() + selectionBox.top() ) / 2 );
-    DPoint *dp1 = new DPoint( rotateOrigin );
 
-    c->Flip( dp1, d );
-    delete dp1;
+    DPoint dp1 ( rotateOrigin );
+    c->Flip( &dp1, d );
 
     selectionBox = c->selectionBox();
     update();
