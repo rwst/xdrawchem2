@@ -39,7 +39,7 @@ void ToolDialog::setMolecule( Molecule * m1 )
 
 void ToolDialog::setMolecule( OBMol * ob1 )
 {
-    this_mol = new Molecule( 0 );
+    this_mol = new Molecule( (Render2D*)0 );
     this_mol->convertFromOBMol( ob1 );
     process();
 }
@@ -52,7 +52,7 @@ void ToolDialog::setProductMolecule( Molecule * m1 )
 
 void ToolDialog::setProductMolecule( OBMol * ob1 )
 {
-    product_mol = new Molecule( 0 );
+    product_mol = new Molecule( (Render2D*)0 );
     product_mol->convertFromOBMol( ob1 );
 }
 
