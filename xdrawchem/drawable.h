@@ -25,7 +25,6 @@ public:
     virtual void Highlight();
     virtual void Highlight(bool);
     virtual bool Highlighted();
-    virtual bool Erase(QSharedPointer<Drawable>);
     virtual bool isWithinRect( QRect, bool );
     virtual void SelectAll();
     virtual void DeselectAll();

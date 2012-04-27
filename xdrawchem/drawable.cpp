@@ -314,11 +314,6 @@ void Drawable::addBond( DPoint *, DPoint *, int, int, QColor, bool )
     return;
 }
 
-bool Drawable::Erase( QSharedPointer<Drawable> )
-{
-    return false;
-}
-
 bool Drawable::isWithinRect( QRect, bool )
 {
     return false;
