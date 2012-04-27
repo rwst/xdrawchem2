@@ -35,7 +35,7 @@ CustomRingWidget::CustomRingWidget( QWidget *parent )
     setMinimumSize( 320, 310 );
 
     render = new Render2D();
-    data = new ChemData( this );
+    data = new ChemData();
 
     widget = new QFrame();
     widget->setFrameStyle( QFrame::Box );

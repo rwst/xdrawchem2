@@ -33,7 +33,7 @@ public:
     bool edited() { return false; }
 
     // defined in chemdata.cpp
-    ChemData( QObject *parent = 0 );
+    ChemData();
     void drawAll();
     QSharedPointer<Molecule> firstMolecule();
     void addMolecule(QSharedPointer<Molecule> );
