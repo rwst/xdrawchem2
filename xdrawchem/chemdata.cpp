@@ -1,3 +1,13 @@
+/*********************************************************************
+ * chemdata.cpp
+ *
+ * Copyright (C)
+ * 2004, 2005 Bryan Herger -- bherger@users.sourceforge.net
+ * 2012 Ralf Stephan -- ralf@ark.in-berlin.de
+ *
+ * LICENSE: GPL v. 2 see GPL.txt
+ *********************************************************************/
+
 #include "drawable.h"
 #include "molecule.h"
 #include "bond.h"
@@ -10,15 +20,14 @@
 #include "chemdata.h"
 #include "defs.h"
 
-ChemData::ChemData( QObject *parent )
-    : QObject( parent )
+ChemData::ChemData()
 {
     thick_kludge = -1;
 }
 
+/// Calls Render() for all Drawables in drawlist
 void ChemData::drawAll()
 {
-    // draw all objects in ChemData
     QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         qDebug() << "drawAll: " << tmp_draw;
@@ -26,11 +35,10 @@ void ChemData::drawAll()
     }
 }
 
-// update Molecules after move
+/// Calls Changed() for all Molecules in drawlist (intended after move)
 void ChemData::FinishMove()
 {
     QSharedPointer<Drawable> d;
-
     foreach ( d, drawlist ) {
         if ( d->metaObject() == &Molecule::staticMetaObject ) {
             (( Molecule * ) d.data())->Changed();
@@ -38,10 +46,10 @@ void ChemData::FinishMove()
     }
 }
 
+/// Returns first Molecule in drawlist or 0
 QSharedPointer<Molecule> ChemData::firstMolecule()
 {
     QSharedPointer<Drawable> d;
-
     foreach ( d, drawlist ) {
         if ( d->metaObject() == &Molecule::staticMetaObject ) {
             return d.objectCast<Molecule>();
@@ -51,11 +59,13 @@ QSharedPointer<Molecule> ChemData::firstMolecule()
     return d.objectCast<Molecule>();
 }
 
+/// Appends param to drawlist
 void ChemData::addMolecule( QSharedPointer<Molecule> m1 )
 {
     drawlist.append( m1 );
 }
 
+/// Create Arrow using all params, append it to drawlist
 void ChemData::addArrow( DPoint * s, DPoint * e, QColor c, int t, int p2, bool hl )
 {
     Arrow *a1 = new Arrow( r );
@@ -70,6 +80,7 @@ void ChemData::addArrow( DPoint * s, DPoint * e, QColor c, int t, int p2, bool h
     drawlist.append( p );
 }
 
+/// Create CurveArrow using all params, append it to drawlist
 void ChemData::addCurveArrow( DPoint * s, DPoint * e, QColor c, QString s1, bool hl )
 {
     CurveArrow *a1 = new CurveArrow( r );
@@ -83,6 +94,7 @@ void ChemData::addCurveArrow( DPoint * s, DPoint * e, QColor c, QString s1, bool
     drawlist.append( p );
 }
 
+/// Create Bracket using all params, append it to drawlist
 void ChemData::addBracket( DPoint * s, DPoint * e, QColor c, int type, bool hl )
 {
     Bracket *a1 = new Bracket( r );
@@ -96,6 +108,8 @@ void ChemData::addBracket( DPoint * s, DPoint * e, QColor c, int type, bool hl )
     drawlist.append( p );
 }
 
+/// If param topleft justified, add it to drawlist, else to Molecule on drawlist
+/// TODO: Failure to add not handled
 void ChemData::addText(QSharedPointer<Text> t )
 {
     qDebug() << "addText";
@@ -112,15 +126,18 @@ void ChemData::addText(QSharedPointer<Text> t )
             }
         }
         qDebug() << "FYI, add text failed";
+        exit(EXIT_FAILURE);
     }
 }
 
+/// Append param to drawlist
 void ChemData::addGraphicObject( GraphicObject * t )
 {
     QSharedPointer<Drawable> p(t);
     drawlist.append( p );
 }
 
+/// Calls addBond with some Molecules in drawlist, with possible creation/fusion
 void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, bool hl )
 {
     //qDebug() << "Request to add bond:" ;
@@ -164,6 +181,7 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
     }
 }
 
+/// Create Symbol using all params, append it to drawlist or Molecule
 void ChemData::addSymbol( DPoint * a, QString symbolfile, bool hl )
 {
     QSharedPointer<Symbol> s1 ( new Symbol( r ));
@@ -182,10 +200,10 @@ void ChemData::addSymbol( DPoint * a, QString symbolfile, bool hl )
         }
     }
 
-    // DANGER! Object may exist twice now!!!
     drawlist.append( s1 );
 }
 
+/// Returns first Molecule in drawlist or 0 whose BoundinBoxAll().contains param
 QSharedPointer<Molecule> ChemData::insideMolecule( DPoint * t1 )
 {
     //qDebug() << t1->x << "," << t1->y;
@@ -205,6 +223,7 @@ QSharedPointer<Molecule> ChemData::insideMolecule( DPoint * t1 )
     return td.objectCast<Molecule>();
 }
 
+/// Returns nearest DPoint in Drawables in list nearer than mindist, or 0
 DPoint *ChemData::FindNearestPoint( DPoint * target, double &dist )
 {
     DPoint *nearest = 0, *d1;
@@ -222,14 +241,13 @@ DPoint *ChemData::FindNearestPoint( DPoint * target, double &dist )
     return nearest;
 }
 
+/// Returns nearest Drawable in list nearer than mindist, or 0
 QSharedPointer<Drawable> ChemData::FindNearestObject( DPoint * target, double &dist )
 {
     double mindist = 2000.0, d1dist = 999999.0;
 
     QSharedPointer<Drawable> nearest;
     foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
-//        if (tmp_draw->metaObject() == &Arrow::staticMetaObject)
-
         d1dist = tmp_draw.data()->distanceTo( target );
         if ( d1dist < mindist ) {
             mindist = d1dist;
@@ -240,63 +258,46 @@ QSharedPointer<Drawable> ChemData::FindNearestObject( DPoint * target, double &d
     return nearest;
 }
 
+/// Removes all instances of param from drawlist and its Molecules, with split
 void ChemData::Erase( QSharedPointer<Drawable> d )
 {
-    if ( drawlist.removeAll( d ) == false ) {
-        qDebug() << "do we get called at all?";
-        QSharedPointer<Drawable> td;
-        foreach ( td, drawlist ) {
-            bool erased = td->Erase( d );
-            // collect empty Molecules for removal
-            if ( td->Members() == 0 )
+    drawlist.removeAll( d );
+
+    QSharedPointer<Drawable> td;
+    foreach ( td, drawlist )
+        if ( td->metaObject() == &Molecule::staticMetaObject ) {
+            bool erased = ((Molecule*)td.data())->Erase( d );
+            if ( erased && td->Members() == 0 )
                 drawlist.removeAll( td );
-            qDebug() << "erased:" << erased;
-            if ( erased == true )
-                break;          //should only be one instance of d to remove!
+        //qDebug() << "erased:" << erased;
         }
-    } else {                    // drawlist.remove(d) == true
-        d.clear();
-    }
 
     // Split Molecules as needed
     DetectSplit();
 }
 
+/// Removes all highlighted objects from drawlist and its Molecules, with split
 void ChemData::EraseSelected()
 {
-    QList < QSharedPointer<Drawable> >removelist;
-    QSharedPointer<Drawable> tmp_draw;
-    foreach ( tmp_draw, drawlist ) {
-        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
-            ((Molecule*)tmp_draw.data())->EraseSelected();
-            // collect empty Molecules for removal
-            if ( tmp_draw->Members() == 0 )
-                removelist.append( tmp_draw );
-        } else {
-            if ( tmp_draw->Highlighted() == true ) {
-                removelist.append( tmp_draw );
-            }
+    QSharedPointer<Drawable> td;
+    foreach ( td, drawlist ) {
+        if ( td->Highlighted() == true ) {
+            drawlist.removeAll( td );
+            continue;
+        }
+        if ( td->metaObject() == &Molecule::staticMetaObject ) {
+            ((Molecule*)td.data())->EraseSelected();
+            if ( td->Members() == 0 )
+                drawlist.removeAll( td );
+        //qDebug() << "erased:" << erased;
         }
     }
-    foreach ( tmp_draw, removelist ) {
-        /*
-           if (tmp_draw->Type() == TYPE_TEXT) {
-           Text *tmp_text = (Text *)tmp_draw;
-           if (tmp_text->getDataType() == TEXT_DATA_MW) {
-           tmp_text->getMolecule()->MWLabelDeleted();
-           }
-           if (tmp_text->getDataType() == TEXT_DATA_FORMULA) {
-           tmp_text->getMolecule()->FormulaLabelDeleted();
-           }
-           }
-         */
-        drawlist.removeAll( tmp_draw );
-    }
+
     // Split Molecules as needed
     DetectSplit();
 }
 
-// Split Molecule's which hold multiple structures (e.g. after delete)
+/// Split Molecules which hold multiple structures (e.g. after delete)
 void ChemData::DetectSplit()
 {
     QList<QSharedPointer<Drawable> > removelist;
@@ -321,6 +322,7 @@ void ChemData::DetectSplit()
     }
 }
 
+/// Calls SelectAll() on all Drawables in list, calls setHighlighted(true) on all UniquePoints()
 void ChemData::SelectAll()
 {
     QList < DPoint * >allpts = UniquePoints();
@@ -334,6 +336,7 @@ void ChemData::SelectAll()
     }
 }
 
+/// Calls DeselectAll() on all Drawables in list, calls setHighlighted(false) on all UniquePoints()
 void ChemData::DeselectAll()
 {
     QList < DPoint * >allpts = UniquePoints();
@@ -347,6 +350,7 @@ void ChemData::DeselectAll()
     }
 }
 
+/// Calls SetColorIfHighlighted() on all Drawables in list
 void ChemData::SetColorIfHighlighted( QColor c )
 {
     QSharedPointer<Drawable> tmp_draw;
@@ -354,6 +358,7 @@ void ChemData::SetColorIfHighlighted( QColor c )
         tmp_draw->SetColorIfHighlighted( c );
 }
 
+/// Calls Move() on all Drawables in list
 void ChemData::Move( double dx, double dy )
 {
     QSharedPointer<Drawable> tmp_draw;
@@ -361,6 +366,7 @@ void ChemData::Move( double dx, double dy )
         tmp_draw->Move( dx, dy );
 }
 
+/// Calls Resize() on all Drawables in list
 void ChemData::Resize( DPoint * d1, double dy )
 {
     QSharedPointer<Drawable> tmp_draw;
@@ -368,6 +374,7 @@ void ChemData::Resize( DPoint * d1, double dy )
         tmp_draw->Resize( d1, dy );
 }
 
+/// Calls Rotate() on all Drawables in list
 void ChemData::Rotate( DPoint * d1, double dy )
 {
     QSharedPointer<Drawable> tmp_draw;
@@ -375,6 +382,7 @@ void ChemData::Rotate( DPoint * d1, double dy )
         tmp_draw->Rotate( d1, dy );
 }
 
+/// Calls Flip() on all Drawables in list
 void ChemData::Flip( DPoint * d1, int dy )
 {
     QSharedPointer<Drawable> tmp_draw;
@@ -382,7 +390,7 @@ void ChemData::Flip( DPoint * d1, int dy )
         tmp_draw->Flip( d1, dy );
 }
 
-// Find minimum rectangle needed to enclose selection
+/// Finds and returns minimum rectangle needed to enclose selection
 QRect ChemData::selectionBox()
 {
     int top = 99999, bottom = 0, left = 99999, right = 0;
@@ -415,10 +423,13 @@ QRect ChemData::selectionBox()
     return QRect( QPoint( left, top ), QPoint( right, bottom ) );
 }
 
-// when doing multiple selection via MODE_SELECT_MULTIPLE, we will
-// have to highlight/unhighlight regions of the drawing as the selection
-// box changes.  This function is called to start checking whether objects
-// fall within the select box.
+/**
+ * Sets highlight on all UniquePoints within rectangle n, calls isWithinRect() with params on all drawables.
+ * When doing multiple selection via MODE_SELECT_MULTIPLE, we will
+ * have to highlight/unhighlight regions of the drawing as the selection
+ * box changes.  This function is called to start checking whether objects
+ * fall within the select box.
+ ***/
 void ChemData::NewSelectRect( QRect n, bool shiftdown )
 {
     QList < DPoint * >allpts = UniquePoints();
@@ -437,7 +448,7 @@ void ChemData::NewSelectRect( QRect n, bool shiftdown )
     }
 }
 
-// Get list of unique points contained in all Molecules.
+/// Returns list of unique points contained in all drawables.
 QList < DPoint * >ChemData::UniquePoints()
 {
     QList < DPoint * >up, tp;
@@ -453,6 +464,7 @@ QList < DPoint * >ChemData::UniquePoints()
     return up;
 }
 
+/// Returns list of molecules contained in all drawables in list.
 QList < QSharedPointer <Drawable> > ChemData::UniqueObjects()
 // TODO: return all Molecule objects or these plus all other Drawables?
 {
