@@ -176,6 +176,7 @@ private:
     Text *tt, *tt_mw, *tt_ef, *tt_ea;
     // hack for setting ring thickness
     int thick_kludge;
+    static const int UNDO_BUFFER_SIZE = 32;
 };
 
 #endif

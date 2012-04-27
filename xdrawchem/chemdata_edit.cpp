@@ -20,6 +20,7 @@
 #include "chemdata.h"
 #include "defs.h"
 
+/// Calls Scale() for all molecules in drawlist
 void ChemData::ScaleAll( double bond_length )
 {
     QSharedPointer<Drawable> tmp_draw;
@@ -30,12 +31,14 @@ void ChemData::ScaleAll( double bond_length )
     }
 }
 
+/// Copy to clipboard and erase selected
 void ChemData::Cut()
 {
     Copy();
     EraseSelected();
 }
 
+/// Clear clipboard, create (copy of) every molecule in drawlist, append to clipboard
 void ChemData::Copy()
 {
     clip->clear();
@@ -80,6 +83,7 @@ void ChemData::Copy()
     }
 }
 
+/// Deselect all, create (copy of) each molecule on clipboard, add it to self
 bool ChemData::Paste()
 {
     DeselectAll();
@@ -161,6 +165,7 @@ bool ChemData::Paste()
     }
     */
 
+/// Calls save_native() and, if state unique, appends it on undo stack.
 void ChemData::StartUndo( int /*fn*/, DPoint * /*s1*/ )
 {
     QString last_undo_file;
@@ -175,10 +180,11 @@ void ChemData::StartUndo( int /*fn*/, DPoint * /*s1*/ )
             return;
     }
     last_states.append( current_undo_file );
-    if ( last_states.count() > 32 )
+    if ( last_states.count() > UNDO_BUFFER_SIZE )
         last_states.removeFirst();
 }
 
+/// If undo stack contains state, pull it off and load_native() it.
 bool ChemData::Undo()
 {
     if ( last_states.count() == 0 ) {
@@ -186,8 +192,7 @@ bool ChemData::Undo()
     }
     current_undo_file = last_states[last_states.count() - 1];
     last_states.removeLast();
-    load_native( current_undo_file );
-    return true;
+    return load_native( current_undo_file );
 }
 
 // kate: tab-width 4; indent-width 4; space-indent on; replace-trailing-space-save on;
