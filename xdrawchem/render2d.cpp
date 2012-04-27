@@ -109,16 +109,6 @@ void Render2D::CleanUpAfterTextTool()
     }
 }
 
-void Render2D::setClipboard( Clipboard * clip1 )
-{
-    c->setClipboard( clip1 );
-}
-
-Clipboard *Render2D::getClipboard()
-{
-    return c->getClipboard();
-}
-
 // setMode functions (slots)
 
 void Render2D::setMode_Select()

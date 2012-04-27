@@ -32,8 +32,8 @@ public:
     void CorrectEndpoint_arrow();
     void CorrectEndpoint_bond();
     void CleanUpAfterTextTool();
-    void setClipboard(Clipboard *);
-    Clipboard *getClipboard();
+    void setClipboard(QSharedPointer<Clipboard>);
+    QSharedPointer<Clipboard> getClipboard();
 
 public slots:
     // defined in render2d.cpp

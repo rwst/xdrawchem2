@@ -153,7 +153,6 @@ public slots:
     void Refs();
     void Dummy() { }
     void Test();
-    void setClipboard(Clipboard *);
 
 private slots:
     void setRegularArrowAction(QAction *);

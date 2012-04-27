@@ -625,7 +625,7 @@ ApplicationWindow::ApplicationWindow()
      * create data system
      */
     m_chemData = new ChemData;
-    m_chemData->setClipboard( 0 );
+    m_chemData->clip = new Clipboard;
 
     /// connect (non-Qt) data center and render widget
     m_renderer->setChemData( m_chemData );
@@ -1259,7 +1259,7 @@ void ApplicationWindow::newDoc()
 {
     ApplicationWindow *ed = new ApplicationWindow;
 
-    ed->setClipboard( m_renderer->getClipboard() );
+    ed->m_chemData->clip = new Clipboard (m_chemData->clip);
     ed->show();
     ed->HideTextButtons();
 }
@@ -2027,11 +2027,6 @@ void ApplicationWindow::CubicBezierTool( int x )
 {
     qDebug() << "Bezier:" << x - 6;
     m_renderer->setMode_DrawBezier(x-6);
-}
-
-void ApplicationWindow::setClipboard( Clipboard * clip1 )
-{
-    m_renderer->setClipboard( clip1 );
 }
 
 void ApplicationWindow::setGroup_Reactant()

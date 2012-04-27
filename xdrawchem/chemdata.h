@@ -127,13 +127,6 @@ public:
     void Retro( Molecule * );
     // defined here
     void setThickKludge( int lt1 ) { thick_kludge = lt1; }
-    Clipboard *getClipboard() { return clip; }
-    void setClipboard( Clipboard *clip1 ) {
-        if (clip1 == 0)
-            clip = new Clipboard;
-        else
-            clip = clip1;
-    }
 
 public slots:
     void XDCEventHandler( XDC_Event * );
@@ -150,6 +143,7 @@ private:
     // Top left corner of visible part of r
     QPoint RenderTopLeft;
     // Application clipboard
+    friend class ApplicationWindow;
     Clipboard *clip;
     // list of Drawable objects we are tracking
     QList<QSharedPointer<Drawable> > drawlist;

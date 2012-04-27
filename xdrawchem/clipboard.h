@@ -9,6 +9,7 @@ class Clipboard
 {
 public:
     Clipboard() {}
+    Clipboard(Clipboard* c) { objects = c->objects; }
     QList<QSharedPointer<Drawable> > objects;
     void clear() { objects.clear(); }
 };
