@@ -32,6 +32,8 @@ Molecule::Molecule (Molecule* m)
     bonds = m->bonds;
     labels = m->labels;
     symbols = m->symbols;
+    tomove = m->tomove;
+    up = m->up;
 }
 
 
