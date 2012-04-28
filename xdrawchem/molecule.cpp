@@ -25,6 +25,9 @@ Molecule::Molecule( Render2D * r1, QObject * parent )
 
 Molecule::Molecule (Molecule* m)
 {
+    start = m->start;
+    end = m->end;
+
     r = m->r;
     cd = m->cd;
 
