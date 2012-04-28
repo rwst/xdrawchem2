@@ -37,7 +37,6 @@ public:
 
 public slots:
     // defined in render2d.cpp
-    void ReactionAnalysis(int);
     void setMode_Select();
     void setMode_Lasso();
     void setMode_DrawLine();

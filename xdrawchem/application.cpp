@@ -2079,22 +2079,22 @@ void ApplicationWindow::clearAllGroups()
 
 void ApplicationWindow::reactionAnalysisTest()
 {
-    m_renderer->ReactionAnalysis( RXN_TEST );
+    m_chemData->ReactionAnalysis( RXN_TEST );
 }
 
 void ApplicationWindow::reactionAnalysisEnthalpy()
 {
-    m_renderer->ReactionAnalysis( RXN_ENTHALPY_ESTIMATE );
+    m_chemData->ReactionAnalysis( RXN_ENTHALPY_ESTIMATE );
 }
 
 void ApplicationWindow::reactionAnalysis1HNMR()
 {
-    m_renderer->ReactionAnalysis( RXN_1HNMR );
+    m_chemData->ReactionAnalysis( RXN_1HNMR );
 }
 
 void ApplicationWindow::reactionAnalysis13CNMR()
 {
-    m_renderer->ReactionAnalysis( RXN_13CNMR );
+    m_chemData->ReactionAnalysis( RXN_13CNMR );
 }
 
 void ApplicationWindow::reactivityForward()

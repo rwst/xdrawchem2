@@ -75,11 +75,6 @@ Render2D::Render2D( QWidget * parent )
     PrintSetup();             // see render2d_print.cpp
 }
 
-void Render2D::ReactionAnalysis( int x )
-{
-    c->ReactionAnalysis( x );
-}
-
 // this function required for good behavior if user changes tools while
 // text is selected.
 void Render2D::CleanUpAfterTextTool()
