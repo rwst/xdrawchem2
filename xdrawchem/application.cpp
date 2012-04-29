@@ -2074,7 +2074,8 @@ void ApplicationWindow::Test()
 
 void ApplicationWindow::clearAllGroups()
 {
-    m_renderer->clearAllGroups();
+    m_chemData->clearAllGroups();
+    m_renderer->update();
 }
 
 void ApplicationWindow::reactionAnalysisTest()

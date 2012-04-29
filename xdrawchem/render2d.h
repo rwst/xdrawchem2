@@ -75,7 +75,6 @@ public slots:
     void Flip(int);
     bool SaveEPS(QString);
     bool SaveSVG(QString);
-    void clearAllGroups();
     QPoint zoomCorrect(QPoint);
     QPoint zoomCorrectReverse(QPoint);
     // defined in render2d_draw.cpp
