@@ -23,6 +23,7 @@ Molecule::Molecule( Render2D * r1, QObject * parent )
     //symbols.setAutoDelete(true);
 }
 
+/// Copy and construct
 Molecule::Molecule (Molecule* m)
 {
     start = m->start;
@@ -37,6 +38,10 @@ Molecule::Molecule (Molecule* m)
     symbols = m->symbols;
     tomove = m->tomove;
     up = m->up;
+    text_mw = m->text_mw;
+    text_formula = m->text_formula;
+    group_type = m->group_type;
+    showPC = m->showPC;
 }
 
 
