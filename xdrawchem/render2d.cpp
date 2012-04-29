@@ -1,4 +1,4 @@
-// render2d.cpp - definitions for functions of class Render2D
+
 
 
 #include <QPainter>
@@ -75,8 +75,7 @@ Render2D::Render2D( QWidget * parent )
     PrintSetup();             // see render2d_print.cpp
 }
 
-// this function required for good behavior if user changes tools while
-// text is selected.
+/// this function required for good behavior if user changes tools while text is selected.
 void Render2D::CleanUpAfterTextTool()
 {
     /*  OLD CODE
@@ -105,7 +104,7 @@ void Render2D::CleanUpAfterTextTool()
 }
 
 // setMode functions (slots)
-
+/// Set and show selection mode, deselect all, update
 void Render2D::setMode_Select()
 {
     qDebug() << "Render2D::setMode_Select()";
@@ -123,6 +122,7 @@ void Render2D::setMode_Select()
     update();
 }
 
+/// Set and show Lasso mode, deselect all, update
 void Render2D::setMode_Lasso()
 {
     qDebug() << "Render2D::setMode_Lasso()";
@@ -140,6 +140,7 @@ void Render2D::setMode_Lasso()
     update();
 }
 
+/// Set and show draw line mode, deselect all, update
 void Render2D::setMode_DrawLine()
 {
     qDebug() << "Render2D::setMode_DrawLine()";
@@ -157,6 +158,7 @@ void Render2D::setMode_DrawLine()
     update();
 }
 
+/// Set and show draw dash mode, deselect all, update
 void Render2D::setMode_DrawDashLine()
 {
     if ( mode == MODE_TEXT )
@@ -173,6 +175,7 @@ void Render2D::setMode_DrawDashLine()
     update();
 }
 
+/// Set and show draw chain mode, deselect all, update
 void Render2D::setMode_DrawChain()
 {
     if ( mode == MODE_TEXT )
@@ -189,6 +192,7 @@ void Render2D::setMode_DrawChain()
     update();
 }
 
+/// Set and show draw upline mode, deselect all, update
 void Render2D::setMode_DrawUpLine()
 {
     if ( mode == MODE_TEXT )
@@ -205,6 +209,7 @@ void Render2D::setMode_DrawUpLine()
     update();
 }
 
+/// Set and show draw downline mode, deselect all, update
 void Render2D::setMode_DrawDownLine()
 {
     if ( mode == MODE_TEXT )
@@ -221,6 +226,7 @@ void Render2D::setMode_DrawDownLine()
     update();
 }
 
+/// Set and show draw wavy mode, deselect all, update
 void Render2D::setMode_DrawWavyLine()
 {
     if ( mode == MODE_TEXT )
@@ -237,6 +243,7 @@ void Render2D::setMode_DrawWavyLine()
     update();
 }
 
+/// Set and show draw arrow mode, deselect all, update
 void Render2D::setMode_DrawArrow( regularArrowType type )
 {
     bracket_type = 0;
@@ -283,6 +290,7 @@ void Render2D::setMode_DrawArrow( regularArrowType type )
     update();
 }
 
+/// Set and show draw curve arrow mode, deselect all, update
 void Render2D::setMode_DrawCurveArrow( curveArrowType type )
 {
     if ( mode == MODE_TEXT )
@@ -322,6 +330,7 @@ void Render2D::setMode_DrawCurveArrow( curveArrowType type )
     update();
 }
 
+/// Set and show draw bracket mode, deselect all, update
 void Render2D::setMode_DrawBracket( bracketType type )
 {
     if ( mode == MODE_TEXT )
@@ -361,6 +370,7 @@ void Render2D::setMode_DrawBracket( bracketType type )
     update();
 }
 
+/// Set and show text mode, deselect all, update
 void Render2D::setMode_DrawText()
 {
     mode = MODE_TEXT;
@@ -375,6 +385,7 @@ void Render2D::setMode_DrawText()
     update();
 }
 
+/// Set and show erase mode, deselect all, update
 void Render2D::setMode_Erase()
 {
     if ( mode == MODE_TEXT )
@@ -392,6 +403,7 @@ void Render2D::setMode_Erase()
     update();
 }
 
+/// Set and show symbol mode, deselect all, update
 void Render2D::setMode_DrawSymbol( const QString &s )
 {
     if ( mode == MODE_TEXT )
@@ -409,6 +421,7 @@ void Render2D::setMode_DrawSymbol( const QString &s )
     update();
 }
 
+/// Set and show draw bezier mode, deselect all, update
 void Render2D::setMode_DrawBezier( int param1 )
 {
     mode = MODE_DRAWBEZIER;
@@ -424,6 +437,7 @@ void Render2D::setMode_DrawBezier( int param1 )
     update();
 }
 
+/// Set and show draw Newman anti mode, deselect all, update
 void Render2D::setMode_DrawNewmanAnti()
 {
     if ( mode == MODE_TEXT )
@@ -439,6 +453,7 @@ void Render2D::setMode_DrawNewmanAnti()
     emit SignalSetStatusBar( tr( "Left-click to draw Newman projection template" ) );
 }
 
+/// Set and show draw Newman gauche mode, deselect all, update
 void Render2D::setMode_DrawNewmanGauche()
 {
     if ( mode == MODE_TEXT )
@@ -454,6 +469,7 @@ void Render2D::setMode_DrawNewmanGauche()
     emit SignalSetStatusBar( tr( "Left-click to draw Newman projection template" ) );
 }
 
+/// Set and show draw ring mode, deselect all, update
 void Render2D::setMode_DrawRing( QString s, QString fn, int sp )
 {
     smartplace = 0;
@@ -472,6 +488,7 @@ void Render2D::setMode_DrawRing( QString s, QString fn, int sp )
     update();
 }
 
+/// Set and show tool mode, deselect all, update
 void Render2D::Tool( int t )
 {
     if ( mode == MODE_TEXT )
@@ -551,12 +568,7 @@ void Render2D::Tool( int t )
     }
 }
 
-void Render2D::clearAllGroups()
-{
-    c->clearAllGroups();
-    update();
-}
-
+/// Deselects all, save for undo, calls AutoLayout(), sets and shows select mode, calls update()
 void Render2D::AutoLayout()
 {
     c->DeselectAll();
@@ -571,6 +583,7 @@ void Render2D::AutoLayout()
     update();
 }
 
+/// Save for undo, calls ChemData::Cut(), nulls highlightobject, calls update()
 void Render2D::Cut()
 {
     c->StartUndo( 0, 0 );
@@ -582,6 +595,7 @@ void Render2D::Cut()
     update();
 }
 
+/// Calls ChemData:Copy(), deselects all, draws on savebox, calls update()
 void Render2D::Copy()
 {
     c->Copy();
@@ -592,6 +606,7 @@ void Render2D::Copy()
     mode = MODE_SELECT;
     c->DeselectAll();
 
+    /*
     QPixmap pm( savebox.size() );
     QPainter p(&pm);
     p.drawPixmap( QPoint( 0, 0), MakeFullPixmap(), savebox );
@@ -599,9 +614,11 @@ void Render2D::Copy()
     selectionBox = c->selectionBox();
     mode = prevmode;
     QApplication::clipboard()->setImage( pm.toImage() );
+    */
     update();                 // do anyways, though Copy() should not alter the drawing.
 }
 
+/// If in text mode, paste from system clipboard, else ChemData::Paste() and move.
 void Render2D::Paste()
 {
     if ( mode == MODE_TEXT ) {
@@ -623,6 +640,7 @@ void Render2D::Paste()
     update();
 }
 
+/// Erase all, restore from file, deselect all, update.
 void Render2D::Undo()
 {
     c->SelectAll();
@@ -637,6 +655,7 @@ void Render2D::Undo()
     update();
 }
 
+/// Calls ChemData::SelectAll(), gets ChemData::selectionBox(), update()
 void Render2D::SelectAll()
 {
     mode = MODE_SELECT_MULTIPLE_SELECTED;
@@ -645,6 +664,7 @@ void Render2D::SelectAll()
     update();
 }
 
+/// Calls ChemData::DeselectAll(), update()
 void Render2D::DeselectAll()
 {
     mode = MODE_SELECT;
@@ -652,6 +672,7 @@ void Render2D::DeselectAll()
     update();
 }
 
+/// In text mode, emulate DEL, else calls ChemData::EraseSelected(), nulls highlightobject
 void Render2D::EraseSelected()
 {
     if ( mode == MODE_TEXT ) {
@@ -671,6 +692,7 @@ void Render2D::EraseSelected()
     update();
 }
 
+/// Save for undo, rotate around center of selection, select new, update()
 void Render2D::Rotate90()
 {
     c->StartUndo( 0, 0 );
@@ -684,6 +706,7 @@ void Render2D::Rotate90()
     update();
 }
 
+/// Save for undo, rotate around center of selection, select new, update()
 void Render2D::Rotate180()
 {
     c->StartUndo( 0, 0 );
@@ -697,6 +720,7 @@ void Render2D::Rotate180()
     update();
 }
 
+/// Save for undo, rotate around center of selection, select new, update()
 void Render2D::Rotate270()
 {
     c->StartUndo( 0, 0 );
@@ -710,6 +734,7 @@ void Render2D::Rotate270()
     update();
 }
 
+/// Save for undo, flip around center of selection, select new, update()
 void Render2D::Flip( int d )
 {
     c->StartUndo( 0, 0 );
@@ -723,7 +748,7 @@ void Render2D::Flip( int d )
     update();
 }
 
-// Inserted(): highlight and box items inserted by RingDialog, etc.
+/// highlight and box items inserted by RingDialog, etc.
 void Render2D::Inserted()
 {
     mode = MODE_SELECT_MULTIPLE_SELECTED;
@@ -731,7 +756,7 @@ void Render2D::Inserted()
     update();
 }
 
-// change current font, or change font of active text
+/// change current font, or change font of active text
 void Render2D::SetFont( QFont f )
 {
     if ( localtext != 0 ) {
@@ -745,7 +770,7 @@ void Render2D::SetFont( QFont f )
     }
 }
 
-// change current font, or change font of active text
+/// change current font, or change font of active text
 void Render2D::SetColor( QColor c1 )
 {
     if ( mode != MODE_SELECT_MULTIPLE_SELECTED ) {
@@ -759,17 +784,19 @@ void Render2D::SetColor( QColor c1 )
     }
 }
 
+/// Returns current font
 QFont Render2D::GetFont()
 {
     return currentFont;
 }
 
+/// Returns current color
 QColor Render2D::GetColor()
 {
     return currentColor;
 }
 
-// adjust endpoint to specified fixed length/angle
+/// adjust endpoint to specified fixed length/angle
 void Render2D::CorrectEndpoint_arrow()
 {
     double dx = endpoint->x - startpoint->x;
@@ -794,7 +821,7 @@ void Render2D::CorrectEndpoint_arrow()
     }
 }
 
-// adjust endpoint to specified fixed length/angle
+/// adjust endpoint to specified fixed length/angle
 void Render2D::CorrectEndpoint_bond()
 {
     double dx = endpoint->x - startpoint->x;
@@ -819,6 +846,7 @@ void Render2D::CorrectEndpoint_bond()
     }
 }
 
+/// Save canvas as SVG using outputDevice SVG and update()
 bool Render2D::SaveSVG( QString fn )
 {
     outputDevice = OUTPUT_SVG;
@@ -853,6 +881,7 @@ bool Render2D::SaveSVG( QString fn )
     return true;
 }
 
+/// Save canvas as EPS using an obscure method
 bool Render2D::SaveEPS( QString fn )
 {
     //
@@ -916,11 +945,13 @@ bool Render2D::SaveEPS( QString fn )
      */
 }
 
+/// Removes temp file
 void Render2D::saveEPSFinished( int, QProcess::ExitStatus )
 {
     QFile::remove( tmpEpsFile );
 }
 
+/// Return param multiplied with zoomfactor
 QPoint Render2D::zoomCorrect( QPoint in1 )
 {
     QPoint out1;
@@ -935,6 +966,7 @@ QPoint Render2D::zoomCorrect( QPoint in1 )
     return out1;
 }
 
+/// Return param divided by zoomfactor
 QPoint Render2D::zoomCorrectReverse( QPoint in1 )
 {
     QPoint out1;
