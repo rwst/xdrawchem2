@@ -399,7 +399,8 @@ QRect ChemData::selectionBox()
 
     foreach ( tmp_draw, drawlist ) {
         tmprect = tmp_draw->BoundingBox();
-        qDebug() << tmprect.width() << "X" << tmprect.height();
+        qDebug() << tmprect.width() << "X" << tmprect.height()
+                 << " : " << tmprect.top() << " , " <<tmprect.left();
         if ( tmprect.isValid() ) {
             if ( tmprect.left() < left )
                 left = tmprect.left();
