@@ -36,7 +36,6 @@ Molecule::Molecule (Molecule* m)
     bonds = m->bonds;
     labels = m->labels;
     symbols = m->symbols;
-    tomove = m->tomove;
     up = m->up;
     text_mw = m->text_mw;
     text_formula = m->text_formula;
@@ -45,13 +44,17 @@ Molecule::Molecule (Molecule* m)
 }
 
 
-// implement more cleanup here
+/// clears all lists
 Molecule::~Molecule()
 {
     qDeleteAll( peaklist );
     peaklist.clear();
+    bonds.clear();
+    labels.clear();
+    symbols.clear();
 }
 
+/// Calls AllPoints(), update double bond states, draw group box if needed, render bonds, texts, symbols.
 void Molecule::Render()
 {
     /// collect all points
@@ -122,7 +125,7 @@ void Molecule::Render()
         tmp_sym->Render();
 }
 
-// Calculate offsets, i.e., where to put a Symbol.
+/// Calculate offsets, i.e., where to put a Symbol.
 void Molecule::CalcOffsets()
 {
     bool top = true, bottom = true, left = true, right = true;
@@ -173,6 +176,7 @@ void Molecule::CalcOffsets()
     }
 }
 
+/// Returns if this has a bond that returns true for Find().
 bool Molecule::Find( DPoint * target )
 {
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
@@ -182,6 +186,7 @@ bool Molecule::Find( DPoint * target )
     return false;
 }
 
+/// Returns if parts of this are isWithinRect(param), handles shiftdown
 bool Molecule::isWithinRect( QRect qr, bool shiftdown )
 {
     if ( shiftdown )
@@ -205,6 +210,7 @@ bool Molecule::isWithinRect( QRect qr, bool shiftdown )
     return false;
 }
 
+/// Calls SelectAll() for bonds, labels, symbols
 void Molecule::SelectAll()
 {
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
@@ -217,6 +223,7 @@ void Molecule::SelectAll()
         tmp_sym->SelectAll();
 }
 
+/// Calls DeselectAll() for bonds, labels, symbols
 void Molecule::DeselectAll()
 {
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
@@ -229,6 +236,7 @@ void Molecule::DeselectAll()
         tmp_sym->DeselectAll();
 }
 
+/// Calls SetColorIfHighlighted() for bonds, labels, symbols
 void Molecule::SetColorIfHighlighted( QColor c )
 {
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
@@ -241,8 +249,7 @@ void Molecule::SetColorIfHighlighted( QColor c )
         tmp_sym->SetColorIfHighlighted( c );
 }
 
-// Copy Text labels into DPoint::element (needed esp. by save, CalcMW,
-// NMR prediction...)
+/// Copy Text labels into DPoint::element (needed esp. by save, CalcMW, NMR prediction...)
 void Molecule::CopyTextToDPoint()
 {
     foreach ( QSharedPointer<Text> tmp_text, labels ) {
@@ -253,6 +260,7 @@ void Molecule::CopyTextToDPoint()
     }
 }
 
+/// Calls SelectAll(), BoundingBox(), DeselectAll()
 QRect Molecule::BoundingBoxAll()
 {
     QRect fr;
@@ -263,6 +271,7 @@ QRect Molecule::BoundingBoxAll()
     return fr;
 }
 
+/// True if this->BoundingBoxAll() contains param.
 bool Molecule::WithinBounds( DPoint * target )
 {
     QRect fr = BoundingBoxAll();
@@ -270,9 +279,11 @@ bool Molecule::WithinBounds( DPoint * target )
     return fr.contains( target->toQPoint() );
 }
 
-// Determine if split is necessary (e.g., if this structure contains two
-// or more fragments).  Return empty list if not, return new Molecule's
-// if needed
+/**
+ * Determine if split is necessary (e.g., if this structure contains two
+ * or more fragments).  Return empty list if not, return new Molecule's
+ * if needed.
+ ***/
 QList < QSharedPointer <Molecule> > Molecule::MakeSplit()
 {
 //  QList<DPoint *> up;
@@ -341,7 +352,7 @@ QList < QSharedPointer <Molecule> > Molecule::MakeSplit()
     return molecules;
 }
 
-// Create and return a list of all unique DPoint's in this Molecule
+/// Create and return a list of all unique DPoint's in this Molecule
 QList < DPoint * >Molecule::AllPoints()
 {
     QList < DPoint * >pl;
@@ -384,7 +395,7 @@ QList < DPoint * >Molecule::AllPoints()
     return pl;
 }
 
-// Create and return a list of all unique Drawable's in this Molecule
+/// Create and return a list of all unique Drawable's in this Molecule
 QList<QSharedPointer<Drawable> > Molecule::AllObjects()
 {
     QList < QSharedPointer <Drawable> > dl;
@@ -401,18 +412,19 @@ QList<QSharedPointer<Drawable> > Molecule::AllObjects()
     return dl;
 }
 
-QList <QSharedPointer<Bond> > Molecule::AllBonds()
+/// Returns read-only access to bonds
+const QList <QSharedPointer<Bond> > Molecule::AllBonds()
 {
-    // this should be safe, right?  ioiface.cpp should use this read-only...  :)
-    return bonds;
+    return (bonds);
 }
 
-// Create a list of unique DPoints to move
-void Molecule::MakeTomoveList()
+/// Returns a list of unique DPoints to move, only used internally
+static QList<DPoint*> & MakeTomoveList(Molecule* m)
 {
-    tomove.clear();
+    static QList<DPoint*> tomove;
+    DPoint *tmp_pt;
 
-    foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
+    foreach ( QSharedPointer<Bond> tmp_bond, m->bonds ) {
         if ( tmp_bond->Highlighted() ) {
             tmp_pt = tmp_bond->Start();
             if ( tomove.contains( tmp_pt ) == 0 )
@@ -422,35 +434,39 @@ void Molecule::MakeTomoveList()
                 tomove.append( tmp_pt );
         }
     }
-    foreach ( QSharedPointer<Text> tmp_text, labels ) {
+    foreach ( QSharedPointer<Text> tmp_text, m->labels ) {
         if ( tmp_text->Highlighted() ) {
             tmp_pt = tmp_text->Start();
             if ( tomove.contains( tmp_pt ) == 0 )
                 tomove.append( tmp_pt );
         }
     }
-    foreach ( QSharedPointer<Symbol> tmp_sym, symbols ) {
+    foreach ( QSharedPointer<Symbol> tmp_sym, m->symbols ) {
         if ( tmp_sym->Highlighted() ) {
             tmp_pt = tmp_sym->Start();
             if ( tomove.contains( tmp_pt ) == 0 )
                 tomove.append( tmp_pt );
         }
     }
+    return tomove;
 }
 
+/// Adds param to all points to move. Calls Changed().
 void Molecule::Move( double dx, double dy )
 {
-    MakeTomoveList();
+    QList<DPoint*> & tomove = MakeTomoveList(this);
 
     foreach ( tmp_pt, tomove ) {
         tmp_pt->x += dx;
         tmp_pt->y += dy;
     }
+    Changed();
 }
 
+/// Rotates by param all points to move. Calls Changed().
 void Molecule::Rotate( DPoint * origin, double angle )
 {
-    MakeTomoveList();
+    QList<DPoint*> & tomove = MakeTomoveList(this);
 
     foreach ( tmp_pt, tomove ) {
         double thisx = tmp_pt->x - origin->x;
@@ -464,10 +480,10 @@ void Molecule::Rotate( DPoint * origin, double angle )
     Changed();
 }
 
-// rotate about center of molecule
+/// Computes center of molecule, rotates by param all points to move. Calls Changed(). TODO: call Rotate(...,...)
 void Molecule::Rotate( double angle )
 {
-    MakeTomoveList();
+    QList<DPoint*> & tomove = MakeTomoveList(this);
 
     double centerx = 0.0, centery = 0.0;
     int n = 0;
@@ -492,9 +508,10 @@ void Molecule::Rotate( double angle )
     Changed();
 }
 
+/// Flip by origin param in direction param all points to move. Calls Changed().
 void Molecule::Flip( DPoint * origin, int direction )
 {
-    MakeTomoveList();
+    QList<DPoint*> & tomove = MakeTomoveList(this);
     double delta;
 
     foreach ( tmp_pt, tomove ) {
@@ -506,13 +523,15 @@ void Molecule::Flip( DPoint * origin, int direction )
             tmp_pt->y = tmp_pt->y - 2 * delta;
         }
     }
+    Changed();
 }
 
+/// Multiply all points tgo move vectors by scale param, taking param as origin. Calls Changed().
 void Molecule::Resize( DPoint * origin, double scale )
 {
     double dx, dy;
 
-    MakeTomoveList();
+    QList<DPoint*> & tomove = MakeTomoveList(this);
 
     foreach ( tmp_pt, tomove ) {
         dx = tmp_pt->x - origin->x;
@@ -522,8 +541,10 @@ void Molecule::Resize( DPoint * origin, double scale )
         tmp_pt->x = origin->x + dx;
         tmp_pt->y = origin->y + dy;
     }
+    Changed();
 }
 
+/// Returns bounding box of all bonds and labels in this molecule.
 QRect Molecule::BoundingBox()
 {
     int top = 99999, bottom = 0, left = 99999, right = 0;
@@ -559,6 +580,7 @@ QRect Molecule::BoundingBox()
     return QRect( QPoint( left, top ), QPoint( right, bottom ) );
 }
 
+/// Returns point in this molecule nearest param within param.
 DPoint *Molecule::FindNearestPoint( DPoint * target, double &dist )
 {
     DPoint *nearest = 0, *d1;
@@ -596,6 +618,7 @@ DPoint *Molecule::FindNearestPoint( DPoint * target, double &dist )
     return nearest;
 }
 
+/// Returns smallest distance of this molecule's labels, bonds, symbols to param.
 double Molecule::distanceTo ( DPoint * target )
 {
     double mindist = 999999.0, d1dist = 999999.0;
@@ -622,6 +645,7 @@ double Molecule::distanceTo ( DPoint * target )
     return mindist;
 }
 
+/// Creates new bond from params, append it to bonds if not already there, calls Changed().
 void Molecule::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, bool hl )
 {
     int o, p;
@@ -663,7 +687,7 @@ void Molecule::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
     Changed();
 }
 
-// shortcut addBond
+/// Append param to bonds if not already there, calls Changed().
 void Molecule::addBond(QSharedPointer<Bond> b )
 {
     // but only add if it's not already there.
@@ -672,7 +696,7 @@ void Molecule::addBond(QSharedPointer<Bond> b )
     Changed();
 }
 
-// add a text label
+/// Append param to labels if not already there, calls Changed().
 void Molecule::addText( QSharedPointer<Text> t )
 {
     // remove Text associated with this point, if any
@@ -690,14 +714,14 @@ void Molecule::addText( QSharedPointer<Text> t )
     Changed();
 }
 
-// add a Symbol
+/// Append param to symbols, calls Changed().
 void Molecule::addSymbol( QSharedPointer<Symbol> s )
 {
     symbols.append( s );
     Changed();
 }
 
-// add a molecule to this one.
+/// Appends other molecule's bonds and labels to this, calls Changed().
 void Molecule::addMolecule( Molecule *m1 )
 {
     qDebug() << "Uh-oh!  Need to merge";
@@ -711,10 +735,9 @@ void Molecule::addMolecule( Molecule *m1 )
     Changed();
 }
 
-// Erase
+/// Removes (bond,label,symbol) from this molecule's lists, calls Changed(). TODO: redesign class hierarchy.
 bool Molecule::Erase( QSharedPointer<Drawable> d )
 {
-    int removed;
     bool retval = false;
 
     if ( d->metaObject() == &Bond::staticMetaObject ) {
@@ -727,16 +750,19 @@ bool Molecule::Erase( QSharedPointer<Drawable> d )
                 Changed();
                 return true;
             } else {
-                removed = bonds.removeAll( tmp_bond );
-                retval = removed;
+                retval = bonds.removeAll( tmp_bond );
             }
         }
     } else {                    // deleting TEXT or SYMBOL
         if ( d->metaObject() == &Text::staticMetaObject ) {
-            return labels.removeAll( d.objectCast<Text>() );
+            retval = labels.removeAll( d.objectCast<Text>() );
         }
         if ( d->metaObject() == &Symbol::staticMetaObject ) {
-            return symbols.removeAll( d.objectCast<Symbol>() );
+            retval = symbols.removeAll( d.objectCast<Symbol>() );
+        }
+        else {
+            qDebug() << "Unhandled case in Mol::Erase()!";
+            exit(EXIT_FAILURE);
         }
     }
     if ( retval == false )
@@ -745,7 +771,7 @@ bool Molecule::Erase( QSharedPointer<Drawable> d )
     return true;
 }
 
-// Erase selected items
+/// Erases all selected (bonds,labels,symbols), calls Changed().
 void Molecule::EraseSelected()
 {
     QList <QSharedPointer<Bond> >removebonds;
@@ -780,7 +806,7 @@ void Molecule::EraseSelected()
     Changed();
 }
 
-// XML (XDrawChem format) representation of this Molecule
+/// Return string with XML (XDrawChem format) representation of this Molecule
 QString Molecule::ToXML( QString xml_id )
 {
     QString s( "" );
@@ -927,7 +953,7 @@ QString Molecule::ToXML( QString xml_id )
     return s;
 }
 
-// XML (ChemDraw(TM) format) representation of this Molecule
+/// Return string with XML (ChemDraw(TM) format) representation of this Molecule
 QString Molecule::ToCDXML( QString xml_id )
 {
     QString s( "" );
@@ -1010,7 +1036,7 @@ QString Molecule::ToCDXML( QString xml_id )
     return s;
 }
 
-// Generate MDL Molfile to export to generate SMILES, export for 3-D
+/// Returns string with MDL Molfile to export to generate SMILES, export for 3-D
 QString Molecule::ToMDLMolfile( int coords )
 {
   QTextDocument localtextdocument;
@@ -1088,6 +1114,7 @@ QString Molecule::ToMDLMolfile( int coords )
     return molfile;
 }
 
+/// Adds points, bonds, labels, symbols from XML to this.
 void Molecule::FromXML( QString xml_tag )
 {
     QString bondtag, subtag, startid, endid;
@@ -1217,7 +1244,7 @@ void Molecule::FromXML( QString xml_tag )
     }
 }
 
-// update MW and formula
+/// update MW and formula, calls AddHydrogens(), BoundingBox(), sets start, end.
 void Molecule::Changed()
 {
     // add hydrogens and correct labels
