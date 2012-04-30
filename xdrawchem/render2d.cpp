@@ -641,7 +641,6 @@ void Render2D::Paste()
     c->StartUndo( 0, 0 );
     if ( c->Paste() == false )
         return;
-    c->Move( 30, 30 );
     mode = MODE_SELECT_MULTIPLE_SELECTED;
     selectionBox = c->selectionBox();
     update();

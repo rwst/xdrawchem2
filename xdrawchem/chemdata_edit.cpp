@@ -91,6 +91,8 @@ bool ChemData::Paste()
     foreach ( QSharedPointer<Drawable> td, clip->objects ) {
         if (td->metaObject() == &Molecule::staticMetaObject) {
             QSharedPointer<Molecule> m (new Molecule ((Molecule*)td.data()));
+            m->Move(30,30);
+            FinishMove();
             addMolecule(m);
         }
         else
