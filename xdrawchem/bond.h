@@ -104,6 +104,7 @@ public:
     }
 
 private:
+    friend class Molecule;
     // Renderer
     Render2D *r;
     // order of bond (1-3, or 5 if up, or 7 if down)
