@@ -31,20 +31,30 @@ Molecule::Molecule( Render2D * r1, QObject * parent )
     //symbols.setAutoDelete(true);
 }
 
-/// Copy and construct
+/// Copy and construct completely new.
 Molecule::Molecule (Molecule* m)
 {
-    start = m->start;
-    end = m->end;
+    start = new DPoint(m->start);
+    end = new DPoint(m->end);
 
     r = m->r;
     cd = m->cd;
 
     peaklist = m->peaklist;
-    bonds = m->bonds;
-    labels = m->labels;
-    symbols = m->symbols;
-    up = m->up;
+    foreach (QSharedPointer<Bond> b, m->bonds) {
+        QSharedPointer<Bond> nb (new Bond(r));
+        nb->setPoints(new DPoint(b->start), new DPoint(b->end));
+        nb->setOrder(b->order);
+        nb->setStereo(b->stereo);
+        nb->setDash(b->dashed);
+        bonds.append(nb);
+    }
+    foreach (QSharedPointer<Text> l, m->labels)
+        labels.append(l);
+    foreach (QSharedPointer<Symbol> s, m->symbols)
+        symbols.append(s);
+    foreach (DPoint *d, m->up)
+        up.append(new DPoint(d));
     text_mw = m->text_mw;
     text_formula = m->text_formula;
     group_type = m->group_type;
