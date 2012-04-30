@@ -1,4 +1,12 @@
-// molecule.cpp - Molecule's implementation of functions
+/*********************************************************************
+ * molecule.cpp
+ *
+ * Copyright (C)
+ * 2004, 2005 Bryan Herger -- bherger@users.sourceforge.net
+ * 2012 Ralf Stephan -- ralf@ark.in-berlin.de
+ *
+ * LICENSE: GPL v. 2 see GPL.txt
+ *********************************************************************/
 
 #include "moldata.h"
 #include "render2d.h"
