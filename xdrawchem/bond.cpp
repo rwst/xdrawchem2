@@ -313,8 +313,6 @@ void Bond::setPoints( DPoint * s, DPoint * e )
 
 QRect Bond::BoundingBox()
 {
-    if ( highlighted == false )
-        return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );
     int top, bottom, left, right, swp;
 
     top = ( int ) start->y;
