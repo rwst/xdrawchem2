@@ -58,7 +58,7 @@ public:
     QRect BoundingBoxAll();
     QList<DPoint *> AllPoints();
     QList<QSharedPointer<Drawable> > AllObjects();
-    QList<QSharedPointer<Bond> > AllBonds();
+    const QList<QSharedPointer<Bond> > AllBonds();
     QList<QSharedPointer<Molecule> > MakeSplit();
     int Members() { return bonds.count(); }
     QString ToXML( QString );
@@ -179,10 +179,6 @@ private:
     // list of elements which make up this molecule
     // Text objects which hold MW and formula
     Text *text_mw, *text_formula;
-    // list of unique points used by Move(), Resize(), Rotate(), and
-    // function to fill it
-    void MakeTomoveList();
-    QList<DPoint *> tomove;
     // used for elemental analysis (set by CalcEmpiricalFormula)
     double nc, nh, no, nn, nmw;
     // Molecule's SSSR
