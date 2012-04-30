@@ -243,7 +243,6 @@ void IOIface::convertToChemData()
 bool IOIface::convertToOBMol()
 {
     QList < DPoint * >allpoints;
-    QList <QSharedPointer<Bond> >allbonds;
     DPoint *tmp_atom;
     Molecule *this_mol;
 
@@ -253,7 +252,7 @@ bool IOIface::convertToOBMol()
 
     this_mol = chemdata->firstMolecule().data();
     allpoints = this_mol->AllPoints();
-    allbonds = this_mol->AllBonds();
+    QListIterator <QSharedPointer<Bond> > allbonds (this_mol->AllBonds());
 
     // adapted from openbabel/mdl.cpp, most similar format to this...
     // (i.e., MDL is atom list followed by bond list)
@@ -281,7 +280,8 @@ bool IOIface::convertToOBMol()
 
     int start, end, order, flag, bst;
 
-    foreach ( QSharedPointer<Bond> tmp_bond, allbonds ) {
+    while (allbonds.hasNext()) {
+        QSharedPointer<Bond> tmp_bond (allbonds.next());
         flag = 0;
         start = allpoints.indexOf( tmp_bond->Start() ) + 1;
         end = allpoints.indexOf( tmp_bond->End() ) + 1;
