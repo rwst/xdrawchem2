@@ -43,10 +43,7 @@ Molecule::Molecule (Molecule* m)
     peaklist = m->peaklist;
     foreach (QSharedPointer<Bond> b, m->bonds) {
         QSharedPointer<Bond> nb (new Bond(r));
-        nb->setPoints(new DPoint(b->start), new DPoint(b->end));
-        nb->setOrder(b->order);
-        nb->setStereo(b->stereo);
-        nb->setDash(b->dashed);
+        *nb = *b;
         bonds.append(nb);
     }
     foreach (QSharedPointer<Text> l, m->labels)

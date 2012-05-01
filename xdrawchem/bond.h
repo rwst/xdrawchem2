@@ -21,6 +21,7 @@ class Bond : public Drawable
 Q_OBJECT
 public:
     Bond( Render2D *, QObject *parent = 0 );
+    Bond& operator= (const Bond &);
     void Render();  // draw this object
     void Edit();  // open edit window
 

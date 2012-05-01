@@ -23,6 +23,20 @@ Bond::Bond( Render2D * r1, QObject * parent )
     rxnlist = "Run 'Tools/Reaction/Reverse reactions' first.";
 }
 
+Bond& Bond::operator = (const Bond& other)
+{
+    start = new DPoint(other.start);
+    end = new DPoint(other.end);
+    order = other.order;
+    stereo = other.stereo;
+    dashed = other.dashed;
+//    highlighted = other.highlighted;
+    thick = other.thick;
+    wside = other.wside;
+    auto_wside = other.auto_wside;
+    return *this;
+}
+
 void Bond::setOrder( int a )
 {
     order = a;
