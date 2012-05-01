@@ -251,6 +251,8 @@ bool IOIface::convertToOBMol()
     // from the ChemData and do that.
 
     this_mol = chemdata->firstMolecule().data();
+    if (!this_mol)
+        return true;
     allpoints = this_mol->AllPoints();
     QListIterator <QSharedPointer<Bond> > allbonds (this_mol->AllBonds());
 
