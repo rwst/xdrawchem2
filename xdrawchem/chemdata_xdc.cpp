@@ -73,9 +73,9 @@ bool ChemData::load_native( QString wholefile )
     }
 
     do {
-        thistag = ReadTag( wholefile, ptr );
+        bool found = ReadTag( wholefile, ptr, thistag );
         // ReadTag returns a null at EOF (ideally).
-        if ( thistag.isNull() )
+        if ( !found )
             break;
         // check what object type this is
         if ( thistag.contains( "<arrow" ) > 0 ) {

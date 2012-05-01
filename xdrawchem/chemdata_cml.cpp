@@ -115,10 +115,10 @@ bool ChemData::LoadCMLFile( QString wholefile, QString doctype )
     int *st1;
 
     do {
-        thistag = ReadTag( wholefile, ptr );
+        bool found = ReadTag( wholefile, ptr, thistag );
         qDebug() << thistag.toAscii();
         // ReadTag returns a null at EOF (ideally).
-        if ( thistag.isNull() )
+        if ( !found )
             break;
         // Look for beginning of document
         if ( thistag.indexOf( QString( "<" ) + doctype ) >= 0 ) {
@@ -285,8 +285,8 @@ bool ChemData::LoadCMLFile( QString wholefile, QString doctype )
                     str_builtin = v1;
             }
             tdata = ReadData( wholefile, ptr );
-            nexttag = ReadTag( wholefile, ptr );
-            if ( nexttag != QString( "</coordinate2>" ) )
+            bool found = ReadTag( wholefile, ptr, nexttag );
+            if ( !found || nexttag != QString( "</coordinate2>" ) )
                 qDebug() << "Imbalanced <coordinate2> tags!";
             if ( str_builtin != QString( "xy2" ) )
                 qDebug() << "Unrecognized builtin type in <coordinate2>!";
@@ -311,8 +311,8 @@ bool ChemData::LoadCMLFile( QString wholefile, QString doctype )
                     str_builtin = v1;
             }
             tdata = ReadData( wholefile, ptr );
-            nexttag = ReadTag( wholefile, ptr );
-            if ( nexttag != QString( "</coordinate3>" ) )
+            bool found = ReadTag( wholefile, ptr, nexttag );
+            if ( !found || nexttag != QString( "</coordinate3>" ) )
                 qDebug() << "Imbalanced <coordinate3> tags!";
             if ( ( str_builtin != QString( "xyz3" ) ) && ( str_builtin != QString( "xyzFract" ) ) )
                 qDebug() << "Unrecognized builtin type in <coordinate3>!";
@@ -335,9 +335,9 @@ bool ChemData::LoadCMLFile( QString wholefile, QString doctype )
                     str_builtin = v1;
             }
             tdata = ReadData( wholefile, ptr );
-            nexttag = ReadTag( wholefile, ptr );
+            bool found = ReadTag( wholefile, ptr, nexttag );
             qDebug() << "DATA<string>[" << tdata << "]";
-            if ( nexttag.left( 8 ) != QString( "</string" ) )
+            if ( !found || nexttag.left( 8 ) != QString( "</string" ) )
                 qDebug() << "Imbalanced <string> tags!";
             // known cases of <string>
             st1 = TagStack.last();
@@ -378,9 +378,9 @@ bool ChemData::LoadCMLFile( QString wholefile, QString doctype )
                     str_builtin = v1;
             }
             tdata = ReadData( wholefile, ptr );
-            nexttag = ReadTag( wholefile, ptr );
+            bool found = ReadTag( wholefile, ptr, nexttag );
             qDebug() << "DATA<numArray>[" << tdata << "]";
-            if ( ( nexttag != QString( "</integerArray>" ) ) && ( nexttag != QString( "</floatArray>" ) ) )
+            if (!found || (( nexttag != QString( "</integerArray>" ) ) && ( nexttag != QString( "</floatArray>" ) ) ))
                 qDebug() << "Imbalanced <integerArray> or <floatArray> tags!";
             // known cases of <integerArray> and <floatArray>
             st1 = TagStack.last();

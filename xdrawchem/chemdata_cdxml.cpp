@@ -27,9 +27,9 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
     double l1, l2, l3, l4;
 
     do {
-        thistag = ReadTag( wholefile, ptr );
+        bool found = ReadTag( wholefile, ptr, thistag );
         // ReadTag returns a null at EOF (ideally).
-        if ( thistag.isNull() )
+        if ( !found )
             break;
         // Look for beginning of document
         if ( thistag.indexOf( QString( "<" ) + doctype ) >= 0 ) {
@@ -173,8 +173,8 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
         // handle <s> (string)
         if ( thistag.indexOf( QString( "<s" ) ) >= 0 ) {
             textstr.append( ReadData( wholefile, ptr ) );
-            nexttag = ReadTag( wholefile, ptr );
-            if ( nexttag != QString( "</s>" ) )
+            bool found = ReadTag( wholefile, ptr, nexttag );
+            if ( !found || nexttag != QString( "</s>" ) )
                 qDebug() << "Imbalanced <s> tags!";
         }
         // handle <t> (text box)

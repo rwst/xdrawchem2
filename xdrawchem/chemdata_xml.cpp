@@ -67,9 +67,9 @@ bool ChemData::ProcessXML( QString wholefile )
     xdc_doctype = QString( "idgniosdnvi" );
 
     do {
-        thistag = ReadTag( wholefile, ptr );
+        bool found = ReadTag( wholefile, ptr, thistag );
         // ReadTag returns a null at EOF (ideally).
-        if ( thistag.isNull() )
+        if ( !found )
             break;
         // check for 'special' tags...
         // continue past <?xml...> tag
@@ -152,15 +152,18 @@ bool ChemData::SelfContainedTag( QString tag )
 }
 
 // function to extract tags from stream
-QString ChemData::ReadTag( QString f, int &ptr )
+bool ChemData::ReadTag( QString f, int &ptr, QString& tag )
 {
     int t1 = f.indexOf( "<", ptr );
-
+    if (t1==-1)
+        return false;
     ptr = t1;
     int t2 = f.indexOf( ">", ptr );
-
+    if (t2==-1)
+        return false;
     ptr = t2 + 1;
-    return f.mid( t1, ptr - t1 ).toAscii();
+    tag = f.mid( t1, ptr - t1 ).toAscii();
+    return true;
 }
 
 // function to extract data between tags

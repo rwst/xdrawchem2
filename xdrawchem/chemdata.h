@@ -95,7 +95,7 @@ public:
     bool ProcessXML( QString );
     bool LoadCDXMLFile( QString, QString );
     bool SelfContainedTag( QString );
-    QString ReadTag( QString, int & );
+    bool ReadTag(QString, int & , QString &tag);
     QString ReadData( QString, int & );
     QStringList ReadAttr( QString );
     QStringList Tokenize( QString );
