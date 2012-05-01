@@ -34,6 +34,7 @@ public:
     void CleanUpAfterTextTool();
     void setClipboard(QSharedPointer<Clipboard>);
     QSharedPointer<Clipboard> getClipboard();
+    static const Qt::GlobalColor highlightColor = Qt::blue;
 
 public slots:
     // defined in render2d.cpp

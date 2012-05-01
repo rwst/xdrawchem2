@@ -103,7 +103,7 @@ void Bond::Render()
     QColor c1;
 
     if ( highlighted )
-        c1 = QColor( 255, 0, 0 );
+        c1 = Render2D::highlightColor;
     else
         c1 = color;
     // for single bonds
