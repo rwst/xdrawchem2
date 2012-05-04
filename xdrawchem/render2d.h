@@ -14,7 +14,6 @@
 #include "paintable.h"
 #include "dpoint.h"
 #include "prefs.h"
-#include "clipboard.h"
 #include "xdc_event.h"
 
 class ChemData;
@@ -32,8 +31,6 @@ public:
     void CorrectEndpoint_arrow();
     void CorrectEndpoint_bond();
     void CleanUpAfterTextTool();
-    void setClipboard(QSharedPointer<Clipboard>);
-    QSharedPointer<Clipboard> getClipboard();
     static const Qt::GlobalColor highlightColor = Qt::blue;
 
 public slots:
@@ -214,6 +211,7 @@ private slots:
     void saveEPSFinished( int, QProcess::ExitStatus );
 
 private:
+    friend class CustomRingWidget;
     // Qpixmap of double buffer
     QPixmap dbuffer;
     QPixmap grid;

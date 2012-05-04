@@ -25,8 +25,6 @@
 class RenderArea;
 class Render2D;
 class ChemData;
-class Clipboard;
-class Clipboard;
 class XRuler;
 class NetDialog;
 class ColorButton;

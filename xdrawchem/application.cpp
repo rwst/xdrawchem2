@@ -625,7 +625,6 @@ ApplicationWindow::ApplicationWindow()
      * create data system
      */
     m_chemData = new ChemData;
-    m_chemData->clip = new Clipboard;
 
     /// connect (non-Qt) data center and render widget
     m_renderer->setChemData( m_chemData );
@@ -1259,7 +1258,6 @@ void ApplicationWindow::newDoc()
 {
     ApplicationWindow *ed = new ApplicationWindow;
 
-    ed->m_chemData->clip = new Clipboard (m_chemData->clip);
     ed->show();
     ed->HideTextButtons();
 }

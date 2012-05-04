@@ -15,7 +15,6 @@
 #include "cml.h"
 #include "xdc_event.h"
 #include "molinfodialog.h"
-#include "clipboard.h"
 
 #include "prefs.h"
 
@@ -142,9 +141,6 @@ private:
     Render2D *r;
     // Top left corner of visible part of r
     QPoint RenderTopLeft;
-    // Application clipboard
-    friend class ApplicationWindow;
-    Clipboard *clip;
     // list of Drawable objects we are tracking
     QList<QSharedPointer<Drawable> > drawlist;
     // Variables for reading CML/CDXML/XML files

@@ -9,7 +9,6 @@
  *********************************************************************/
 
 #include "drawable.h"
-#include "clipboard.h"
 #include "molecule.h"
 #include "bond.h"
 #include "arrow.h"
@@ -18,6 +17,7 @@
 #include "symbol.h"
 #include "text.h"
 #include "chemdata.h"
+#include "clipboard.h"
 #include "defs.h"
 
 /// Calls Scale() for all molecules in drawlist
@@ -41,6 +41,7 @@ void ChemData::Cut()
 /// Clear clipboard, create (copy of) every molecule in drawlist, append to clipboard
 void ChemData::Copy()
 {
+    Clipboard *clip = Clipboard::get();
     clip->clear();
 
     QSharedPointer<Drawable> tmp_draw;
@@ -86,6 +87,8 @@ void ChemData::Copy()
 /// Deselect all, create (copy of) each molecule on clipboard, add it to self
 bool ChemData::Paste()
 {
+    Clipboard *clip = Clipboard::get();
+
     DeselectAll();
 
     foreach ( QSharedPointer<Drawable> td, clip->objects ) {

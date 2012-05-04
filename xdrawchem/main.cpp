@@ -14,9 +14,9 @@
 #include <QLocale>
 #include <QTranslator>
 #include <QTimer>
+#include <QDebug>
 
 #include "application.h"
-#include "clipboard.h"
 #include "defs.h"
 #include "prefs.h"
 #include "dyk.h"
