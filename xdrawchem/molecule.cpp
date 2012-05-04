@@ -32,12 +32,15 @@ Molecule::Molecule( Render2D * r1, QObject * parent )
 }
 
 /// Copy and construct completely new.
-Molecule::Molecule (Molecule* m)
+Molecule::Molecule (Molecule* m, Render2D *re)
 {
     start = new DPoint(m->start);
     end = new DPoint(m->end);
 
-    r = m->r;
+    if (re==0)
+        r = m->r;
+    else
+        r = re;
     cd = m->cd;
 
     peaklist = m->peaklist;
