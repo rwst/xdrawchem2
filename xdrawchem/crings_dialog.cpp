@@ -87,7 +87,8 @@ void CustomRingWidget::slotTitle( QString & string )
 
 void CustomRingWidget::setMolecule( QSharedPointer<Molecule> m )
 {
-    data->addMolecule( m );
+    QSharedPointer<Molecule> nm (new Molecule(m.data(), render));
+    data->addMolecule( nm );
 
     //QPixmap pixmap=real_render->MakePixmap();
 
@@ -116,12 +117,12 @@ void CustomRingWidget::setMolecule( QSharedPointer<Molecule> m )
     widget->show();
 }
 
-void CustomRingWidget::paintEvent( QPaintEvent * pe )
+void CustomRingWidget::paintEvent( QPaintEvent * /* pe */ )
 {
     QPainter p( widget );
-//    painter = &p;
+    render->painter = &p;
     data->drawAll();
-//    painter = 0;
+    render->painter = 0;
 }
 
 CustomRingDialog::CustomRingDialog( QWidget * parent )
