@@ -101,9 +101,9 @@ void ChemData::Tool( DPoint *target, int mode )
     switch ( mode ) {
     case MODE_TOOL_MOLECULE_INFO:
         mi = new MolInfoDialog( r );
-        tt_mw = m->CalcMW().data();
-        tt_ef = m->CalcEmpiricalFormula().data();
-        tt_ea = m->CalcElementalAnalysis().data();
+        tt_mw = m->CalcMW();
+        tt_ef = m->CalcEmpiricalFormula();
+        tt_ea = m->CalcElementalAnalysis();
         mi->setMW( tt_mw->getText() );
         mi->setEF( tt_ef->getText() );
         mi->setEA( tt_ea->getText() );
@@ -259,10 +259,6 @@ void ChemData::Save3D( QString fn3d )
 
 void ChemData::returnFromMID()
 {
-    Q_CHECK_PTR( mi );
-    Q_CHECK_PTR( tt_mw );
-    Q_CHECK_PTR( tt_ef );
-    Q_CHECK_PTR( tt_ea );
     if ( mi->isMWChecked() )
     {
         QSharedPointer<Text> tt (tt_mw);

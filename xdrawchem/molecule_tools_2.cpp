@@ -274,7 +274,7 @@ double Molecule::CalcPartialCharge( QString atomtype )
     return 0.0;
 }
 
-QSharedPointer<Text> Molecule::CalcEmpiricalFormula( bool from_mw )
+Text *Molecule::CalcEmpiricalFormula( bool from_mw )
 {
     QList < DPoint * >up;
     QString ef;
@@ -470,7 +470,7 @@ QSharedPointer<Text> Molecule::CalcEmpiricalFormula( bool from_mw )
     ny = nr.top() - 16.0;
     nx = ( nr.left() + nr.right() ) / 2.0;
 
-    QSharedPointer<Text> tmp_text ( new Text( r ));
+    Text *tmp_text = new Text( r );
     tmp_pt = new DPoint( nx, ny );
     tmp_text->setPoint( tmp_pt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
@@ -492,9 +492,9 @@ QSharedPointer<Text> Molecule::CalcEmpiricalFormula( bool from_mw )
     return tmp_text;
 }
 
-QSharedPointer<Text> Molecule::CalcMW( bool from_change )
+Text *Molecule::CalcMW( bool from_change )
 {
-    QSharedPointer<Text> tt = CalcEmpiricalFormula( true );
+    // Text *tt = CalcEmpiricalFormula( true );
 
     double nx, ny;
 
@@ -503,7 +503,7 @@ QSharedPointer<Text> Molecule::CalcMW( bool from_change )
     ny = nr.bottom() + 5.0;
     nx = ( nr.left() + nr.right() ) / 2.0;
 
-    QSharedPointer<Text> tmp_text ( new Text( r ));
+    Text *tmp_text = new Text( r );
     tmp_pt = new DPoint( nx, ny );
     tmp_text->setPoint( tmp_pt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
@@ -524,7 +524,7 @@ QSharedPointer<Text> Molecule::CalcMW( bool from_change )
     return tmp_text;
 }
 
-QSharedPointer<Text> Molecule::CalcElementalAnalysis( bool show_dialog )
+Text *Molecule::CalcElementalAnalysis( bool show_dialog )
 {
     QString ea, n1;
 
@@ -573,7 +573,7 @@ QSharedPointer<Text> Molecule::CalcElementalAnalysis( bool show_dialog )
     ny = nr.top() + 8.0;
     nx = nr.right() + 16.0;
 
-    QSharedPointer<Text> tmp_text ( new Text( r ));
+    Text *tmp_text = new Text( r );
     tmp_pt = new DPoint( nx, ny );
     tmp_text->setPoint( tmp_pt );
     //qDebug() << ea;

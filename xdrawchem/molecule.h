@@ -76,9 +76,9 @@ public:
     double CalculateRingAttachAngle( DPoint * );
     void FindHybridization();
     void setGroupType( int );
-    QSharedPointer<Text> CalcMW( bool from_change = false );
-    QSharedPointer<Text> CalcEmpiricalFormula( bool from_mw = false );
-    QSharedPointer<Text> CalcElementalAnalysis( bool show_dialog = true );
+    Text *CalcMW( bool from_change = false );
+    Text *CalcEmpiricalFormula( bool from_mw = false );
+    Text *CalcElementalAnalysis( bool show_dialog = true );
     QStringList Calc13CNMR( bool show_dialog = true );
     void CalcIR();
     QString CalcName();  // actually returns canonical SMILES

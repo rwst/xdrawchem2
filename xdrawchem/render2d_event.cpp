@@ -1241,7 +1241,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // check if we're over a molecule
         QSharedPointer<Molecule> tmp_mol = c->insideMolecule( &tmp_pt );
         if ( tmp_mol != 0 ) {
-            QSharedPointer<Text> tmp_txt = tmp_mol->CalcMW();
+            QSharedPointer<Text> tmp_txt (tmp_mol->CalcMW());
             emit SignalSetStatusBar( tmp_txt->getText() + tr( ", click to paste into drawing" ) );
         } else {
             emit SignalSetStatusBar( tr( "Click on a molecule to calculate its molecular weight" ) );
@@ -1253,7 +1253,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // check if we're over a molecule
         QSharedPointer<Molecule> tmp_mol = c->insideMolecule( &tmp_pt ); // doesn't copy pointer
         if ( tmp_mol != 0 ) {
-            QSharedPointer<Text> tmp_txt = tmp_mol->CalcEmpiricalFormula();
+            QSharedPointer<Text> tmp_txt (tmp_mol->CalcEmpiricalFormula());
             emit SignalSetStatusBar( tmp_txt->getText() + tr( ", click to paste into drawing" ) );
         } else {
             emit SignalSetStatusBar( tr( "Click on a molecule to calculate its empirical formula" ) );
