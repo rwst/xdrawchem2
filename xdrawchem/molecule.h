@@ -66,6 +66,7 @@ public:
     QString ToMDLMolfile( int coords = 0 );
     void FromXML( QString );
     void Changed();
+    void doChanged();
     // defined in molecule_tools.cpp
     QSharedPointer<Bond> FindBond( DPoint *, DPoint * );
     int OrderOfBond( DPoint *, DPoint * );
@@ -192,7 +193,7 @@ private:
     QStringList protonMagEnvList;
     QStringList protonFinalList;
     // render partial charges?
-    bool showPC;
+    bool showPC, changed;
     // reactivity info
     QStringList atomRxns, bondRxns;
 };

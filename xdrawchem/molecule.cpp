@@ -75,6 +75,8 @@ Molecule::~Molecule()
 /// Calls AllPoints(), update double bond states, draw group box if needed, render bonds, texts, symbols.
 void Molecule::Render()
 {
+    doChanged();
+
     /// collect all points
     AllPoints();
 
@@ -1262,9 +1264,16 @@ void Molecule::FromXML( QString xml_tag )
     }
 }
 
-/// update MW and formula, calls AddHydrogens(), BoundingBox(), sets start, end.
 void Molecule::Changed()
 {
+    changed = true;
+}
+
+/// update MW and formula, calls AddHydrogens(), BoundingBox(), sets start, end.
+void Molecule::doChanged()
+{
+    if (!changed)
+        return;
     // add hydrogens and correct labels
     //qDebug() << "changed" ;
     AddHydrogens();
@@ -1272,6 +1281,7 @@ void Molecule::Changed()
     QRect r = BoundingBox();
     start = new DPoint (r.topLeft());
     end = new DPoint (start->x + r.width(), start->y + r.height());
+    changed = false;
     return;
 }
 
