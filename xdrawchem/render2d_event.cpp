@@ -17,7 +17,7 @@
 #include "molinfodialog.h"
 #include "textshapedialog.h"
 
-// move point to grid if needed
+/// move point to grid if needed
 QPoint Render2D::GridLock( QPoint qp1 )
 {
     if ( mode < 200 )
@@ -87,7 +87,7 @@ QPoint Render2D::GridLock( QPoint qp1 )
     return qp1;
 }
 
-// right-click popup choices from mousePressEvent popup (rtclickpopup)
+/// right-click popup choices from mousePressEvent popup (rtclickpopup)
 void Render2D::molInfo()
 {
     qDebug() << "Popup-info";
