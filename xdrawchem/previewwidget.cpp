@@ -270,8 +270,7 @@ void PreviewWidget::paintEvent( QPaintEvent* /* qp1 */ )
         }
         return;
     default:
-        qDebug() << "Unhandled case in PreviewWidget!";
-        exit(1);
+        qWarning() << "Unhandled case in PreviewWidget!";
     }
 }
 

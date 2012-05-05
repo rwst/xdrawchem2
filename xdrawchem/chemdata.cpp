@@ -7,6 +7,7 @@
  *
  * LICENSE: GPL v. 2 see GPL.txt
  *********************************************************************/
+#include <QtDebug>
 
 #include "drawable.h"
 #include "molecule.h"
@@ -125,8 +126,7 @@ void ChemData::addText(QSharedPointer<Text> t )
                 return;
             }
         }
-        qDebug() << "FYI, add text failed";
-        exit(EXIT_FAILURE);
+        qWarning() << "FYI, add text failed";
     }
 }
 

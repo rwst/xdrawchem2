@@ -55,8 +55,7 @@ void ChemData::Copy()
                 clip->objects.append( d );
             }
         } else {
-            qDebug() << "Object other than Molecule in ChemData::Copy()!";
-            exit(1);
+            qWarning() << "Object other than Molecule in ChemData::Copy()!";
             /*
             QList < Drawable * >unique;
             QList < DPoint * >oldPoints, newPoints;
@@ -103,9 +102,7 @@ bool ChemData::Paste()
         }
         else
             {
-            qDebug() << "Unhandled clip->object in ChemData::Paste()";
-            qDebug() << td->metaObject()->className();
-            exit(EXIT_FAILURE);
+            qWarning() << "Unhandled clip->object in ChemData::Paste()" << td->metaObject()->className();
         }
     }
     return true;

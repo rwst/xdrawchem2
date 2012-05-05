@@ -392,8 +392,7 @@ BondEditDialog::BondEditDialog( QWidget *parent, DPoint * s, DPoint * e, Preview
         mygrid->addWidget( symbolBtnBox, 0, 1 );
         break;
         }
-    default: qDebug() << "Unhandled case in BondEditDialog!";
-        exit(1);
+    default: qWarning() << "Unhandled case in BondEditDialog!";
     }
 
     QHBoxLayout *btnLayout = new QHBoxLayout();

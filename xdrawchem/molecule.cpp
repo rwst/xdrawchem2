@@ -781,8 +781,7 @@ bool Molecule::Erase( QSharedPointer<Drawable> d )
             retval = symbols.removeAll( d.objectCast<Symbol>() );
         }
         else {
-            qDebug() << "Unhandled case in Mol::Erase()!";
-            exit(EXIT_FAILURE);
+            qWarning() << "Unhandled case in Mol::Erase()!";
         }
     }
     if ( retval == false )

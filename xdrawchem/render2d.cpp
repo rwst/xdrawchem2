@@ -327,8 +327,7 @@ void Render2D::setMode_DrawCurveArrow( curveArrowType type )
         symbolfile = QString::fromLatin1( "CCW270" );
         break;
     default:
-        qDebug() << "Unhandled case in Render2D::setMode_DrawCurveArrow(): " << type;
-        exit(1);
+        qWarning() << "Unhandled case in Render2D::setMode_DrawCurveArrow(): " << type;
     }
     setCursor( Qt::CrossCursor );
     c->DeselectAll();
