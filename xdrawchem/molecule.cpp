@@ -158,11 +158,11 @@ void Molecule::CalcOffsets()
         bottom = true;
         left = true;
         right = true;
-        tmp_pt = tmp_sym->Start();
+        DPoint *tpt = tmp_sym->Start();
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) ) {
-                op = tmp_bond->otherPoint( tmp_pt );
-                ang = tmp_bond->getAngle( tmp_pt, op );
+            if ( tmp_bond->Find( tpt ) ) {
+                op = tmp_bond->otherPoint( tpt );
+                ang = tmp_bond->getAngle( tpt, op );
                 if ( ( ang > 300.0 ) || ( ang < 60.0 ) )
                     right = false;
                 if ( ( ang > 30.0 ) && ( ang < 150.0 ) )
@@ -272,15 +272,18 @@ void Molecule::SetColorIfHighlighted( QColor c )
         tmp_sym->SetColorIfHighlighted( c );
 }
 
-/// Copy Text labels into DPoint::element (needed esp. by save, CalcMW, NMR prediction...)
+/// TODO: Copy Text labels into DPoint::element (needed esp. by save, CalcMW, NMR prediction...)
 void Molecule::CopyTextToDPoint()
 {
+    // outcommented because incomplete and unused
+    /*
     foreach ( QSharedPointer<Text> tmp_text, labels ) {
-        tmp_pt = tmp_text->Start();
-        tmp_pt->element = tmp_text->getText();
+        DPoint *tpt = tmp_text->Start();
+        tpt->element = tmp_text->getText();
         // clear aromaticity here
         tmp_pt->aromatic = false;
     }
+    */
 }
 
 /// Calls SelectAll(), BoundingBox(), DeselectAll()
@@ -381,31 +384,32 @@ QList < DPoint * >Molecule::AllPoints()
     QList < DPoint * >pl;
 
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-        tmp_pt = tmp_bond->Start();
-        if ( pl.contains( tmp_pt ) == 0 )
-            pl.append( tmp_pt );
-        tmp_pt = tmp_bond->End();
-        if ( pl.contains( tmp_pt ) == 0 )
-            pl.append( tmp_pt );
+        DPoint *tpt = tmp_bond->Start();
+        if ( pl.contains( tpt ) == 0 )
+            pl.append( tpt );
+        tpt = tmp_bond->End();
+        if ( pl.contains( tpt ) == 0 )
+            pl.append( tpt );
     }
     foreach ( QSharedPointer<Text> tmp_text, labels ) {
-        tmp_pt = tmp_text->Start();
-        if ( pl.contains( tmp_pt ) == 0 )
-            pl.append( tmp_pt );
+        DPoint *tpt = tmp_text->Start();
+        if ( pl.contains( tpt ) == 0 )
+            pl.append( tpt );
     }
     // Copy Text labels to DPoint's as needed
+    // tODO: this function's result is NOT used
     CopyTextToDPoint();
     // Determine number of substituents at each point
     int c1 = 0;
 
-    foreach ( tmp_pt, pl ) {
-        tmp_pt->serial = c1;    // serialize atoms
+    foreach ( DPoint *tpt, pl ) {
+        tpt->serial = c1;    // serialize atoms
         c1++;
-        tmp_pt->hit = false;    // also reset "hit"
-        tmp_pt->substituents = 0;
+        tpt->hit = false;    // also reset "hit"
+        tpt->substituents = 0;
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) )
-                tmp_pt->substituents = tmp_pt->substituents + tmp_bond->Order();
+            if ( tmp_bond->Find( tpt ) )
+                tpt->substituents += tmp_bond->Order();
         }
     }
     // serialize atoms -- copy list place to serial field of DPoint
@@ -445,30 +449,29 @@ const QList <QSharedPointer<Bond> > Molecule::AllBonds()
 static QList<DPoint*> & MakeTomoveList(Molecule* m)
 {
     static QList<DPoint*> tomove;
-    DPoint *tmp_pt;
 
     foreach ( QSharedPointer<Bond> tmp_bond, m->bonds ) {
         if ( tmp_bond->Highlighted() ) {
-            tmp_pt = tmp_bond->Start();
-            if ( tomove.contains( tmp_pt ) == 0 )
-                tomove.append( tmp_pt );
-            tmp_pt = tmp_bond->End();
-            if ( tomove.contains( tmp_pt ) == 0 )
-                tomove.append( tmp_pt );
+            DPoint *tpt = tmp_bond->Start();
+            if ( tomove.contains( tpt ) == 0 )
+                tomove.append( tpt );
+            tpt = tmp_bond->End();
+            if ( tomove.contains( tpt ) == 0 )
+                tomove.append( tpt );
         }
     }
     foreach ( QSharedPointer<Text> tmp_text, m->labels ) {
         if ( tmp_text->Highlighted() ) {
-            tmp_pt = tmp_text->Start();
-            if ( tomove.contains( tmp_pt ) == 0 )
-                tomove.append( tmp_pt );
+            DPoint *tpt = tmp_text->Start();
+            if ( tomove.contains( tpt ) == 0 )
+                tomove.append( tpt );
         }
     }
     foreach ( QSharedPointer<Symbol> tmp_sym, m->symbols ) {
         if ( tmp_sym->Highlighted() ) {
-            tmp_pt = tmp_sym->Start();
-            if ( tomove.contains( tmp_pt ) == 0 )
-                tomove.append( tmp_pt );
+            DPoint *tpt = tmp_sym->Start();
+            if ( tomove.contains( tpt ) == 0 )
+                tomove.append( tpt );
         }
     }
     return tomove;
@@ -479,9 +482,9 @@ void Molecule::Move( double dx, double dy )
 {
     QList<DPoint*> & tomove = MakeTomoveList(this);
 
-    foreach ( tmp_pt, tomove ) {
-        tmp_pt->x += dx;
-        tmp_pt->y += dy;
+    foreach ( DPoint *tpt, tomove ) {
+        tpt->x += dx;
+        tpt->y += dy;
     }
     Changed();
 }
@@ -491,14 +494,14 @@ void Molecule::Rotate( DPoint * origin, double angle )
 {
     QList<DPoint*> & tomove = MakeTomoveList(this);
 
-    foreach ( tmp_pt, tomove ) {
-        double thisx = tmp_pt->x - origin->x;
-        double thisy = tmp_pt->y - origin->y;
+    foreach ( DPoint *tpt, tomove ) {
+        double thisx = tpt->x - origin->x;
+        double thisy = tpt->y - origin->y;
         double newx = thisx * cos( angle ) + thisy * sin( angle );
         double newy = -thisx * sin( angle ) + thisy * cos( angle );
 
-        tmp_pt->x = newx + origin->x;
-        tmp_pt->y = newy + origin->y;
+        tpt->x = newx + origin->x;
+        tpt->y = newy + origin->y;
     }
     Changed();
 }
@@ -511,22 +514,22 @@ void Molecule::Rotate( double angle )
     double centerx = 0.0, centery = 0.0;
     int n = 0;
 
-    foreach ( tmp_pt, tomove ) {
-        centerx += tmp_pt->x;
-        centery += tmp_pt->y;
+    foreach ( DPoint *tpt, tomove ) {
+        centerx += tpt->x;
+        centery += tpt->y;
         n++;
     }
     centerx /= ( double ) n;
     centery /= ( double ) n;
 
-    foreach ( tmp_pt, tomove ) {
-        double thisx = tmp_pt->x - centerx;
-        double thisy = tmp_pt->y - centery;
+    foreach ( DPoint *tpt, tomove ) {
+        double thisx = tpt->x - centerx;
+        double thisy = tpt->y - centery;
         double newx = thisx * cos( angle ) + thisy * sin( angle );
         double newy = -thisx * sin( angle ) + thisy * cos( angle );
 
-        tmp_pt->x = newx + centerx;
-        tmp_pt->y = newy + centery;
+        tpt->x = newx + centerx;
+        tpt->y = newy + centery;
     }
     Changed();
 }
@@ -537,13 +540,13 @@ void Molecule::Flip( DPoint * origin, int direction )
     QList<DPoint*> & tomove = MakeTomoveList(this);
     double delta;
 
-    foreach ( tmp_pt, tomove ) {
+    foreach ( DPoint *tpt, tomove ) {
         if ( direction == FLIP_H ) {
-            delta = tmp_pt->x - origin->x;
-            tmp_pt->x = tmp_pt->x - 2 * delta;
+            delta = tpt->x - origin->x;
+            tpt->x -= 2 * delta;
         } else {                // direction == FLIP_V
-            delta = tmp_pt->y - origin->y;
-            tmp_pt->y = tmp_pt->y - 2 * delta;
+            delta = tpt->y - origin->y;
+            tpt->y -= 2 * delta;
         }
     }
     Changed();
@@ -556,19 +559,19 @@ void Molecule::Resize( DPoint * origin, double scale )
 
     QList<DPoint*> & tomove = MakeTomoveList(this);
 
-    foreach ( tmp_pt, tomove ) {
-        dx = tmp_pt->x - origin->x;
-        dy = tmp_pt->y - origin->y;
+    foreach ( DPoint *tpt, tomove ) {
+        dx = tpt->x - origin->x;
+        dy = tpt->y - origin->y;
         dx *= scale;
         dy *= scale;
-        tmp_pt->x = origin->x + dx;
-        tmp_pt->y = origin->y + dy;
+        tpt->x = origin->x + dx;
+        tpt->y = origin->y + dy;
     }
     Changed();
 }
 
 /// Returns bounding box of all bonds and labels in this molecule.
-QRect Molecule::BoundingBox()
+const QRect Molecule::BoundingBox() const
 {
     int top = 99999, bottom = 0, left = 99999, right = 0;
     QRect tmprect;
@@ -875,52 +878,52 @@ QString Molecule::ToXML( QString xml_id )
         s.append( "</grouptype>\n" );
     }
     // Add XML ID's to DPoint's, write as we go
-    foreach ( tmp_pt, up ) {
+    foreach ( DPoint *tpt, up ) {
         n1.setNum( n );
         nfull = QString( "a" ) + n1;
-        tmp_pt->id = nfull;
+        tpt->id = nfull;
         n++;
         s.append( "<atom id=\"" );
-        s.append( tmp_pt->id );
+        s.append( tpt->id );
         s.append( "\">\n" );
         s.append( "<element>" );
-        s.append( tmp_pt->element );
+        s.append( tpt->element );
         s.append( "</element>\n" );
         s.append( "<elemask>" );
-        s.append( tmp_pt->elementmask );
+        s.append( tpt->elementmask );
         s.append( "</elemask>\n" );
-        if ( tmp_pt->hit )
+        if ( tpt->hit )
             s.append( "<textobject>yes</textobject>\n" );
-        if ( tmp_pt->symbol.length() > 1 ) {
+        if ( tpt->symbol.length() > 1 ) {
             s.append( "<symtype>" );
-            s.append( tmp_pt->symbol );
+            s.append( tpt->symbol );
             s.append( "</symtype>\n" );
         }
         s.append( "<coordinate2>" );
-        n1.setNum( tmp_pt->x );
+        n1.setNum( tpt->x );
         s.append( n1 );
         s.append( " " );
-        n1.setNum( tmp_pt->y );
+        n1.setNum( tpt->y );
         s.append( n1 );
         s.append( "</coordinate2>\n" );
 
         // write color
         s.append( "<color>" );
-        n1.setNum( tmp_pt->color.red() );
+        n1.setNum( tpt->color.red() );
         s.append( n1 );
         s.append( " " );
-        n1.setNum( tmp_pt->color.green() );
+        n1.setNum( tpt->color.green() );
         s.append( n1 );
         s.append( " " );
-        n1.setNum( tmp_pt->color.blue() );
+        n1.setNum( tpt->color.blue() );
         s.append( n1 );
         s.append( "</color>\n" );
 
         // write font
         s.append( "<font>" );
-        s.append( tmp_pt->font.family() );
+        s.append( tpt->font.family() );
         s.append( QString( "#" ) );
-        n1.setNum( tmp_pt->font.pointSize() );
+        n1.setNum( tpt->font.pointSize() );
         s.append( n1 );
         s.append( "</font>\n" );
 
@@ -1004,24 +1007,24 @@ QString Molecule::ToCDXML( QString xml_id )
     s.append( "\">\n" );
 
     // Add XML ID's to DPoint's, write as we go
-    foreach ( tmp_pt, up ) {
+    foreach ( DPoint *tpt, up ) {
         n1.setNum( n );
-        tmp_pt->id = n1;
+        tpt->id = n1;
         n++;
         s.append( "<n id=\"" );
-        s.append( tmp_pt->id );
+        s.append( tpt->id );
         s.append( "\" p=\"" );
-        n1.setNum( tmp_pt->x );
+        n1.setNum( tpt->x );
         s.append( n1 );
         s.append( " " );
-        n1.setNum( tmp_pt->y );
+        n1.setNum( tpt->y );
         s.append( n1 );
         s.append( "\"" );
-        if ( tmp_pt->element == "C" ) {
+        if ( tpt->element == "C" ) {
             s.append( "/>\n" );
         } else {
             s.append( "><t><s font=\"21\" size=\"10\" face=\"96\">" );
-            s.append( tmp_pt->element );
+            s.append( tpt->element );
             s.append( "</s></t></n>\n" );
         }
     }
@@ -1065,7 +1068,6 @@ QString Molecule::ToMDLMolfile( int coords )
     QList < DPoint * >up;
 //   Q3PtrList<Drawable> uo;
     QString tmpline;
-    int acount = 0, bcount = 0;
 
     /// get all unique points and objects
     up = AllPoints();
@@ -1078,11 +1080,8 @@ QString Molecule::ToMDLMolfile( int coords )
     t << endl << endl << endl;
 
     /// find counts...
-    foreach ( tmp_pt, up ) {
-        acount++;
-    }
-
-    bcount = bonds.count();
+    int acount = up.count();
+    int bcount = bonds.count();
     // write counts line
     t.setFieldWidth( 3 );
     t << acount;
@@ -1090,8 +1089,8 @@ QString Molecule::ToMDLMolfile( int coords )
     t << bcount << "  0  0  0  0  0  0  0  0  1" << endl;
 
     // Write atom list
-    foreach ( tmp_pt, up ) {
-      localtextdocument.setHtml(tmp_pt->element);
+    foreach ( DPoint *tpt, up ) {
+      localtextdocument.setHtml(tpt->element);
       tmpline = localtextdocument.toPlainText();
       //tmpline = tmp_pt->element;
         if ( tmpline.length() < 3 )
@@ -1100,16 +1099,16 @@ QString Molecule::ToMDLMolfile( int coords )
             tmpline.append( ' ' );
         if ( coords == 0 ) {    // 2D
             t.setFieldWidth( 10 );
-            t << tmp_pt->x;
+            t << tpt->x;
             t.setFieldWidth( 10 );
-            t << -tmp_pt->y << "    0.0000 " << tmpline;
+            t << -tpt->y << "    0.0000 " << tmpline;
         } else {                // 3D
             t.setFieldWidth( 10 );
-            t << tmp_pt->x;
+            t << tpt->x;
             t.setFieldWidth( 10 );
-            t << tmp_pt->y;
+            t << tpt->y;
             t.setFieldWidth( 10 );
-            t << tmp_pt->z;
+            t << tpt->z;
             t << tmpline;
         }
         t << " 0  0  0  0  0  0  0  0  0  0  0  0" << endl;
@@ -1155,9 +1154,9 @@ void Molecule::FromXML( QString xml_tag )
         int i1 = xml_tag.indexOf( "<atom " );
         int i2 = xml_tag.indexOf( "</atom>" ) + 7;
         if ( i1 >= 0 ) {
-            tmp_pt = new DPoint;
-            tmp_pt->FromXML( xml_tag.mid( i1, i2 - i1 ) );
-            points.append( tmp_pt );
+            DPoint *tpt = new DPoint;
+            tpt->FromXML( xml_tag.mid( i1, i2 - i1 ) );
+            points.append( tpt );
             xml_tag.remove( i1, i2 - i1 );
         } else {
             break;
@@ -1181,9 +1180,9 @@ void Molecule::FromXML( QString xml_tag )
             subtag.remove( i2, 999 );
             subtag.remove( i1, 7 );
             DPoint *s1 = NULL;
-            foreach ( tmp_pt, points ) {
-                if ( tmp_pt->id == subtag ) {
-                    s1 = tmp_pt;
+            foreach ( DPoint *tpt, points ) {
+                if ( tpt->id == subtag ) {
+                    s1 = tpt;
                     break;
                 }
             }
@@ -1196,9 +1195,9 @@ void Molecule::FromXML( QString xml_tag )
             subtag.remove( i2, 999 );
             subtag.remove( i1, 5 );
             DPoint *e1 = NULL;
-            foreach ( tmp_pt, points ) {
-                if ( tmp_pt->id == subtag ) {
-                    e1 = tmp_pt;
+            foreach ( DPoint *tpt, points ) {
+                if ( tpt->id == subtag ) {
+                    e1 = tpt;
                     break;
                 }
             }
@@ -1242,25 +1241,25 @@ void Molecule::FromXML( QString xml_tag )
         }
     } while ( 1 );
     // add Text and Symbol as needed
-    foreach ( tmp_pt, points ) {
-        if ( ( tmp_pt->element != QString( "C" ) ) || ( tmp_pt->hit == true ) ) {
+    foreach ( DPoint *tpt, points ) {
+        if ( ( tpt->element != QString( "C" ) ) || ( tpt->hit == true ) ) {
             QSharedPointer<Text> tmp_text ( new Text( r ));
-            tmp_text->setPoint( tmp_pt );
-            tmp_text->SetColor( tmp_pt->color );
-            tmp_text->setFont( tmp_pt->font );
-            tmp_text->setText( tmp_pt->elementmask );
-            if ( tmp_pt->elementmask.length() > 0 ) {
+            tmp_text->setPoint( tpt );
+            tmp_text->SetColor( tpt->color );
+            tmp_text->setFont( tpt->font );
+            tmp_text->setText( tpt->elementmask );
+            if ( tpt->elementmask.length() > 0 ) {
 //                tmp_text->setTextMask( tmp_pt->elementmask );
             } else {
-                tmp_pt->element.fill( ' ' );
+                tpt->element.fill( ' ' );
 //                tmp_text->setTextMask( tmp_pt->element );
             }
             labels.append( tmp_text );
         }
-        if ( tmp_pt->symbol.length() > 0 ) {
+        if ( tpt->symbol.length() > 0 ) {
             QSharedPointer<Symbol> tmp_sym ( new Symbol( r ));
-            tmp_sym->setPoint( tmp_pt );
-            tmp_sym->SetSymbol( tmp_pt->symbol );
+            tmp_sym->setPoint( tpt );
+            tmp_sym->SetSymbol( tpt->symbol );
             symbols.append( tmp_sym );
         }
     }
@@ -1290,7 +1289,8 @@ void Molecule::doChanged()
 QDebug operator<<(QDebug dbg, const Molecule &m)
 {
     // Drawable part
-    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id << m.tmp_pt << m.style << m.which << m.thick;
+    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id << m.style << m.which << m.thick;
+    dbg.space() << m.BoundingBox();
     return dbg.space();
 }
 

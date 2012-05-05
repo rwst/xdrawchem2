@@ -54,7 +54,7 @@ public:
     void Rotate( double );
     void Flip( DPoint *, int );
     void Resize( DPoint *, double );
-    QRect BoundingBox();
+    const QRect BoundingBox() const;
     QRect BoundingBoxAll();
     QList<DPoint *> AllPoints();
     QList<QSharedPointer<Drawable> > AllObjects();
