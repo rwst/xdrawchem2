@@ -36,6 +36,7 @@ Molecule::Molecule (Molecule* m, Render2D *re)
 {
     start = new DPoint(m->start);
     end = new DPoint(m->end);
+    ingroup = false;
 
     if (re==0)
         r = m->r;
