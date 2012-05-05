@@ -126,6 +126,7 @@ public:
     void Retro( Molecule * );
     // defined here
     void setThickKludge( int lt1 ) { thick_kludge = lt1; }
+    Molecule *debug_mol;
 
 public slots:
     void XDCEventHandler( XDC_Event * );

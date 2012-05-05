@@ -48,11 +48,13 @@ void ChemData::Copy()
     foreach ( tmp_draw, drawlist ) {
         if ( tmp_draw->metaObject() == &Molecule::staticMetaObject ) {
             Molecule *mp =(Molecule*)tmp_draw.data();
+            qDebug() << "Copy() original: ===" << *mp;
 
             // Copy to clipboard if selected
             if ( mp->Highlighted() == true ) {
                 QSharedPointer<Molecule> d (new Molecule (mp));
                 clip->objects.append( d );
+                qDebug() << "Copy() copy on clipboard: ===" << *d;
             }
         } else {
             qWarning() << "Object other than Molecule in ChemData::Copy()!";
@@ -95,10 +97,13 @@ bool ChemData::Paste()
 
     foreach ( QSharedPointer<Drawable> td, clip->objects ) {
         if (td->metaObject() == &Molecule::staticMetaObject) {
-            QSharedPointer<Molecule> m (new Molecule ((Molecule*)td.data()));
+            Molecule *mp = (Molecule*)td.data();
+            QSharedPointer<Molecule> m (new Molecule (mp));
+            qDebug() << "Paste() clipboard original: ===" << *mp;
             m->Move(30,30);
             FinishMove();
             addMolecule(m);
+            qDebug() << "Paste() copy in chemdata: ===" << *m;
         }
         else
             {

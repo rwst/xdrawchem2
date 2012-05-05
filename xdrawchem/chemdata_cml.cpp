@@ -503,6 +503,9 @@ void ChemData::Convert_CML_Lists_To_Native()
         drawlist.append( tmp_draw );
     }
 
+    qDebug() << *debug_mol;
+    SelectAll();
+    qDebug() << *debug_mol;
     QRect sb = selectionBox();
 
     qDebug() << sb.left();

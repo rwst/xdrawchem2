@@ -162,6 +162,7 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
         m->addBond( s, e, thick, order, c, hl );
         QSharedPointer<Drawable> d (m);
         drawlist.append( d );
+        debug_mol = (Molecule*)d.data();
         return;
     }
     // one point exists, or both in same molecule
