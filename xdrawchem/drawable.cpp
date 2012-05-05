@@ -320,7 +320,7 @@ bool Drawable::isWithinRect( QRect, bool )
     return false;
 }
 
-QRect Drawable::BoundingBox()
+const QRect Drawable::BoundingBox() const
 {
     return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );
 }

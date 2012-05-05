@@ -51,7 +51,7 @@ public:
     void setStereo( int a ) { stereo = a; }
     int Dash() { return dashed; }
     void setDash( int d ) { dashed = d; }
-    QRect BoundingBox();
+    const QRect BoundingBox() const;
     DPoint *otherPoint( DPoint * );
     void setIR_shift( double in1 ) { IR_shift = in1; }
     void setIR_intensity( QString in1 ) { IR_intensity = in1; }

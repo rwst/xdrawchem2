@@ -764,7 +764,7 @@ bool Text::WithinBounds( DPoint * target )
         return false;
 }
 
-QRect Text::BoundingBox()
+const QRect Text::BoundingBox() const
 {
     if ( highlighted == false )
         return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );
@@ -1168,7 +1168,7 @@ void Text::Select( DPoint * e1, DPoint * e2 )
     qDebug() << selectMin << " " << selectMax;
 }
 
-QPoint Text::GetTopLeftPoint()
+QPoint Text::GetTopLeftPoint() const
 {
     bool leftcenter = true;
 

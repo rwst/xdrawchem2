@@ -23,7 +23,7 @@ public:
     double distanceTo ( DPoint *);
     void setPoints( DPoint *, DPoint * );
     bool isWithinRect( QRect, bool );
-    QRect BoundingBox();
+    const QRect BoundingBox() const;
     QString ToXML( QString );
     QString ToCDXML( QString );
     void FromXML( QString );

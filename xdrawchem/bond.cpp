@@ -325,7 +325,7 @@ void Bond::setPoints( DPoint * s, DPoint * e )
     end = e;
 }
 
-QRect Bond::BoundingBox()
+const QRect Bond::BoundingBox() const
 {
     int top, bottom, left, right, swp;
 

@@ -259,7 +259,7 @@ bool GraphicObject::isWithinRect( QRect n, bool /*shiftdown*/ )
     return highlighted;
 }
 
-QRect GraphicObject::BoundingBox()
+const QRect GraphicObject::BoundingBox() const
 {
     if ( highlighted == false )
         return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );

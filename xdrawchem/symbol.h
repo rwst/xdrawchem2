@@ -21,7 +21,7 @@ public:
     DPoint *FindNearestPoint( DPoint *, double & );
     double distanceTo ( DPoint * );
     void setPoint( DPoint * );
-    QRect BoundingBox();
+    const QRect BoundingBox() const;
     bool isWithinRect( QRect, bool );
     bool WithinBounds( DPoint * );
     QString ToXML( QString );

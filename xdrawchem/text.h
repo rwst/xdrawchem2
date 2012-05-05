@@ -32,7 +32,7 @@ public:
     void InsertCharacter( class QKeyEvent * );
     void InsertString( QString );
     void DeleteKeyPressed();
-    QPoint GetTopLeftPoint();  // get real top left point, based on justify
+    QPoint GetTopLeftPoint() const;  // get real top left point, based on justify
     QPoint NearestCenter( QPoint, int, int & );
 
     void setText( QString nt1, QString nt2 )
@@ -100,7 +100,7 @@ public:
     QFont getFont() { return font; }
     void MoveCursor( DPoint * );
     void Select( DPoint *, DPoint * );
-    QRect BoundingBox();
+    const QRect BoundingBox() const;
     void DoSuperscript();
     void DoSubscript();
     void DoBold();

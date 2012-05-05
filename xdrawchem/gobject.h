@@ -30,7 +30,7 @@ public:
     void setPoints( DPoint *, DPoint * );
     void setPointArray( QPolygon );
     bool isWithinRect( QRect, bool );
-    QRect BoundingBox();
+    const QRect BoundingBox() const;
     QString ToXML( QString );
     QString ToCDXML( QString );
     void FromXML( QString );

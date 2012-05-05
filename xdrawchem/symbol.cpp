@@ -536,7 +536,7 @@ void Symbol::setPoint( DPoint * s )
     start = s;
 }
 
-QRect Symbol::BoundingBox()
+const QRect Symbol::BoundingBox() const
 {
     if ( highlighted == false )
         return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );

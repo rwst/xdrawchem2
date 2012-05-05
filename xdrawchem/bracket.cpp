@@ -283,7 +283,7 @@ bool Bracket::isWithinRect( QRect n, bool /*shiftdown*/ )
     return highlighted;
 }
 
-QRect Bracket::BoundingBox()
+const QRect Bracket::BoundingBox() const
 {
     if ( highlighted == false )
         return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );

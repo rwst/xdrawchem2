@@ -33,7 +33,7 @@ public:
     virtual void Rotate(DPoint *, double);
     virtual void Flip(DPoint *, int);
     virtual void Resize(DPoint *, double);
-    virtual QRect BoundingBox();
+    virtual const QRect BoundingBox() const;
     virtual QList<DPoint *> AllPoints();
     virtual QString ToXML(QString);
     virtual QString ToCDXML(QString);

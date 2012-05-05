@@ -196,7 +196,7 @@ QRect CurveArrow::BoundingBox() {
 }
 */
 
-QRect CurveArrow::BoundingBox()
+const QRect CurveArrow::BoundingBox() const
 {
     if ( highlighted == false )
         return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );

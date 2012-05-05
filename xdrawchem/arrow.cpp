@@ -214,7 +214,7 @@ void Arrow::setPoints( DPoint * s, DPoint * e )
     end = e;
 }
 
-QRect Arrow::BoundingBox()
+const QRect Arrow::BoundingBox() const
 {
     if ( highlighted == false )
         return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );
