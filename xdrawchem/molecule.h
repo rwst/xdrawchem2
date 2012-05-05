@@ -170,6 +170,8 @@ public:
     QList<QSharedPointer<Text> > labels;
     QList<QSharedPointer<Symbol> > symbols;
 
+    friend QDebug operator<<(QDebug dbg, const Molecule &m);
+
 private:
     // Renderer
     Render2D *r;

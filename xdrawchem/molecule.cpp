@@ -230,9 +230,10 @@ bool Molecule::isWithinRect( QRect qr, bool shiftdown )
     return false;
 }
 
-/// Calls SelectAll() for bonds, labels, symbols
+/// Calls SelectAll() for base class, bonds, labels, symbols
 void Molecule::SelectAll()
 {
+    Drawable::SelectAll();
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
         tmp_bond->SelectAll();
 
@@ -243,9 +244,10 @@ void Molecule::SelectAll()
         tmp_sym->SelectAll();
 }
 
-/// Calls DeselectAll() for bonds, labels, symbols
+/// Calls DeselectAll() for base class, bonds, labels, symbols
 void Molecule::DeselectAll()
 {
+    Drawable::DeselectAll();
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
         tmp_bond->DeselectAll();
 
@@ -1282,6 +1284,13 @@ void Molecule::doChanged()
     end = new DPoint (start->x + r.width(), start->y + r.height());
     changed = false;
     return;
+}
+
+QDebug operator<<(QDebug dbg, const Molecule &m)
+{
+    // Drawable part
+    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id << m.tmp_pt << m.style << m.which << m.thick;
+    return dbg.space();
 }
 
 // kate: tab-width 4; indent-width 4; space-indent on; replace-trailing-space-save on;
