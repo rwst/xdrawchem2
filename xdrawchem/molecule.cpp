@@ -450,6 +450,7 @@ static QList<DPoint*> & MakeTomoveList(Molecule* m)
 {
     static QList<DPoint*> tomove;
 
+    tomove.clear();
     foreach ( QSharedPointer<Bond> tmp_bond, m->bonds ) {
         if ( tmp_bond->Highlighted() ) {
             DPoint *tpt = tmp_bond->Start();
