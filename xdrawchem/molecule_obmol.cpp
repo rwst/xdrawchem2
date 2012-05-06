@@ -35,7 +35,7 @@ struct pt_cmp
 
 using namespace OpenBabel;
 
-const char Molecule::symbol[110][4] = {
+static const char esymbol[110][4] = {
     "H", "He", "Li", "Be", "B", "C", "N", "O", "F", "Ne",
     "Na", "Mg", "Al", "Si", "P", "S", "Cl", "Ar", "K", "Ca",    // 20
     "Sc", "Ti", "V", "Cr", "Mn", "Fe", "Co", "Ni", "Cu", "Zn",
@@ -135,7 +135,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
         if ( !atom1->IsCarbon() ) {
             QString str( "<element>" );
 
-            str += symbol[atom1->GetAtomicNum() - 1];
+            str += esymbol[atom1->GetAtomicNum() - 1];
             str += "</element>";
             s->SetElementFromXML( str );
 
@@ -144,7 +144,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
         if ( !atom2->IsCarbon() ) {
             QString str( "<element>" );
 
-            str += symbol[atom2->GetAtomicNum() - 1];
+            str += esymbol[atom2->GetAtomicNum() - 1];
             str += "</element>";
             e->SetElementFromXML( str );
 
@@ -157,7 +157,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
         if ( !atom1->IsCarbon() ) {
 
             QSharedPointer<Text> text ( new Text( r ));
-            QString str = symbol[atom1->GetAtomicNum() - 1];
+            QString str = esymbol[atom1->GetAtomicNum() - 1];
 
             text->setText( str );
             text->setPoint( s );
@@ -169,7 +169,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
         if ( !atom2->IsCarbon() ) {
 
             QSharedPointer<Text> text ( new Text( r ));
-            QString str = symbol[atom2->GetAtomicNum() - 1];
+            QString str = esymbol[atom2->GetAtomicNum() - 1];
 
             text->setText( str );
             text->setPoint( e );

@@ -176,9 +176,6 @@ private:
     Render2D *r;
     // ChemData
     ChemData *cd;
-    // current/temporary DPoint
-    DPoint *tmp_pt;
-    // list of elements which make up this molecule
     // Text objects which hold MW and formula
     Text *text_mw, *text_formula;
     // used for elemental analysis (set by CalcEmpiricalFormula)

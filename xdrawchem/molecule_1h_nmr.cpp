@@ -77,10 +77,10 @@ void Molecule::AddNMRprotons()
     QString orig_element;
     double ox, oy;
 
-    foreach ( tmp_pt, up ) {
-        orig_element = tmp_pt->element;
-        ox = tmp_pt->x;
-        oy = tmp_pt->y;
+    foreach ( DPoint *tpt, up ) {
+        orig_element = tpt->element;
+        ox = tpt->x;
+        oy = tpt->y;
         if ( orig_element == "H" )
             continue;
         if ( orig_element == "" )
@@ -108,7 +108,7 @@ void Molecule::AddNMRprotons()
         }
         // find order of bonds
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) ) {
+            if ( tmp_bond->Find( tpt ) ) {
                 if ( tmp_bond->Order() < 4 )
                     sumbonds += tmp_bond->Order();
                 else
@@ -125,7 +125,7 @@ void Molecule::AddNMRprotons()
             new_proton->nmr_proton = true;
             new_proton->x = ox;
             new_proton->y = oy;
-            tmp_bond->setPoints( tmp_pt, new_proton );
+            tmp_bond->setPoints( tpt, new_proton );
             bonds.append( tmp_bond );
         }
     }
@@ -154,8 +154,8 @@ void Molecule::ProtonEnvironment()
 
     protonMagEnvList.clear();
 
-    foreach ( tmp_pt, up ) {
-        tmp_pt->protonHOSECode = "";
+    foreach ( DPoint *tpt, up ) {
+        tpt->protonHOSECode = "";
         rgroups.clear();
         r1 = "";
         r2 = "";
@@ -163,14 +163,14 @@ void Molecule::ProtonEnvironment()
         r_current = "";
         rnext = 0;
         adj_protons = 1;
-        tmp_pt->H1_multiplicity = 0;
+        tpt->H1_multiplicity = 0;
         search_stack.clear();
-        if ( tmp_pt->element != "H" )
+        if ( tpt->element != "H" )
             continue;
         /// first, find atom this proton is connected to (depth 1)
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) ) {
-                depth1_pt = tmp_bond->otherPoint( tmp_pt );
+            if ( tmp_bond->Find( tpt ) ) {
+                depth1_pt = tmp_bond->otherPoint( tpt );
                 nearest = depth1_pt->baseElement();
                 if ( ( depth1_pt->inring == true ) && ( depth1_pt->aromatic == true ) )
                     nearest.append( "A" );
@@ -184,7 +184,7 @@ void Molecule::ProtonEnvironment()
             if ( tmp_bond->Find( depth1_pt ) ) {
                 depth2_pt = tmp_bond->otherPoint( depth1_pt );
                 //qDebug() << "DEPTH2: "<< depth2_pt->element ;
-                if ( depth2_pt == tmp_pt )
+                if ( depth2_pt == tpt )
                     continue;
                 search_stack.append( depth2_pt );
                 depth2_pt->serial = tmp_bond->Order();
@@ -244,7 +244,7 @@ void Molecule::ProtonEnvironment()
         if ( ( r1 != r2 ) && ( r2 != r3 ) && ( r1 != r3 ) && ( r1 != "H" ) && ( r1 != "" ) && ( r2 != "" ) && ( r3 != "" ) && ( r2 != "H" ) && ( r3 != "H" ) && ( nearest.left( 1 ) == "C" ) && ( nearest.left( 2 ) != "CA" ) ) {
             nearest.prepend( "*" );
         }
-        tmp_pt->protonHOSECode = nearest;
+        tpt->protonHOSECode = nearest;
         qDebug() << "env:" << nearest;
     }
 }
@@ -259,23 +259,23 @@ void Molecule::Multiplicity_1HNMR()
 
     QList < DPoint * >search_stack;     // depth 2 atoms
 
-    foreach ( tmp_pt, up ) {
+    foreach ( DPoint *tpt, up ) {
         /// chiral atoms should implicitly be split...
-        if ( tmp_pt->protonHOSECode.count( "*" ) > 0 ) {
-            protonMagEnvList.append( tmp_pt->protonHOSECode );
+        if ( tpt->protonHOSECode.count( "*" ) > 0 ) {
+            protonMagEnvList.append( tpt->protonHOSECode );
             continue;
         }
         adj_protons = 1;
         split = false;
         chiral = false;
-        tmp_pt->H1_multiplicity = 0;
+        tpt->H1_multiplicity = 0;
         search_stack.clear();
-        if ( tmp_pt->element != "H" )
+        if ( tpt->element != "H" )
             continue;
         /// first, find atom this proton is connected to (depth 1)
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) ) {
-                depth1_pt = tmp_bond->otherPoint( tmp_pt );
+            if ( tmp_bond->Find( tpt ) ) {
+                depth1_pt = tmp_bond->otherPoint( tpt );
                 break;
             }
         }
@@ -299,15 +299,15 @@ void Molecule::Multiplicity_1HNMR()
                     //qDebug() << "DEPTH3: "<< depth3_pt->element ;
                     if ( depth3_pt->element == "H" ) {
                         adj_protons++;
-                        if ( depth3_pt->protonHOSECode != tmp_pt->protonHOSECode )
+                        if ( depth3_pt->protonHOSECode != tpt->protonHOSECode )
                             split = true;
                     }
                 }
             }
         }
-        tmp_pt->H1_multiplicity = adj_protons;
+        tpt->H1_multiplicity = adj_protons;
         qDebug() << "1H_mult = " << adj_protons;
-        new_magenv = tmp_pt->protonHOSECode;
+        new_magenv = tpt->protonHOSECode;
         if ( split ) {
             new_magenv.prepend( "+" );
         } else {

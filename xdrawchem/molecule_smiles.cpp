@@ -52,19 +52,19 @@ void Molecule::SDG( bool coord )
     QVector < Atom * >atoms (up.count());
 
     // clear "hit" flag on all atoms
-    foreach ( tmp_pt, up )
-        tmp_pt->hit = false;
+    foreach (DPoint *tpt, up )
+        tpt->hit = false;
     // find rings (esp. find aromaticity) - do after CopyTextToDPoint()
     MakeSSSR();
 
     // convert "up" to JMDraw-friendly Qlist<Atom>
     // rebuild neighbors list (usually mangled by MakeSSSR)
-    foreach ( tmp_pt, up ) {
-        tmp_pt->neighbors.clear();
+    foreach ( DPoint *tpt, up ) {
+        tpt->neighbors.clear();
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) == true ) {
-                tmp_pt->neighbors.append( tmp_bond->otherPoint( tmp_pt ) );
-                tmp_pt->bondorder[( tmp_pt->neighbors.count() - 1 )] = tmp_bond->Order();
+            if ( tmp_bond->Find( tpt ) == true ) {
+                tpt->neighbors.append( tmp_bond->otherPoint( tpt ) );
+                tpt->bondorder[( tpt->neighbors.count() - 1 )] = tmp_bond->Order();
             }
         }
     }
@@ -72,21 +72,21 @@ void Molecule::SDG( bool coord )
     int c1, c2, refnum;
 
     for ( c1 = 0; c1 < up.count(); c1++ ) {
-        tmp_pt = up.at( c1 );
-        a1 = new Atom( tmp_pt->element, tmp_pt->x, tmp_pt->y, tmp_pt->z );
-        a1->number = tmp_pt->serial;
-        a1->degree = tmp_pt->neighbors.count();
+        DPoint *tpt = up.at( c1 );
+        a1 = new Atom( tpt->element, tpt->x, tpt->y, tpt->z );
+        a1->number = tpt->serial;
+        a1->degree = tpt->neighbors.count();
         //qDebug() << c1 << "-degree-" << a1->degree ;
         atoms[c1] = a1;
     }
     // now build connectivity table
     for ( c1 = 0; c1 < up.count(); c1++ ) {
-        tmp_pt = up.at( c1 );
+        DPoint *tpt = up.at( c1 );
         a1 = atoms.at( c1 );
-        for ( c2 = 0; c2 < tmp_pt->neighbors.count(); c2++ ) {
-            refnum = tmp_pt->neighbors.at( c2 )->serial;
+        for ( c2 = 0; c2 < tpt->neighbors.count(); c2++ ) {
+            refnum = tpt->neighbors.at( c2 )->serial;
             a1->nodeTable.insert( c2, atoms.at( refnum ) );
-            a1->bondTable[c2] = tmp_pt->bondorder[c2];
+            a1->bondTable[c2] = tpt->bondorder[c2];
             a1->intnodeTable[c2] = refnum;
         }
     }
@@ -125,10 +125,10 @@ void Molecule::SDG( bool coord )
 
     // convert atoms back to DPoint (essentially, just update x,y coordinates)
     for ( c1 = 0; c1 < up.count(); c1++ ) {
-        tmp_pt = up.at( c1 );
+        DPoint *tpt = up.at( c1 );
         a1 = atoms.at( c1 );
-        tmp_pt->x = a1->x;
-        tmp_pt->y = a1->y;
+        tpt->x = a1->x;
+        tpt->y = a1->y;
     }
 
     bb1 = BoundingBoxAll();
@@ -144,9 +144,9 @@ void Molecule::SDG( bool coord )
         if ( bb1.top() < 10 )
             ymove = 10 - bb1.top();
     }
-    foreach ( tmp_pt, up ) {
-        tmp_pt->x += xmove;
-        tmp_pt->y += ymove;
+    foreach ( DPoint *tpt, up ) {
+        tpt->x += xmove;
+        tpt->y += ymove;
     }
 
     // add hydrogens
@@ -218,7 +218,7 @@ QString Molecule::ToSMILES()
 
 // convert InChI string to Molecule (using Babel!)
 // (Ideally, you should call this function just after creating)
-void Molecule::FromInChI( QString sm )
+void Molecule::FromInChI( QString /* sm */ )
 {
 }
 

@@ -36,8 +36,7 @@ int Molecule::OrderOfBond( DPoint * e1, DPoint * e2 )
 {
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( e1 ) == true ) {
-            tmp_pt = tmp_bond->otherPoint( e1 );
-            if ( tmp_pt == e2 )
+            if ( tmp_bond->otherPoint( e1 ) == e2 )
                 return tmp_bond->Order();
         }
     }
@@ -49,8 +48,7 @@ QSharedPointer<Bond> Molecule::FindBond( DPoint * e1, DPoint * e2 )
 {
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( e1 ) == true ) {
-            tmp_pt = tmp_bond->otherPoint( e1 );
-            if ( tmp_pt == e2 )
+            if ( tmp_bond->otherPoint( e1 ) == e2 )
                 return tmp_bond;
         }
     }
@@ -98,29 +96,29 @@ QStringList Molecule::Calc13CNMR( bool show_dialog )
     peaklist.clear();
 
     // Scan for keto groups
-    foreach ( tmp_pt, up ) {
-        tmp_pt->ketos = 0;
+    foreach ( DPoint *tpt, up ) {
+        tpt->ketos = 0;
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) == true ) {
-                tmp_pt2 = tmp_bond->otherPoint( tmp_pt );
+            if ( tmp_bond->Find( tpt ) == true ) {
+                tmp_pt2 = tmp_bond->otherPoint( tpt );
                 if ( ( tmp_pt2->element == "O" ) && ( tmp_bond->Order() == 2 ) )
-                    tmp_pt->ketos += 1;
+                    tpt->ketos += 1;
             }
         }
     }
     // Determine atoms surrounding each atom and build HOSE code list
-    foreach ( tmp_pt, up ) {
-        if ( tmp_pt->element == "C" ) { // only look at carbons
+    foreach ( DPoint *tpt, up ) {
+        if ( tpt->element == "C" ) { // only look at carbons
             foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-                if ( tmp_bond->Find( tmp_pt ) == true ) {
+                if ( tmp_bond->Find( tpt ) == true ) {
                     tmp_str = "";
                     hs = 0;
-                    tmp_pt2 = tmp_bond->otherPoint( tmp_pt );
+                    tmp_pt2 = tmp_bond->otherPoint( tpt );
                     if ( tmp_bond->Order() == 3 ) {
                         tmp_str.append( "%" );
                         hs += 300;
                     }
-                    if ( ( tmp_pt->aromatic == true ) && ( tmp_pt2->aromatic == true ) ) {
+                    if ( ( tpt->aromatic == true ) && ( tmp_pt2->aromatic == true ) ) {
                         tmp_str.append( "*" );
                         hs += 100;
                     } else {
@@ -237,7 +235,7 @@ QStringList Molecule::Calc13CNMR( bool show_dialog )
             } while ( sphere1.count() > 0 );
             tmp_str.append( "(//)" );
             hosecodes.append( tmp_str );
-            tmp_pt->hosecode = tmp_str;
+            tpt->hosecode = tmp_str;
             qDebug() << tmp_str;
         }
     }
@@ -395,59 +393,59 @@ void Molecule::CalcIR()
          */
     }
     // iterate thru unique atoms, look for functional groups
-    foreach ( tmp_pt, up ) {
-        qDebug() << "|" << tmp_pt->element << "|";
-        if ( ( tmp_pt->element == "C" ) && ( tmp_pt->substituents < 4 ) )
+    foreach ( DPoint *tpt, up ) {
+        qDebug() << "|" << tpt->element << "|";
+        if ( ( tpt->element == "C" ) && ( tpt->substituents < 4 ) )
             AddPeak( 3000.0, QString( "CH" ), QString( tr( "~3000 (broad), C-H" ) ) );
-        if ( tmp_pt->element == "CH" )
+        if ( tpt->element == "CH" )
             AddPeak( 3000.0, QString( "CH" ), QString( tr( "~3000 (broad), C-H" ) ) );
-        if ( tmp_pt->element == "HC" )
+        if ( tpt->element == "HC" )
             AddPeak( 3000.0, QString( "CH" ), QString( tr( "~3000 (broad), C-H" ) ) );
-        if ( tmp_pt->element == "CH2" )
+        if ( tpt->element == "CH2" )
             AddPeak( 3000.0, QString( "CH" ), QString( tr( "~3000 (broad), C-H" ) ) );
-        if ( tmp_pt->element == "H2C" )
+        if ( tpt->element == "H2C" )
             AddPeak( 3000.0, QString( "CH" ), QString( tr( "~3000 (broad), C-H" ) ) );
-        if ( tmp_pt->element == "CH3" )
+        if ( tpt->element == "CH3" )
             AddPeak( 3000.0, QString( "CH" ), QString( tr( "~3000 (broad), C-H" ) ) );
-        if ( tmp_pt->element == "H3C" )
+        if ( tpt->element == "H3C" )
             AddPeak( 3000.0, QString( "CH" ), QString( tr( "~3000 (broad), C-H" ) ) );
-        if ( ( tmp_pt->element == "N" ) && ( tmp_pt->substituents == 1 ) )
+        if ( ( tpt->element == "N" ) && ( tpt->substituents == 1 ) )
             AddPeak( 3350.0, QString( "NH" ), QString( tr( "two peaks: ~3400, ~3300, primary N-H" ) ) );
-        if ( ( tmp_pt->element == "N" ) && ( tmp_pt->substituents == 2 ) )
+        if ( ( tpt->element == "N" ) && ( tpt->substituents == 2 ) )
             AddPeak( 3300.0, QString( "NH" ), QString( tr( "~3300 (broad), secondary N-H" ) ) );
-        if ( tmp_pt->element == "NH" )
+        if ( tpt->element == "NH" )
             AddPeak( 3300.0, QString( "NH" ), QString( tr( "~3300 (broad), secondary N-H" ) ) );
-        if ( tmp_pt->element == "HN" )
+        if ( tpt->element == "HN" )
             AddPeak( 3300.0, QString( "NH" ), QString( tr( "~3300 (broad), secondary N-H" ) ) );
-        if ( tmp_pt->element == "NH2" )
+        if ( tpt->element == "NH2" )
             AddPeak( 3350.0, QString( "NH" ), QString( tr( "two peaks: ~3400, ~3300, primary N-H" ) ) );
-        if ( tmp_pt->element == "H2N" )
+        if ( tpt->element == "H2N" )
             AddPeak( 3350.0, QString( "NH" ), QString( tr( "two peaks: ~3400, ~3300, primary N-H" ) ) );
-        if ( ( tmp_pt->element == "S" ) && ( tmp_pt->substituents < 2 ) )
+        if ( ( tpt->element == "S" ) && ( tpt->substituents < 2 ) )
             AddPeak( 2550.0, QString( "SH" ), QString( tr( "~2550 (broad), S-H" ) ) );
-        if ( ( tmp_pt->element == "SH" ) && ( tmp_pt->substituents < 2 ) )
+        if ( ( tpt->element == "SH" ) && ( tpt->substituents < 2 ) )
             AddPeak( 2550.0, QString( "SH" ), QString( tr( "~2550 (broad), S-H" ) ) );
-        if ( ( tmp_pt->element == "HS" ) && ( tmp_pt->substituents < 2 ) )
+        if ( ( tpt->element == "HS" ) && ( tpt->substituents < 2 ) )
             AddPeak( 2550.0, QString( "SH" ), QString( tr( "~2550 (broad), S-H" ) ) );
-        if ( ( tmp_pt->element == "O" ) && ( tmp_pt->substituents < 2 ) )
+        if ( ( tpt->element == "O" ) && ( tpt->substituents < 2 ) )
             AddPeak( 2550.0, QString( "OH" ), QString( tr( "~3400 (broad), O-H" ) ) );
-        if ( tmp_pt->element == "CN" )
+        if ( tpt->element == "CN" )
             AddPeak( 2250.0, QString( "CN" ), QString( tr( "~2250 (narrow), nitrile" ) ) );
-        if ( tmp_pt->element == "NC" )
+        if ( tpt->element == "NC" )
             AddPeak( 2250.0, QString( "CN" ), QString( tr( "~2250 (narrow), nitrile" ) ) );
-        if ( tmp_pt->element == "NCO" )
+        if ( tpt->element == "NCO" )
             AddPeak( 2270.0, QString( "NCO" ), QString( tr( "~2270 (narrow), -N=C=O" ) ) );
-        if ( tmp_pt->element == "NCS" )
+        if ( tpt->element == "NCS" )
             AddPeak( 2125.0, QString( "NCS" ), QString( tr( "~2125 (narrow), -N=C=S" ) ) );
-        if ( tmp_pt->element == "OH" )
+        if ( tpt->element == "OH" )
             AddPeak( 3400.0, QString( "OH" ), QString( tr( "~3400 (broad), O-H" ) ) );
-        if ( tmp_pt->element == "HO" )
+        if ( tpt->element == "HO" )
             AddPeak( 3400.0, QString( "OH" ), QString( tr( "~3400 (broad), O-H" ) ) );
-        if ( tmp_pt->element == "NO2" )
+        if ( tpt->element == "NO2" )
             AddPeak( 1525.0, QString( "NO2" ), QString( tr( "~1525 (narrow), -NO2" ) ) );
-        if ( tmp_pt->element == "O2N" )
+        if ( tpt->element == "O2N" )
             AddPeak( 1525.0, QString( "NO2" ), QString( tr( "~1525 (narrow), -NO2" ) ) );
-        if ( tmp_pt->aromatic == true ) {
+        if ( tpt->aromatic == true ) {
             AddPeak( 1600.0, QString( "aromatic" ), QString( tr( "~1600 (narrow), aromatic ring C=C" ) ) );
             AddPeak( 1475.0, QString( "aromatic" ), QString( tr( "~1475 (narrow), aromatic ring C=C" ) ) );
         }
@@ -482,76 +480,76 @@ double Molecule::CalcKOW()
 
     DPoint *alt_pt1, *alt_pt2, *alt_pt3;
 
-    foreach ( tmp_pt, up ) {
-        if ( tmp_pt->hit )
+    foreach ( DPoint *tpt, up ) {
+        if ( tpt->hit )
             continue;           // skip atoms already considered
-        if ( tmp_pt->baseElement() == "H" )
+        if ( tpt->baseElement() == "H" )
             continue;
 
         /*
            qDebug() << "KOW parameters:";
-           qDebug() << tmp_pt->baseElement();
-           alt_pt1 = tmp_pt->neighbors.at(0);
+           qDebug() << tpt->baseElement();
+           alt_pt1 = tpt->neighbors.at(0);
            qDebug() << alt_pt1->baseElement();
-           qDebug() << tmp_pt->bondorder[0];
-           if (tmp_pt->neighbors.count() > 1) {
-           alt_pt2 = tmp_pt->neighbors.at(1);
+           qDebug() << tpt->bondorder[0];
+           if (tpt->neighbors.count() > 1) {
+           alt_pt2 = tpt->neighbors.at(1);
            qDebug() << alt_pt2->baseElement();
-           qDebug() << tmp_pt->bondorder[1];
+           qDebug() << tpt->bondorder[1];
            }
-           if (tmp_pt->neighbors.count() > 2) {
-           alt_pt3 = tmp_pt->neighbors.at(2);
+           if (tpt->neighbors.count() > 2) {
+           alt_pt3 = tpt->neighbors.at(2);
            qDebug() << alt_pt3->baseElement();
-           qDebug() << tmp_pt->bondorder[2];
+           qDebug() << tpt->bondorder[2];
            }
          */
 
-        if ( tmp_pt->baseElement() == "Br" ) {
+        if ( tpt->baseElement() == "Br" ) {
             ri += 1.114;
             qi += 0.935;
             dg += 1.268;
         }
-        if ( tmp_pt->baseElement() == "Cl" ) {
+        if ( tpt->baseElement() == "Cl" ) {
             ri += 0.861;
             qi += 0.771;
             dg += 1.129;
         }
-        if ( tmp_pt->baseElement() == "F" ) {
+        if ( tpt->baseElement() == "F" ) {
             ri += 0.376;
             qi += 0.458;
             dg += 0.946;
         }
-        if ( ( tmp_pt->baseElement() == "C" ) && ( tmp_pt->neighbors.count() == 1 ) ) {
+        if ( ( tpt->baseElement() == "C" ) && ( tpt->neighbors.count() == 1 ) ) {
             ri += 0.887;
             qi += 0.840;
             dg += 2.201;
         }
-        if ( ( tmp_pt->baseElement() == "C" ) && ( tmp_pt->neighbors.count() == 2 ) ) {
+        if ( ( tpt->baseElement() == "C" ) && ( tpt->neighbors.count() == 2 ) ) {
             // check first for aldehyde/nitrile
-            alt_pt1 = tmp_pt->neighbors.at( 0 );
-            alt_pt2 = tmp_pt->neighbors.at( 1 );
-            if ( ( alt_pt1->baseElement() == "N" ) && ( tmp_pt->bondorder[0] == 3 ) ) {
+            alt_pt1 = tpt->neighbors.at( 0 );
+            alt_pt2 = tpt->neighbors.at( 1 );
+            if ( ( alt_pt1->baseElement() == "N" ) && ( tpt->bondorder[0] == 3 ) ) {
                 qDebug() << "Nitrile";
                 continue;
             }
-            if ( ( alt_pt1->baseElement() == "O" ) && ( tmp_pt->bondorder[0] == 2 ) ) {
+            if ( ( alt_pt1->baseElement() == "O" ) && ( tpt->bondorder[0] == 2 ) ) {
                 qDebug() << "Aldehyde";
                 continue;
             }
-            if ( ( alt_pt2->baseElement() == "N" ) && ( tmp_pt->bondorder[1] == 3 ) ) {
+            if ( ( alt_pt2->baseElement() == "N" ) && ( tpt->bondorder[1] == 3 ) ) {
                 qDebug() << "Nitrile";
                 continue;
             }
-            if ( ( alt_pt2->baseElement() == "O" ) && ( tmp_pt->bondorder[1] == 2 ) ) {
+            if ( ( alt_pt2->baseElement() == "O" ) && ( tpt->bondorder[1] == 2 ) ) {
                 qDebug() << "Aldehyde";
                 continue;
             }
-            if ( tmp_pt->aromatic ) {
+            if ( tpt->aromatic ) {
                 ri += 0.537;
                 qi += 0.431;
                 dg += 0.468;
             } else {
-                if ( tmp_pt->inring ) {
+                if ( tpt->inring ) {
                     ri += 0.665;
                     qi += 0.523;
                     dg += 1.071;
@@ -562,26 +560,26 @@ double Molecule::CalcKOW()
                 }
             }
         }
-        if ( ( tmp_pt->baseElement() == "C" ) && ( tmp_pt->neighbors.count() == 3 ) ) {
+        if ( ( tpt->baseElement() == "C" ) && ( tpt->neighbors.count() == 3 ) ) {
             // check first for ester/ketone
-            alt_pt1 = tmp_pt->neighbors.at( 0 );
-            alt_pt2 = tmp_pt->neighbors.at( 1 );
-            alt_pt3 = tmp_pt->neighbors.at( 2 );
+            alt_pt1 = tpt->neighbors.at( 0 );
+            alt_pt2 = tpt->neighbors.at( 1 );
+            alt_pt3 = tpt->neighbors.at( 2 );
             int ocount = 0, odb = 0;
 
             if ( alt_pt1->baseElement() == "O" ) {
                 ocount++;
-                if ( tmp_pt->bondorder[0] == 2 )
+                if ( tpt->bondorder[0] == 2 )
                     odb = 1;
             }
             if ( alt_pt2->baseElement() == "O" ) {
                 ocount++;
-                if ( tmp_pt->bondorder[1] == 2 )
+                if ( tpt->bondorder[1] == 2 )
                     odb = 1;
             }
             if ( alt_pt3->baseElement() == "O" ) {
                 ocount++;
-                if ( tmp_pt->bondorder[2] == 2 )
+                if ( tpt->bondorder[2] == 2 )
                     odb = 1;
             }
             if ( ( ocount == 1 ) && ( odb == 1 ) ) {
@@ -598,12 +596,12 @@ double Molecule::CalcKOW()
                 dg += -0.723;
                 continue;
             }
-            if ( tmp_pt->aromatic ) {
+            if ( tpt->aromatic ) {
                 ri += 0.316;
                 qi += 0.114;
                 dg += 0.031;
             } else {
-                if ( tmp_pt->inring ) {
+                if ( tpt->inring ) {
                     ri += 0.497;
                     qi += 0.235;
                     dg += -0.051;
@@ -614,40 +612,40 @@ double Molecule::CalcKOW()
                 }
             }
         }
-        if ( ( tmp_pt->baseElement() == "C" ) && ( tmp_pt->neighbors.count() == 4 ) ) {
+        if ( ( tpt->baseElement() == "C" ) && ( tpt->neighbors.count() == 4 ) ) {
             ri += 0.213;
             qi += 0.0;
             dg += -0.729;
         }
-        if ( ( tmp_pt->baseElement() == "O" ) && ( tmp_pt->neighbors.count() == 1 ) ) {
+        if ( ( tpt->baseElement() == "O" ) && ( tpt->neighbors.count() == 1 ) ) {
             ri += 0.532;
             qi += 0.572;
             dg += -10.405;
         }
-        if ( ( tmp_pt->baseElement() == "O" ) && ( tmp_pt->neighbors.count() == 2 ) ) {
-            alt_pt1 = tmp_pt->neighbors.at( 0 );
-            alt_pt2 = tmp_pt->neighbors.at( 1 );
+        if ( ( tpt->baseElement() == "O" ) && ( tpt->neighbors.count() == 2 ) ) {
+            alt_pt1 = tpt->neighbors.at( 0 );
+            alt_pt2 = tpt->neighbors.at( 1 );
             if ( ( alt_pt1->baseElement() == "C" ) && ( alt_pt2->baseElement() == "C" ) )
                 ri += 0.742;
             qi += 0.748;
             dg += -9.255;
         }
-        if ( ( tmp_pt->baseElement() == "N" ) && ( tmp_pt->neighbors.count() == 1 ) ) {
+        if ( ( tpt->baseElement() == "N" ) && ( tpt->neighbors.count() == 1 ) ) {
             ri += 0.742;
             qi += 0.748;
             dg += -9.255;
         }
-        if ( ( tmp_pt->baseElement() == "N" ) && ( tmp_pt->neighbors.count() == 2 ) ) {
-            if ( ( tmp_pt->bondorder[0] + tmp_pt->bondorder[1] ) == 2 )
+        if ( ( tpt->baseElement() == "N" ) && ( tpt->neighbors.count() == 2 ) ) {
+            if ( ( tpt->bondorder[0] + tpt->bondorder[1] ) == 2 )
                 ri += 0.553;
             qi += 0.401;
             dg += -4.959;
-            if ( ( tmp_pt->bondorder[0] + tmp_pt->bondorder[1] ) == 3 )
+            if ( ( tpt->bondorder[0] + tpt->bondorder[1] ) == 3 )
                 ri += 0.436;
             qi += 0.339;
             dg += -1.301;
         }
-        if ( ( tmp_pt->baseElement() == "N" ) && ( tmp_pt->neighbors.count() == 3 ) ) {
+        if ( ( tpt->baseElement() == "N" ) && ( tpt->neighbors.count() == 3 ) ) {
             ri += 0.341;
             qi += 0.0;
             dg += -5.525;
@@ -679,15 +677,15 @@ void Molecule::CalcpKa()
     int testcount;
 
     // first thing to do is scan for large patterns (e.g. guanidino, rings)
-    foreach ( tmp_pt, up ) {
-        if ( tmp_pt->hit )
+    foreach ( DPoint *tpt, up ) {
+        if ( tpt->hit )
             continue;           // skip atoms already considered
-        if ( tmp_pt->baseElement() == "C" ) {
-            if ( tmp_pt->neighbors.count() == 3 ) {
+        if ( tpt->baseElement() == "C" ) {
+            if ( tpt->neighbors.count() == 3 ) {
                 // check for guanidino
-                alt_pt1 = tmp_pt->neighbors.at( 0 );
-                alt_pt2 = tmp_pt->neighbors.at( 1 );
-                alt_pt3 = tmp_pt->neighbors.at( 2 );
+                alt_pt1 = tpt->neighbors.at( 0 );
+                alt_pt2 = tpt->neighbors.at( 1 );
+                alt_pt3 = tpt->neighbors.at( 2 );
                 testcount = alt_pt1->neighbors.count() + alt_pt2->neighbors.count() + alt_pt3->neighbors.count();
                 if ( ( alt_pt1->baseElement() == "N" ) && ( alt_pt2->baseElement() == "N" ) && ( alt_pt3->baseElement() == "N" ) && ( testcount == 4 ) ) {
                     alt_pt1->hit = true;
@@ -699,18 +697,18 @@ void Molecule::CalcpKa()
         }
     }
 
-    foreach ( tmp_pt, up ) {
-        //qDebug() << tmp_pt->serial << "," << tmp_pt->baseElement();
-        if ( tmp_pt->hit )
+    foreach ( DPoint *tpt, up ) {
+        //qDebug() << tpt->serial << "," << tpt->baseElement();
+        if ( tpt->hit )
             continue;           // skip atoms already considered
-        if ( tmp_pt->baseElement() == "C" ) {
-            if ( tmp_pt->neighbors.count() == 3 ) {
+        if ( tpt->baseElement() == "C" ) {
+            if ( tpt->neighbors.count() == 3 ) {
 
             }
             // few cases where C-H proton is going to split!
-            if ( ( tmp_pt->hosecode == "C$C$(//)" ) && ( tmp_pt->substituents == 2 ) ) {
-                alt_pt1 = tmp_pt->neighbors.at( 0 );
-                alt_pt2 = tmp_pt->neighbors.at( 1 );
+            if ( ( tpt->hosecode == "C$C$(//)" ) && ( tpt->substituents == 2 ) ) {
+                alt_pt1 = tpt->neighbors.at( 0 );
+                alt_pt2 = tpt->neighbors.at( 1 );
                 if ( ( alt_pt1->hosecode == "=OCC" ) && ( alt_pt1->hosecode == "=OCC" ) ) {
                     pKa_table.append( tr( "9 (a-carbon between two ketones)" ) );
                 }
@@ -725,10 +723,10 @@ void Molecule::CalcpKa()
                 }
             }
         }
-        if ( tmp_pt->baseElement() == "N" ) {
-            qDebug() << tmp_pt->substituents;
-            if ( tmp_pt->substituents == 1 ) {
-                alt_pt1 = tmp_pt->neighbors.at( 0 );    // MakeSSSR() should set this
+        if ( tpt->baseElement() == "N" ) {
+            qDebug() << tpt->substituents;
+            if ( tpt->substituents == 1 ) {
+                alt_pt1 = tpt->neighbors.at( 0 );    // MakeSSSR() should set this
                 if ( alt_pt1->hosecode.count( "*" ) > 0 ) {
                     pKa_table.append( tr( "5 (Aromatic primary amine)" ) );
                 } else {
@@ -743,9 +741,9 @@ void Molecule::CalcpKa()
                     }
                 }
             }
-            if ( tmp_pt->substituents == 2 ) {  // check secondary amine
-                alt_pt1 = tmp_pt->neighbors.at( 0 );
-                alt_pt2 = tmp_pt->neighbors.at( 1 );
+            if ( tpt->substituents == 2 ) {  // check secondary amine
+                alt_pt1 = tpt->neighbors.at( 0 );
+                alt_pt2 = tpt->neighbors.at( 1 );
                 //qDebug() << "alt_pt1 = " << alt_pt1->hosecode;
                 //qDebug() << "alt_pt2 = " << alt_pt2->hosecode;
                 if ( ( alt_pt1->hosecode == "=CN(//)" ) && ( alt_pt2->hosecode == "=CN(//)" ) ) {
@@ -761,11 +759,11 @@ void Molecule::CalcpKa()
                     pKa_table.append( tr( "11 (aliphatic secondary amine)" ) );
                 }
             }
-            if ( tmp_pt->substituents == 3 ) {  // check conjugated and tertiary amines
-                if ( tmp_pt->neighbors.count() == 2 ) {
+            if ( tpt->substituents == 3 ) {  // check conjugated and tertiary amines
+                if ( tpt->neighbors.count() == 2 ) {
                     // conjugated/aromatic amine
-                    alt_pt1 = tmp_pt->neighbors.at( 0 );
-                    alt_pt2 = tmp_pt->neighbors.at( 1 );
+                    alt_pt1 = tpt->neighbors.at( 0 );
+                    alt_pt2 = tpt->neighbors.at( 1 );
                     qDebug() << "alt_pt1 = " << alt_pt1->hosecode;
                     qDebug() << "alt_pt2 = " << alt_pt2->hosecode;
                     if ( ( alt_pt1->hosecode == "=CN(//)" ) && ( alt_pt2->hosecode == "=NN(//)" ) ) {
@@ -781,11 +779,11 @@ void Molecule::CalcpKa()
                         pKa_table.append( tr( "1-3 (purine/pyrimidine)" ) );
                     }
                 }
-                if ( tmp_pt->neighbors.count() == 3 ) {
+                if ( tpt->neighbors.count() == 3 ) {
                     // tertiary amine
-                    alt_pt1 = tmp_pt->neighbors.at( 0 );
-                    alt_pt2 = tmp_pt->neighbors.at( 1 );
-                    alt_pt3 = tmp_pt->neighbors.at( 2 );
+                    alt_pt1 = tpt->neighbors.at( 0 );
+                    alt_pt2 = tpt->neighbors.at( 1 );
+                    alt_pt3 = tpt->neighbors.at( 2 );
                     if ( ( alt_pt1->hosecode.count( "*" ) > 0 ) || ( alt_pt2->hosecode.count( "*" ) > 0 ) || ( alt_pt3->hosecode.count( "*" ) > 0 ) ) {
                         pKa_table.append( tr( "4 (tertiary amine)" ) );
                         continue;
@@ -796,10 +794,10 @@ void Molecule::CalcpKa()
                 }
             }
         }
-        if ( tmp_pt->baseElement() == "O" ) {
+        if ( tpt->baseElement() == "O" ) {
             //qDebug() << "base element: O";
-            if ( tmp_pt->substituents == 1 ) {
-                alt_pt1 = tmp_pt->neighbors.at( 0 );    // MakeSSSR() should set this
+            if ( tpt->substituents == 1 ) {
+                alt_pt1 = tpt->neighbors.at( 0 );    // MakeSSSR() should set this
                 if ( alt_pt1->baseElement() == "O" ) {
                     pKa_table.append( tr( "8 (Peroxy acid)" ) );
                 }
@@ -855,10 +853,10 @@ void Molecule::CalcpKa()
                 }
             }
         }
-        if ( tmp_pt->baseElement() == "S" ) {
+        if ( tpt->baseElement() == "S" ) {
             // R-SH, Ar-SH (R-SO3H = consider under "O")
-            if ( tmp_pt->substituents == 1 ) {
-                alt_pt1 = tmp_pt->neighbors.at( 0 );    // MakeSSSR() should set this
+            if ( tpt->substituents == 1 ) {
+                alt_pt1 = tpt->neighbors.at( 0 );    // MakeSSSR() should set this
                 if ( alt_pt1->hosecode.count( "*" ) > 0 ) {
                     pKa_table.append( tr( "7.8 (Aromatic -SH)" ) );
                 } else {

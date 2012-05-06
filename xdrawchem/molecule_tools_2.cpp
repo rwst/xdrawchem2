@@ -35,15 +35,15 @@ void Molecule::Scale( double bond_length )
     double topedge = 9999.0, leftedge = 9999.0;
 
     up = AllPoints();
-    foreach ( tmp_pt, up ) {
-        if ( tmp_pt->x < leftedge )
-            leftedge = tmp_pt->x;
-        if ( tmp_pt->y < topedge )
-            topedge = tmp_pt->y;
+    foreach ( DPoint *tpt, up ) {
+        if ( tpt->x < leftedge )
+            leftedge = tpt->x;
+        if ( tpt->y < topedge )
+            topedge = tpt->y;
     }
-    foreach ( tmp_pt, up ) {
-        tmp_pt->x = ( ( tmp_pt->x - leftedge ) * sf ) + ( leftedge * sf );
-        tmp_pt->y = ( ( tmp_pt->y - topedge ) * sf ) + ( topedge * sf );
+    foreach ( DPoint *tpt, up ) {
+        tpt->x = ( ( tpt->x - leftedge ) * sf ) + ( leftedge * sf );
+        tpt->y = ( ( tpt->y - topedge ) * sf ) + ( topedge * sf );
     }
 }
 
@@ -53,9 +53,9 @@ QList < DPoint * >Molecule::BreakRingBonds( DPoint * target1 )
 
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( target1 ) == true ) {
-            tmp_pt = tmp_bond->otherPoint( target1 );
-            tmp_pt->new_order = tmp_bond->Order();
-            bb.append( tmp_pt );
+            DPoint *tpt = tmp_bond->otherPoint( target1 );
+            tpt->new_order = tmp_bond->Order();
+            bb.append( tpt );
             bonds.removeAll( tmp_bond );
             tmp_bond = bonds.first();
         }
@@ -68,60 +68,63 @@ DPoint *Molecule::GetAttachPoint( QString sf )
 {
     if ( ( sf.contains( "fmoc" ) > 0 ) || ( sf.contains( "boc" ) > 0 ) || ( sf.contains( "dabcyl" ) > 0 ) || ( sf.contains( "dabsyl" ) > 0 ) || ( sf.contains( "dansyl" ) > 0 ) ) {
         up = AllPoints();
-        foreach ( tmp_pt, up ) {
-            if ( tmp_pt->element == "Cl" ) {
+        DPoint *tpt;
+        foreach ( tpt, up ) {
+            if ( tpt->element == "Cl" ) {
                 qDebug() << "Point:Cl";
-                tmp_pt->element = "C";
+                tpt->element = "C";
                 break;
             }
         }
         foreach ( QSharedPointer<Text> tmp_text, labels ) {
-            if ( tmp_text->Start() == tmp_pt ) {
+            if ( tmp_text->Start() == tpt ) {
                 qDebug() << "removed";
                 labels.removeAll( tmp_text );
                 break;
             }
         }
-        qDebug() << tmp_pt->element;
-        return tmp_pt;
+        qDebug() << tpt->element;
+        return tpt;
     }
     if ( ( sf.contains( "edans" ) > 0 ) ) {
         up = AllPoints();
-        foreach ( tmp_pt, up ) {
-            if ( tmp_pt->element == "NH2" ) {
+        DPoint *tpt;
+        foreach ( tpt, up ) {
+            if ( tpt->element == "NH2" ) {
                 qDebug() << "Point:NH2";
-                tmp_pt->element = "C";
+                tpt->element = "C";
                 break;
             }
         }
         foreach ( QSharedPointer<Text> tmp_text, labels ) {
-            if ( tmp_text->Start() == tmp_pt ) {
+            if ( tmp_text->Start() == tpt ) {
                 qDebug() << "removed";
                 labels.removeAll( tmp_text );
                 break;
             }
         }
-        qDebug() << tmp_pt->element;
-        return tmp_pt;
+        qDebug() << tpt->element;
+        return tpt;
     }
     if ( ( sf.contains( "biotin" ) > 0 ) ) {
         up = AllPoints();
-        foreach ( tmp_pt, up ) {
-            if ( tmp_pt->element == "OH" ) {
+        DPoint *tpt;
+        foreach ( tpt, up ) {
+            if ( tpt->element == "OH" ) {
                 qDebug() << "Biotin-Point:OH";
-                tmp_pt->element = "C";
+                tpt->element = "C";
                 break;
             }
         }
         foreach ( QSharedPointer<Text> tmp_text, labels ) {
-            if ( tmp_text->Start() == tmp_pt ) {
+            if ( tmp_text->Start() == tpt ) {
                 qDebug() << "removed";
                 labels.removeAll( tmp_text );
                 break;
             }
         }
-        qDebug() << tmp_pt->element;
-        return tmp_pt;
+        qDebug() << tpt->element;
+        return tpt;
     }
     // end biotin
 
@@ -130,12 +133,12 @@ DPoint *Molecule::GetAttachPoint( QString sf )
     DPoint *ymaxpt = 0;
 
     up = AllPoints();
-    foreach ( tmp_pt, up ) {
-        if ( tmp_pt->element.contains( "N" ) > 0 ) {
+    foreach ( DPoint *tpt, up ) {
+        if ( tpt->element.contains( "N" ) > 0 ) {
             qDebug() << "Point:NH2";
-            if ( tmp_pt->y > ymax ) {
-                ymaxpt = tmp_pt;
-                ymax = tmp_pt->y;
+            if ( tpt->y > ymax ) {
+                ymaxpt = tpt;
+                ymax = tpt->y;
             }
         }
     }
@@ -157,10 +160,10 @@ DPoint *Molecule::GetRingAttachPoint()
     DPoint *yminpt = 0;
 
     up = AllPoints();
-    foreach ( tmp_pt, up ) {
-        if ( tmp_pt->y < ymin ) {
-            yminpt = tmp_pt;
-            ymin = tmp_pt->y;
+    foreach ( DPoint *tpt, up ) {
+        if ( tpt->y < ymin ) {
+            yminpt = tpt;
+            ymin = tpt->y;
         }
     }
 
@@ -173,9 +176,9 @@ double Molecule::CalculateRingAttachAngle( DPoint * t1 )
 
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->Find( t1 ) == true ) {
-            tmp_pt = tmp_bond->otherPoint( t1 );
-            dx = dx + ( tmp_pt->x - t1->x );
-            dy = dy + ( tmp_pt->y - t1->y );
+            DPoint *tpt = tmp_bond->otherPoint( t1 );
+            dx = dx + ( tpt->x - t1->x );
+            dy = dy + ( tpt->y - t1->y );
             break;
         }
     }
@@ -213,15 +216,15 @@ void Molecule::AllNeighbors()
 
     QList < DPoint * >groupAtoms = AllPoints();
 
-    foreach ( tmp_pt, groupAtoms ) {
+    foreach ( DPoint *tpt, groupAtoms ) {
         n1 = 0;
         n2 = 0;
         n3 = 0;
-        tmp_pt->neighbors.clear();
-        tmp_pt->aromatic = false;
-        tmp_pt->inring = false;
+        tpt->neighbors.clear();
+        tpt->aromatic = false;
+        tpt->inring = false;
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) == true ) {
+            if ( tmp_bond->Find( tpt ) == true ) {
                 if ( tmp_bond->Order() == 1 )
                     n1++;
                 if ( tmp_bond->Order() == 5 )
@@ -232,37 +235,37 @@ void Molecule::AllNeighbors()
                     n2++;
                 if ( tmp_bond->Order() == 3 )
                     n3++;
-                tmp_pt->neighbors.append( tmp_bond->otherPoint( tmp_pt ) );
-                tmp_pt->bondorder[( tmp_pt->neighbors.count() - 1 )] = tmp_bond->Order();
+                tpt->neighbors.append( tmp_bond->otherPoint( tpt ) );
+                tpt->bondorder[( tpt->neighbors.count() - 1 )] = tmp_bond->Order();
             }
         }
-        tmp_pt->hybrid = "unknown";
+        tpt->hybrid = "unknown";
         if ( ( n1 == 1 ) && ( n2 == 0 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp3";
+            tpt->hybrid = "sp3";
         if ( ( n1 == 2 ) && ( n2 == 0 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp3";
+            tpt->hybrid = "sp3";
         if ( ( n1 == 3 ) && ( n2 == 0 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp3";
+            tpt->hybrid = "sp3";
         if ( ( n1 == 4 ) && ( n2 == 0 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp3";
+            tpt->hybrid = "sp3";
         if ( ( n1 == 5 ) && ( n2 == 0 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp3d2";
+            tpt->hybrid = "sp3d2";
         if ( ( n1 == 6 ) && ( n2 == 0 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp3d2";
+            tpt->hybrid = "sp3d2";
         if ( ( n1 == 0 ) && ( n2 == 1 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp2";
+            tpt->hybrid = "sp2";
         if ( ( n1 == 1 ) && ( n2 == 1 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp2";
+            tpt->hybrid = "sp2";
         if ( ( n1 == 2 ) && ( n2 == 1 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp2";
+            tpt->hybrid = "sp2";
         if ( ( n1 == 0 ) && ( n2 == 2 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "sp";
+            tpt->hybrid = "sp";
         if ( ( n1 == 0 ) && ( n2 == 0 ) && ( n3 == 1 ) )
-            tmp_pt->hybrid = "sp";
+            tpt->hybrid = "sp";
         if ( ( n1 == 1 ) && ( n2 == 0 ) && ( n3 == 1 ) )
-            tmp_pt->hybrid = "sp";
+            tpt->hybrid = "sp";
         if ( ( n1 == 2 ) && ( n2 == 2 ) && ( n3 == 0 ) )
-            tmp_pt->hybrid = "spd2";
+            tpt->hybrid = "spd2";
     }
 }
 
@@ -282,9 +285,9 @@ Text *Molecule::CalcEmpiricalFormula( bool from_mw )
 
     up = AllPoints();
     // Split all labels into allatoms (one atom per entry)
-    foreach ( tmp_pt, up ) {
+    foreach ( DPoint *tpt, up ) {
         // parse this string
-        QString x = tmp_pt->element;
+        QString x = tpt->element;
         QString iso;            // isotope MW
         QString thiselement;    // current element
         QString repeatnum;      // number of repeats
@@ -347,17 +350,17 @@ Text *Molecule::CalcEmpiricalFormula( bool from_mw )
     // need to find implicit hydrogens here!
     int num_c = 0, num_h = 0, num_n = 0, num_o = 0, num_p = 0, num_s = 0;
 
-    foreach ( tmp_pt, up ) {
+    foreach ( DPoint *tpt, up ) {
         int possible_h = 0;
 
-        //qDebug() << "CalcEF:" << tmp_pt->element;
-        possible_h = MolData::Hydrogens( tmp_pt->element );
+        //qDebug() << "CalcEF:" << tpt->element;
+        possible_h = MolData::Hydrogens( tpt->element );
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) )
+            if ( tmp_bond->Find( tpt ) )
                 possible_h -= tmp_bond->Order();
         }
         if ( possible_h < 0 ) {
-            qDebug() << tmp_pt->element << " resulted in negative hydrogens ";
+            qDebug() << tpt->element << " resulted in negative hydrogens ";
             qDebug() << "in Molecule::CalcEmpiricalFormula()";
             possible_h = 0;
         }
@@ -471,8 +474,8 @@ Text *Molecule::CalcEmpiricalFormula( bool from_mw )
     nx = ( nr.left() + nr.right() ) / 2.0;
 
     Text *tmp_text = new Text( r );
-    tmp_pt = new DPoint( nx, ny );
-    tmp_text->setPoint( tmp_pt );
+    DPoint *tpt = new DPoint( nx, ny );
+    tmp_text->setPoint( tpt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
     tmp_text->setText( finalef );
     for ( int c = 0; c < finalef.length(); c++ ) {
@@ -504,8 +507,8 @@ Text *Molecule::CalcMW( bool from_change )
     nx = ( nr.left() + nr.right() ) / 2.0;
 
     Text *tmp_text = new Text( r );
-    tmp_pt = new DPoint( nx, ny );
-    tmp_text->setPoint( tmp_pt );
+    DPoint *tpt = new DPoint( nx, ny );
+    tmp_text->setPoint( tpt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
     QString finalmw;
 
@@ -574,8 +577,8 @@ Text *Molecule::CalcElementalAnalysis( bool show_dialog )
     nx = nr.right() + 16.0;
 
     Text *tmp_text = new Text( r );
-    tmp_pt = new DPoint( nx, ny );
-    tmp_text->setPoint( tmp_pt );
+    DPoint *tpt = new DPoint( nx, ny );
+    tmp_text->setPoint( tpt );
     //qDebug() << ea;
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
     tmp_text->setText( ea );
@@ -618,12 +621,12 @@ void Molecule::AddHydrogens( bool to_carbon )
     int least_hindered_side;
 
     // calculate hindrance first
-    foreach ( tmp_pt, up ) {
+    foreach ( DPoint *tpt, up ) {
         // find order of bonds
         least_hindered_side = 0;
         foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
-            if ( tmp_bond->Find( tmp_pt ) ) {
-                dx = tmp_pt->x - tmp_bond->otherPoint( tmp_pt )->x;
+            if ( tmp_bond->Find( tpt ) ) {
+                dx = tpt->x - tmp_bond->otherPoint( tpt )->x;
                 if ( dx > 0.5 )
                     least_hindered_side++;
                 if ( dx < -0.5 )
@@ -631,11 +634,11 @@ void Molecule::AddHydrogens( bool to_carbon )
             }
         }
         // save # of bonds found
-        tmp_pt->substituents = sumbonds;
-        tmp_pt->C13_shift = least_hindered_side;
+        tpt->substituents = sumbonds;
+        tpt->C13_shift = least_hindered_side;
         // update Text, if it exists, with least hindered side
         foreach ( QSharedPointer<Text> tmp_text, labels ) {
-            if ( tmp_text->Start() == tmp_pt ) {
+            if ( tmp_text->Start() == tpt ) {
                 if ( least_hindered_side < 0 )
                     tmp_text->CheckAlignment( 2 );      // left hindered
                 else
@@ -646,51 +649,51 @@ void Molecule::AddHydrogens( bool to_carbon )
     // add hydrogens if user requested
     if ( preferences.getFixHydrogens() == false )
         return;
-    foreach ( tmp_pt, up ) {
-        orig_element = tmp_pt->element;
-        if ( tmp_pt->element == "" )
-            tmp_pt->element = "C";
+    foreach ( DPoint *tpt, up ) {
+        orig_element = tpt->element;
+        if ( tpt->element == "" )
+            tpt->element = "C";
         sumbonds = 0;
         least_hindered_side = 0;
         h = 0;
         // don't add to carbons unless specifically instructed
-        if ( ( tmp_pt->element == "C" ) && ( to_carbon == false ) )
+        if ( ( tpt->element == "C" ) && ( to_carbon == false ) )
             continue;
         // skip special cases
-        if ( tmp_pt->element == "CO" )
+        if ( tpt->element == "CO" )
             continue;
-        if ( tmp_pt->element == "SO" )
+        if ( tpt->element == "SO" )
             continue;
         // don't do fragments with charges
-        if ( tmp_pt->element.contains( "+" ) > 0 )
+        if ( tpt->element.contains( "+" ) > 0 )
             continue;
-        if ( tmp_pt->element.contains( "-" ) > 0 )
+        if ( tpt->element.contains( "-" ) > 0 )
             continue;
         // N typically needs correcting...
-        if ( tmp_pt->element == "HN" )
-            tmp_pt->element = "N";
-        if ( tmp_pt->element == "NH" )
-            tmp_pt->element = "N";
-        if ( tmp_pt->element == "H2N" )
-            tmp_pt->element = "N";
-        if ( tmp_pt->element == "NH2" )
-            tmp_pt->element = "N";
+        if ( tpt->element == "HN" )
+            tpt->element = "N";
+        if ( tpt->element == "NH" )
+            tpt->element = "N";
+        if ( tpt->element == "H2N" )
+            tpt->element = "N";
+        if ( tpt->element == "NH2" )
+            tpt->element = "N";
         // so does O
-        if ( tmp_pt->element == "HO" )
-            tmp_pt->element = "O";
-        if ( tmp_pt->element == "OH" )
-            tmp_pt->element = "O";
+        if ( tpt->element == "HO" )
+            tpt->element = "O";
+        if ( tpt->element == "OH" )
+            tpt->element = "O";
         // let's do thiols too, so H ends up on proper side
-        if ( tmp_pt->element == "HS" )
-            tmp_pt->element = "S";
-        if ( tmp_pt->element == "SH" )
-            tmp_pt->element = "S";
+        if ( tpt->element == "HS" )
+            tpt->element = "S";
+        if ( tpt->element == "SH" )
+            tpt->element = "S";
         // retrieve # of bonds found
-        sumbonds = tmp_pt->substituents;
-        least_hindered_side = ( int ) tmp_pt->C13_shift;
+        sumbonds = tpt->substituents;
+        least_hindered_side = ( int ) tpt->C13_shift;
         // don't add if hydrogen already present
-        if ( tmp_pt->element.contains( "H" ) == 0 ) {
-            h = MolData::Hydrogens( tmp_pt->element ) - sumbonds;
+        if ( tpt->element.contains( "H" ) == 0 ) {
+            h = MolData::Hydrogens( tpt->element ) - sumbonds;
             qDebug() << h;
             if ( h > 1 )
                 hnum.setNum( h );
@@ -698,31 +701,31 @@ void Molecule::AddHydrogens( bool to_carbon )
                 hnum = "";
             if ( h > 0 ) {
                 if ( least_hindered_side < 0 )
-                    tmp_pt->element.prepend( "H" + hnum );
+                    tpt->element.prepend( "H" + hnum );
                 else
-                    tmp_pt->element.append( "H" + hnum );
+                    tpt->element.append( "H" + hnum );
             }
         }
         // now find Text which reference this DPoint and copy back
         QString elbackup;
 
-        if ( orig_element != tmp_pt->element ) {
+        if ( orig_element != tpt->element ) {
             foreach ( QSharedPointer<Text> tmp_text, labels ) {
-                if ( tmp_text->Start() == tmp_pt ) {
-                    elbackup = tmp_pt->element;
-                    qDebug() << tmp_pt->element;
-                    tmp_text->setText( tmp_pt->element );
+                if ( tmp_text->Start() == tpt ) {
+                    elbackup = tpt->element;
+                    qDebug() << tpt->element;
+                    tmp_text->setText( tpt->element );
                     // *sigh* I suppose the least I can do is compute a proper textmask
                     elbackup.fill( ' ' );
                     if ( h > 1 ) {
                         if ( least_hindered_side < 0 ) {
                             elbackup.replace( 1, 1, "-" );
                         } else {
-                            elbackup.replace( tmp_pt->element.length() - 1, 1, "-" );
+                            elbackup.replace( tpt->element.length() - 1, 1, "-" );
                         }
                     }
 //                    tmp_text->setTextMask( elbackup );
-                    //tmp_pt->element = elbackup;
+                    //tpt->element = elbackup;
                 }               // if (tmp_text->...)
             }                   // for(tmp_text...)
         }                       // if (orig...)
