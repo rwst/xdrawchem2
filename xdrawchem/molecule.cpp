@@ -446,10 +446,8 @@ const QList <QSharedPointer<Bond> > Molecule::AllBonds()
 }
 
 /// Returns a list of unique DPoints to move, only used internally
-static QList<DPoint*> & MakeTomoveList(Molecule* m)
+void MakeTomoveList(Molecule* m, QList<DPoint*> tomove)
 {
-    static QList<DPoint*> tomove;
-
     tomove.clear();
     foreach ( QSharedPointer<Bond> tmp_bond, m->bonds ) {
         if ( tmp_bond->Highlighted() ) {
@@ -475,13 +473,13 @@ static QList<DPoint*> & MakeTomoveList(Molecule* m)
                 tomove.append( tpt );
         }
     }
-    return tomove;
 }
 
 /// Adds param to all points to move. Calls Changed().
 void Molecule::Move( double dx, double dy )
 {
-    QList<DPoint*> & tomove = MakeTomoveList(this);
+    QList<DPoint*> tomove;
+    MakeTomoveList(this, tomove);
 
     foreach ( DPoint *tpt, tomove ) {
         tpt->x += dx;
@@ -493,7 +491,8 @@ void Molecule::Move( double dx, double dy )
 /// Rotates by param all points to move. Calls Changed().
 void Molecule::Rotate( DPoint * origin, double angle )
 {
-    QList<DPoint*> & tomove = MakeTomoveList(this);
+    QList<DPoint*> tomove;
+    MakeTomoveList(this, tomove);
 
     foreach ( DPoint *tpt, tomove ) {
         double thisx = tpt->x - origin->x;
@@ -510,7 +509,8 @@ void Molecule::Rotate( DPoint * origin, double angle )
 /// Computes center of molecule, rotates by param all points to move. Calls Changed(). TODO: call Rotate(...,...)
 void Molecule::Rotate( double angle )
 {
-    QList<DPoint*> & tomove = MakeTomoveList(this);
+    QList<DPoint*> tomove;
+    MakeTomoveList(this, tomove);
 
     double centerx = 0.0, centery = 0.0;
     int n = 0;
@@ -538,7 +538,8 @@ void Molecule::Rotate( double angle )
 /// Flip by origin param in direction param all points to move. Calls Changed().
 void Molecule::Flip( DPoint * origin, int direction )
 {
-    QList<DPoint*> & tomove = MakeTomoveList(this);
+    QList<DPoint*> tomove;
+    MakeTomoveList(this, tomove);
     double delta;
 
     foreach ( DPoint *tpt, tomove ) {
@@ -557,8 +558,8 @@ void Molecule::Flip( DPoint * origin, int direction )
 void Molecule::Resize( DPoint * origin, double scale )
 {
     double dx, dy;
-
-    QList<DPoint*> & tomove = MakeTomoveList(this);
+    QList<DPoint*> tomove;
+    MakeTomoveList(this, tomove);
 
     foreach ( DPoint *tpt, tomove ) {
         dx = tpt->x - origin->x;
