@@ -161,7 +161,6 @@ public:
 
     OpenBabel::OBMol * convertToOBMol();
     bool convertFromOBMol(OpenBabel::OBMol *);
-    static const char symbol[110][4];
 
     // not appropriate but best way to handle ToolDialog requests.
     QList<Peak *> peaklist;
