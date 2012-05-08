@@ -108,6 +108,7 @@ HEADERS += xdrawchem/aa_xpm.h \
            xdrawchem/tool_2d3d.h \
            xdrawchem/tool_ir.h \
            xdrawchem/tooldialog.h \
+	   xdrawchem/version.h \
            xdrawchem/xdc_event.h \
            xdrawchem/xdc_toolbutton.h \
            xdrawchem/xml_cml.h \

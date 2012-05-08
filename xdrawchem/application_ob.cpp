@@ -13,6 +13,7 @@
 #include "bond.h"
 #include "ioiface.h"
 #include "render2d.h"
+#include "version.h"
 
 using namespace OpenBabel;
 

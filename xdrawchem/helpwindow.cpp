@@ -22,7 +22,7 @@
 
 #include "helpwindow.h"
 #include "defs.h"
-#include "defs.h"
+#include "version.h"
 
 #include "back.xpm"
 #include "forward.xpm"

@@ -2,6 +2,7 @@
 #include "render2d.h"
 #include "helpwindow.h"
 #include "defs.h"
+#include "version.h"
 
 using namespace OpenBabel;
 

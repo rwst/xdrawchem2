@@ -7,6 +7,7 @@
 #include "graphdata.h"
 #include "helpwindow.h"
 #include "defs.h"
+#include "version.h"
 
 // defined in main.cpp
 extern QString RingDir;

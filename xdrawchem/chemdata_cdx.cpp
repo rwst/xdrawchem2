@@ -2,6 +2,7 @@
 #include "dpoint.h"
 #include "text.h"
 #include "defs.h"
+#include "version.h"
 
 // save as ChemDraw binary format (IBM PC byte order)
 bool ChemData::save_cdx( QString fn )

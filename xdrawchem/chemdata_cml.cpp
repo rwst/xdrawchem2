@@ -3,6 +3,7 @@
 //#include <QXmlSimpleReader>
 
 #include "defs.h"
+#include "version.h"
 #include "chemdata.h"
 #include "dpoint.h"
 #include "text.h"

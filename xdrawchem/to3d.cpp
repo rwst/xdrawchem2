@@ -11,6 +11,7 @@
 #include "molecule.h"
 #include "dpoint.h"
 #include "defs.h"
+#include "version.h"
 #include "netaccess.h"
 
 // Preferences

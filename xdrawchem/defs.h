@@ -6,21 +6,6 @@
 // Ring directories (global, user)
 extern QString RingDir, HomeDir;
 
-const QString VERSION = QString::fromLatin1("1.99.1");
-
-// version string (makes updates easier :)
-#ifdef UNIX
-const QString XDC_VERSION = QString::fromLatin1("XDrawChem ") + VERSION;
-#endif
-
-#ifdef WIN32
-const QString XDC_VERSION = QString::fromLatin1("WinDrawChem ") + VERSION;
-#endif
-
-#ifdef MACOSX
-const QString XDC_VERSION = QString::fromLatin1("MacDrawChem ") + VERSION;
-#endif
-
 // define XDC_SERVER for Windows
 #define XDC_SERVER "www.xdrawchem.org"
 

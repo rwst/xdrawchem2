@@ -23,6 +23,7 @@
 #include <QBitmap>
 
 #include "defs.h"
+#include "version.h"
 #include "drawable.h"
 #include "renderarea.h"
 #include "render2d.h"

@@ -18,6 +18,7 @@
 
 #include "application.h"
 #include "defs.h"
+#include "version.h"
 #include "prefs.h"
 #include "dyk.h"
 
