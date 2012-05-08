@@ -446,7 +446,7 @@ const QList <QSharedPointer<Bond> > Molecule::AllBonds()
 }
 
 /// Returns a list of unique DPoints to move, only used internally
-void MakeTomoveList(Molecule* m, QList<DPoint*> tomove)
+void MakeTomoveList(Molecule* m, QList<DPoint*> &tomove)
 {
     tomove.clear();
     foreach ( QSharedPointer<Bond> tmp_bond, m->bonds ) {
