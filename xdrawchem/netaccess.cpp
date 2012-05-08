@@ -294,7 +294,8 @@ void NetAccess::slotFinished( int httpId, bool )
 bool NetAccess::getNameCAS( QString nserver, QString sinchi )
 {
     // don't waste bandwidth...
-    if ( sinchi.length() < 2 )
+    // xdrawchem.org is discontinued
+    //if ( sinchi.length() < 2 )
         return false;
 
     //runInChI( ssmiles );  obsolete, we use OpenBabel now!
