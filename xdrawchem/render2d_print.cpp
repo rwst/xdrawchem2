@@ -1,4 +1,5 @@
 #include <QPrinter>
+#include <QPainter>
 #include <QPrintDialog>
 
 #include "paintable.h"
@@ -102,10 +103,21 @@ void Render2D::Print( QString epsname )
 
     c->DeselectAll();
     // set output device
-    outputDevice = OUTPUT_PRINTER;
+    // outputDevice = OUTPUT_PRINTER;
     // render all objects
-    paintqueue.clear();
-    update();
+    // paintqueue.clear();
+    // update();
+    QPainter painter;
+    painter.begin(printer);
+    double xscale = printer->pageRect().width()/double(width());
+    double yscale = printer->pageRect().height()/double(height());
+    double scale = qMin(xscale, yscale);
+    painter.translate(printer->paperRect().x() + printer->pageRect().width()/2,
+                      printer->paperRect().y() + printer->pageRect().height()/2);
+    painter.scale(scale, scale);
+    painter.translate(-width()/2, -height()/2);
+
+    render(&painter);
 
     // set output to screen
     outputDevice = OUTPUT_SCREEN;
