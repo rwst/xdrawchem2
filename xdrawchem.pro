@@ -34,7 +34,7 @@ DEFINES += QT_NO_CAST_TO_ASCII
 #DEFINES += QT_NO_CAST_FROM_ASCII
 
 CONFIG += qt debug
-QT += xml network
+QT += xml network svg
 
 #RESOURCES = xdrawchem/xdrawchem.qrc
 # Input
