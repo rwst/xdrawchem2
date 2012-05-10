@@ -1864,16 +1864,11 @@ void Render2D::paintEvent( QPaintEvent * )
     // initialize global painter object
     QPainter p;
     painter = &p;
-    if ( outputDevice == OUTPUT_PRINTER ) {
-        qDebug() << "printer";
-        p.begin( printer );
-    } else if ( outputDevice == OUTPUT_SCREEN ) {
-        qDebug() << "screen";
-        p.begin(this);
+    p.begin(this);
 
-        ///TODO: make that an option
-        p.setRenderHint( QPainter::Antialiasing, true );
-    }
+    ///TODO: make that an option
+    p.setRenderHint( QPainter::Antialiasing, true );
+
     // clear buffer pixmap
     dbuffer.fill( bgcolor );
     // draw grid as needed

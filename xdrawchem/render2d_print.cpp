@@ -119,8 +119,6 @@ void Render2D::Print( QString epsname )
 
     render(&painter);
 
-    // set output to screen
-    outputDevice = OUTPUT_SCREEN;
     update();
     return;
 }

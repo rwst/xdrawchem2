@@ -23,7 +23,7 @@
 #include "rotatecursor.xpm"
 
 Render2D::Render2D( QWidget * parent )
-:  QWidget( parent )
+:  QSvgWidget( parent )
 {
 //  setPalette(QPalette(QColor(255,255,255)));
 
@@ -36,7 +36,6 @@ Render2D::Render2D( QWidget * parent )
     setBackgroundRole( QPalette::Base );
 
     resize( renderWidth, renderHeight );
-    outputDevice = OUTPUT_SCREEN;
 
     mode = MODE_SELECT;
     prev_mode = 0;
@@ -854,8 +853,30 @@ void Render2D::CorrectEndpoint_bond()
 /// Save canvas as SVG using outputDevice SVG and update()
 bool Render2D::SaveSVG( QString fn )
 {
-    outputDevice = OUTPUT_SVG;
-    output_file.setFileName( fn );
+    if (fn.isEmpty())
+          return false;
+
+      QString path = fn;
+
+      QSvgGenerator generator;
+      generator.setFileName(path);
+      c->SelectAll();
+      QRect r = c->selectionBox();
+      selectionBox = r;
+      c->DeselectAll();
+      generator.setSize(QSize(r.width(), r.height()));
+      generator.setViewBox(QRect(0, 0, r.width(), r.height()));
+      generator.setTitle(tr("Qt SVG Generator Drawing"));
+      generator.setDescription(tr("An SVG drawing created by the SVG Generator provided with Qt."));
+      QPainter p;
+      p.begin(&generator);
+      render(&p);
+      //painter = &p;
+      //update();
+      //painter = NULL;
+      p.end();
+
+    /* output_file.setFileName( fn );
     // open file and create text stream
     if ( !output_file.open( QIODevice::WriteOnly ) )
         return false;
@@ -881,8 +902,8 @@ bool Render2D::SaveSVG( QString fn )
 
     output_file.close();
     // restore screen display
-    outputDevice = OUTPUT_SCREEN;
-    update();
+    update(); */
+
     return true;
 }
 

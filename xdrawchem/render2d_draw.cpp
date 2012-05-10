@@ -41,7 +41,7 @@ double Render2D::getAngle( QPoint a, QPoint b )
 
 void Render2D::drawLine( QPoint a, QPoint b, int t, QColor c1, int s )
 {
-    qDebug() << "Render2D::drawLine()";
+/*    qDebug() << "Render2D::drawLine()";
     if ( outputDevice == OUTPUT_EPS ) {
         a.setY( a.y() + ( 2 * ( selectionBox.center().y() - a.y() ) ) );
         b.setY( b.y() + ( 2 * ( selectionBox.center().y() - b.y() ) ) );
@@ -341,7 +341,7 @@ void Render2D::drawUpLine( QPoint a, QPoint b, QColor c1 )
     dy = mysign * newlen * sin( newang2 / MOL_ARAD );
     QPoint t2( ( int ) ( a.x() + dx ), ( int ) ( a.y() + dy ) );
 
-    if ( outputDevice == OUTPUT_EPS ) {
+/*    if ( outputDevice == OUTPUT_EPS ) {
         a.setY( a.y() + ( 2 * ( selectionBox.center().y() - a.y() ) ) );
         t1.setY( t1.y() + ( 2 * ( selectionBox.center().y() - t1.y() ) ) );
         t2.setY( t2.y() + ( 2 * ( selectionBox.center().y() - t2.y() ) ) );
@@ -597,7 +597,7 @@ void Render2D::drawFillBox( QPoint a, QPoint b, QColor c1 )
 }
 void Render2D::drawFillBox( QPoint a, QPoint b, QColor c1, bool border, QColor bordercolor, int style )
 {
-    if ( outputDevice == OUTPUT_EPS ) {
+/*    if ( outputDevice == OUTPUT_EPS ) {
         a.setY( a.y() + ( 2 * ( selectionBox.center().y() - a.y() ) ) );
         b.setY( b.y() + ( 2 * ( selectionBox.center().y() - b.y() ) ) );
         output_ts << "1.0 1.0 1.0 setrgbcolor";
@@ -690,7 +690,7 @@ void Render2D::drawText( QChar ch, QPoint a, QColor c1, QFont f )
     fsize = f.pointSize();
     if ( fsize < 1 )
         fsize = f.pixelSize();
-    if ( outputDevice == OUTPUT_EPS ) {
+/*    if ( outputDevice == OUTPUT_EPS ) {
         // calc flip
         a.setY( a.y() + ( 2 * ( selectionBox.center().y() - a.y() ) ) );
         output_ts << "/" << f.family() << " findfont " << fsize;
@@ -751,7 +751,7 @@ void Render2D::drawText( QChar ch, QPoint a, QColor c1, QFont f )
 
 void Render2D::drawString( QString s1, QPoint a, QColor c1, QFont f )
 {
-    if ( outputDevice == OUTPUT_EPS ) {
+/*    if ( outputDevice == OUTPUT_EPS ) {
         // calc flip
         a.setY( a.y() + ( 2 * ( selectionBox.center().y() - a.y() ) ) );
         output_ts << "/" << f.family() << " findfont " << f.pointSize();
@@ -815,7 +815,7 @@ void Render2D::drawTextReverse( QChar ch, QPoint a, QColor c1, QFont f )
 
 void Render2D::drawPixmap( QPoint a, QPixmap pix )
 {
-    if ( outputDevice == OUTPUT_EPS ) {
+/*    if ( outputDevice == OUTPUT_EPS ) {
         // calc flip
         a.setY( a.y() + ( 2 * ( selectionBox.center().y() - a.y() ) ) - 16 );
         output_ts << "20 dict begin";

@@ -7,6 +7,7 @@
 #include <QTextCharFormat>
 #include <QTextEdit>
 #include <QProcess>
+#include <QtSvg>
 
 #include "drawable.h"
 #include "molecule.h"
@@ -20,7 +21,7 @@ class ChemData;
 
 extern Preferences preferences;
 
-class Render2D : public QWidget
+class Render2D : public QSvgWidget
 {
 Q_OBJECT
 
@@ -165,7 +166,6 @@ public slots:
         else
             return x1;
     }
-    void SetOutputDevice(int x) { outputDevice = x; }
     void SetThick(int t) { thick = t; }
     void resetTextOrigin()
     {
@@ -264,8 +264,6 @@ private:
     int thick, savedBondOrder;
     // chain length
     double chainlength;
-    // Output device (screen, printer, image)
-    int outputDevice;
     // Output file/textstream
     QFile output_file;
     QTextStream output_ts;
