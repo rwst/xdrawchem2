@@ -1442,9 +1442,10 @@ void ApplicationWindow::savePicture()
             QPixmap tosave;
 
             // use "tosave" with ImageMagick to specify size
-            tosave = m_renderer->MakePixmap( fd.isTransparent() );
-            QString sizehint;
+            // tosave = m_renderer->MakePixmap( fd.isTransparent() );
+            tosave = m_renderer->MakeFullPixmap();
 
+            /*QString sizehint;
             n1.setNum( tosave.width() );
             sizehint = n1;
             sizehint.append( "x" );
@@ -1466,7 +1467,8 @@ void ApplicationWindow::savePicture()
                     was_saved = tosave.save( selectedFile, "PNG" );
                 if ( pm == 2 )  // BMP
                     was_saved = tosave.save( selectedFile, "BMP" );
-            }
+            }*/
+            was_saved = tosave.save( selectedFile, pm==1? "PNG" : "BMP" );
             if ( was_saved )
                 statusBar()->showMessage( tr( "Saved picture file " ) + selectedFile );
             else
