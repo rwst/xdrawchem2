@@ -1091,9 +1091,11 @@ void Render2D::drawCurveArrow( QPoint a, QPoint b, QColor c1, QString wh )
     }
 }
 
-// Make QPixmap of this drawing.
-// just the drawing if page_size set to paper (LETTER, LEGAL, A4, ...)
-// whole area if set to a screen size (640, 800, 1024)
+/**
+ * Make QPixmap of this drawing:
+ * Just the drawing if page_size set to paper (LETTER, LEGAL, A4, ...).
+ * Whole area if set to a screen size (640, 800, 1024).
+ */
 QPixmap Render2D::MakePixmap( bool transp )
 {
     double oldspace = preferences.getDoubleBondOffset();
@@ -1161,7 +1163,7 @@ QPixmap Render2D::MakePixmap( bool transp )
     return pm;
 }
 
-// Make QPixmap of this drawing.
+/// Make QPixmap of this drawing.
 QPixmap Render2D::MakeFullPixmap()
 {
     c->DeselectAll();
