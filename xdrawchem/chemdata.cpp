@@ -391,15 +391,13 @@ void ChemData::Flip( DPoint * d1, int dy )
         tmp_draw->Flip( d1, dy );
 }
 
-/// Finds and returns minimum rectangle needed to enclose selection
+/// Finds and returns minimum rectangle needed to enclose all drawables in drawlist
 QRect ChemData::selectionBox()
 {
     int top = 99999, bottom = 0, left = 99999, right = 0;
-    QRect tmprect;
-    QSharedPointer<Drawable> tmp_draw;
 
-    foreach ( tmp_draw, drawlist ) {
-        tmprect = tmp_draw->BoundingBox();
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist ) {
+        QRect tmprect = tmp_draw->BoundingBox();
         qDebug() << tmprect.width() << "X" << tmprect.height()
                  << " : " << tmprect.top() << " , " <<tmprect.left();
         if ( tmprect.isValid() ) {
@@ -426,13 +424,13 @@ QRect ChemData::selectionBox()
 }
 
 /**
- * Sets highlight on all UniquePoints within rectangle n, calls isWithinRect() with params on all drawables.
+ * Sets highlight on all UniquePoints within rectangle n.
  * When doing multiple selection via MODE_SELECT_MULTIPLE, we will
  * have to highlight/unhighlight regions of the drawing as the selection
  * box changes.  This function is called to start checking whether objects
- * fall within the select box.
+ * fall within the select box and settig highlighted on them.
  ***/
-void ChemData::NewSelectRect( QRect n, bool shiftdown )
+void ChemData::NewSelectRect( QRect n, bool /* shiftdown */ )
 {
     QList < DPoint * >allpts = UniquePoints();
 
@@ -444,13 +442,43 @@ void ChemData::NewSelectRect( QRect n, bool shiftdown )
         }
     }
 
-    QSharedPointer<Drawable> tmp_draw;
-    foreach ( tmp_draw, drawlist ) {
-        tmp_draw->isWithinRect( n, shiftdown );
-    }
+    //QSharedPointer<Drawable> tmp_draw;
+    //foreach ( tmp_draw, drawlist ) {
+    //    tmp_draw->isWithinRect( n, shiftdown );
+    //}
 }
 
-/// Returns list of unique points contained in all drawables.
+/// Returns rectangle enclosing all highlighted UniquePoints(), with a margin.
+QRect ChemData::BoxAllHighlightedAtoms()
+{
+    int top = 99999, bottom = 0, left = 99999, right = 0;
+    QList < DPoint * >allpts = UniquePoints();
+
+    foreach ( tmp_pt, allpts ) {
+        if ( !tmp_pt->highlighted )
+            continue;
+        if ( left > tmp_pt->x )
+            left = tmp_pt->x;
+        if ( right < tmp_pt->x )
+            right = tmp_pt->x;
+        if ( top > tmp_pt->y )
+            top = tmp_pt->y;
+        if ( bottom < tmp_pt->y )
+            bottom = tmp_pt->y;
+    }
+
+    left -= 3;
+    right += 5;
+    top -= 3;
+    bottom += 3;
+    if ( left < 0 )
+        left = 0;
+    if ( top < 0 )
+        top = 0;
+    return QRect( QPoint( left, top ), QPoint( right, bottom ) );
+}
+
+/// Returns list of unique points contained in all drawables in list.
 QList < DPoint * >ChemData::UniquePoints()
 {
     QList < DPoint * >up, tp;

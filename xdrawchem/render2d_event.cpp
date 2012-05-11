@@ -734,7 +734,7 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
         if ( e1->modifiers() == Qt::ShiftModifier )
             shiftdown = true;
         c->NewSelectRect( QRect( zoomCorrectReverse( selectOrigin ), zoomCorrectReverse( selectPrev ) ), shiftdown );
-        selectionBox = c->selectionBox();
+        selectionBox = c->BoxAllHighlightedAtoms();
         if ( selectionBox.left() < 999 )
             mode = MODE_SELECT_MULTIPLE_SELECTED;
         else

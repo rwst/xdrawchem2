@@ -58,6 +58,7 @@ public:
     void SetColorIfHighlighted( QColor );
     void FinishMove();
     QRect selectionBox();
+    QRect BoxAllHighlightedAtoms();
     QList<DPoint *> UniquePoints();
     QList<QSharedPointer<Drawable> > UniqueObjects();
     void SetTopLeft(QPoint p) { RenderTopLeft = p; }
