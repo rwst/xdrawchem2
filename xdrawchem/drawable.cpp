@@ -112,9 +112,7 @@ void Drawable::SetStartFromXML( QString xml_tag )
 
     ts >> x1 >> y1;
 
-    tmp_pt = new DPoint( x1, y1 );      // necessary
-
-    start = tmp_pt;
+    start = new DPoint( x1, y1 );      // necessary
 }
 
 // set DPoint *end from XML
@@ -133,9 +131,7 @@ void Drawable::SetEndFromXML( QString xml_tag )
 
     ts >> x1 >> y1;
 
-    tmp_pt = new DPoint( x1, y1 );      // necessary
-
-    end = tmp_pt;
+    end = new DPoint( x1, y1 );      // necessary
 }
 
 void Drawable::Highlight()

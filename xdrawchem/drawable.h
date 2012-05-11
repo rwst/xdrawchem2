@@ -76,8 +76,6 @@ protected:
     QColor color;
     // XML ID
     QString id;
-    // temporary DPoint
-    DPoint *tmp_pt;
     // arrow or bracket style
     int style;
     // which symbol or curvearrow to draw

@@ -522,10 +522,10 @@ double Symbol::distanceTo ( DPoint * target )
 
 bool Symbol::WithinBounds( DPoint * target )
 {
-    tmp_pt = new DPoint( start->x, start->y );
-    tmp_pt->x = tmp_pt->x + offset.x();
-    tmp_pt->y = tmp_pt->y + offset.y();
-    if ( tmp_pt->distanceTo( target ) < 8.0 )
+    DPoint *tpt = new DPoint( start->x, start->y );
+    tpt->x += offset.x();
+    tpt->y += offset.y();
+    if ( tpt->distanceTo( target ) < 8.0 )
         return true;
     else
         return false;
@@ -561,10 +561,10 @@ const QRect Symbol::BoundingBox() const
 
 bool Symbol::isWithinRect( QRect n, bool shiftdown )
 {
-    tmp_pt = new DPoint( start->x, start->y );
-    tmp_pt->x = tmp_pt->x + offset.x();
-    tmp_pt->y = tmp_pt->y + offset.y();
-    if ( n.contains( tmp_pt->toQPoint(), true ) )
+    DPoint *tpt = new DPoint( start->x, start->y );
+    tpt->x += offset.x();
+    tpt->y += offset.y();
+    if ( n.contains( tpt->toQPoint(), true ) )
         highlighted = true;
     else
         highlighted = false;
