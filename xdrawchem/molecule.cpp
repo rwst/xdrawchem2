@@ -36,7 +36,6 @@ Molecule::Molecule (Molecule* m, Render2D *re)
 {
     start = new DPoint(m->start);
     end = new DPoint(m->end);
-    ingroup = false;
 
     if (re==0)
         r = m->r;
@@ -1291,7 +1290,7 @@ void Molecule::doChanged()
 QDebug operator<<(QDebug dbg, const Molecule &m)
 {
     // Drawable part
-    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color;
+    dbg.space() << m.highlighted << m.start << m.end << m.color;
     dbg.space() << m.BoundingBox();
     return dbg.space();
 }

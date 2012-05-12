@@ -10,7 +10,6 @@ Drawable::Drawable( QObject * parent )
     start = 0;
     end = 0;
     color = QColor( 0, 0, 0 );
-    ingroup = false;
 }
 
 // ***************************************************

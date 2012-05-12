@@ -55,22 +55,16 @@ public:
     void SetColorFromXML(QString);
     void SetStartFromXML(QString);
     void SetEndFromXML(QString);
-    bool isInGroup() { return ingroup; }
-    void setInGroup(bool x) { ingroup = x; }
-    // more or less everything must be protected so derived classes can use them
 
     enum type { drawable=0, arrow=1, bond, bracket, curvearrow, symbol };
 
 protected:
     // highlighted?
     bool highlighted;
-    // member of a group?
-    bool ingroup;
     // points which define this Drawable (only start needed for TEXT)
     DPoint *start, *end;
     // color
     QColor color;
-    // XML ID
 };
 
 #endif
