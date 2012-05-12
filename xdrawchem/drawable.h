@@ -74,8 +74,6 @@ protected:
     QColor color;
     // XML ID
     QString id;
-    // arrow or bracket style
-    int style;
 };
 
 #endif

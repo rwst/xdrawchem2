@@ -45,6 +45,7 @@ private:
     QPolygon objectPoints;
     // graphic object type
     int ot;
+    int style;
 };
 
 #endif

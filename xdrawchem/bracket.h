@@ -52,6 +52,7 @@ private:
     // fill options, where applicable
     bool fill;
     QColor fillColor;
+    int style;
 };
 
 #endif

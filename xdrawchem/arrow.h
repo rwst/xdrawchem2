@@ -36,7 +36,7 @@ public:
 private:
     // Renderer
     Render2D *m_renderer;
-    int thick;
+    int thick, style;
 };
 
 #endif
