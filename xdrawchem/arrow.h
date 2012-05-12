@@ -31,10 +31,12 @@ public:
     QPoint Midpoint();
     int Style() { return style; }
     void SetStyle( int s1 ) { style = s1; }
+    void setThick(int t) { thick = t; }
 
 private:
     // Renderer
     Render2D *m_renderer;
+    int thick;
 };
 
 #endif

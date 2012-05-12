@@ -51,7 +51,7 @@ void Tool_2D3D::process()
     foreach ( QSharedPointer<Drawable> td1, objs ) {
         if ( td1->metaObject() == &Bond::staticMetaObject ) {
             Bond *b = (Bond*)td1.data();
-            new3dmol->addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), b->Thick(), b->Order(), td1->GetColor(), true );
+            new3dmol->addBond( newPoints.at( oldPoints.indexOf( td1->Start() ) ), newPoints.at( oldPoints.indexOf( td1->End() ) ), b->thickness(), b->Order(), td1->GetColor(), true );
         }
     }
 

@@ -59,8 +59,6 @@ public:
     void SetEndFromXML(QString);
     bool isInGroup() { return ingroup; }
     void setInGroup(bool x) { ingroup = x; }
-    int Thick() { return thick; }
-    void setThick(int t) { thick = t; }
     // more or less everything must be protected so derived classes can use them
 
     enum type { drawable=0, arrow=1, bond, bracket, curvearrow, symbol };
@@ -80,8 +78,6 @@ protected:
     int style;
     // which symbol or curvearrow to draw
     QString which;
-    // thickness of bond/bracket/line
-    int thick;
 };
 
 #endif

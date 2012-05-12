@@ -37,6 +37,8 @@ public:
     void setPoints( DPoint *, DPoint * );
     bool Equals( QSharedPointer<Bond> );
     bool isWithinRect( QRect, bool );
+    void setThick(int t) { thick = t; }
+    int thickness() { return thick; }
     int Order() { return order; }
 
     int baseOrder()
@@ -108,6 +110,7 @@ private:
     friend class Molecule;
     // Renderer
     Render2D *r;
+    int thick;
     // order of bond (1-3, or 5 if up, or 7 if down)
     int order;
     // stereochemistry flag

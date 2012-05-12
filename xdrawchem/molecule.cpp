@@ -958,7 +958,7 @@ QString Molecule::ToXML( QString xml_id )
             s.append( "</dash>\n" );
             // write thickness
             s.append( "<thick>" );
-            n1.setNum( tmp_bond->Thick() );
+            n1.setNum( tmp_bond->thick );
             s.append( n1 );
             s.append( "</thick>\n" );
             // write color
@@ -1291,7 +1291,7 @@ void Molecule::doChanged()
 QDebug operator<<(QDebug dbg, const Molecule &m)
 {
     // Drawable part
-    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id << m.style << m.which << m.thick;
+    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id << m.style << m.which;
     dbg.space() << m.BoundingBox();
     return dbg.space();
 }
