@@ -50,10 +50,8 @@ public:
     void setEnd(DPoint *ne) { end = ne; }
     virtual void SetColorIfHighlighted(QColor);
     void SetColor(QColor c) { color = c; }
-    QColor GetColor() { return color; }
-    QString getID() { return id; }
-    void setID(QString x) { id = x; }
     QColor GetColorFromXML(QString);
+    QColor GetColor() { return color; }
     void SetColorFromXML(QString);
     void SetStartFromXML(QString);
     void SetEndFromXML(QString);
@@ -73,7 +71,6 @@ protected:
     // color
     QColor color;
     // XML ID
-    QString id;
 };
 
 #endif

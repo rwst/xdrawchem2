@@ -590,7 +590,7 @@ bool ChemData::save_cml( QString fn )
             Bond* tb = qobject_cast<Bond *> (d);
             n1.setNum( n );
             nfull = QString( "b" ) + n1;
-            td->setID( nfull );
+            tb->setID( nfull );
             n++;
             t << "<bond id=\"" << tb->getID() << "\">";
             t << "<string builtin=\"atomRef\">" << tb->Start()->id << "</string>";

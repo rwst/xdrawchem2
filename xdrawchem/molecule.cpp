@@ -939,7 +939,7 @@ QString Molecule::ToXML( QString xml_id )
             Bond *tmp_bond = ( Bond * ) tmp_draw.data();
             n1.setNum( n );
             nfull = QString( "b" ) + n1;
-            tmp_draw->setID( nfull );
+            tmp_bond->setID( nfull );
             n++;
             s.append( "<bond id=\"" );
             s.append( tmp_bond->getID() );
@@ -1036,7 +1036,7 @@ QString Molecule::ToCDXML( QString xml_id )
         if ( tmp_draw->metaObject() == &Bond::staticMetaObject ) {
             Bond *tmp_bond = ( Bond * ) tmp_draw.data();
             n1.setNum( n );
-            tmp_draw->setID( n1 );
+            tmp_bond->setID( n1 );
             n++;
             s.append( "<b id=\"" );
             s.append( tmp_bond->getID() );
@@ -1291,7 +1291,7 @@ void Molecule::doChanged()
 QDebug operator<<(QDebug dbg, const Molecule &m)
 {
     // Drawable part
-    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id;
+    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color;
     dbg.space() << m.BoundingBox();
     return dbg.space();
 }

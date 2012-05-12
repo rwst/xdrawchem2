@@ -55,6 +55,9 @@ public:
     void setDash( int d ) { dashed = d; }
     const QRect BoundingBox() const;
     DPoint *otherPoint( DPoint * );
+    QString getID() { return id; }
+    void setID(QString x) { id = x; }
+
     void setIR_shift( double in1 ) { IR_shift = in1; }
     void setIR_intensity( QString in1 ) { IR_intensity = in1; }
     double getIR_shift() { return IR_shift; }
@@ -132,6 +135,7 @@ private:
     QString rxnlist;
     // bond name
     QString cname;
+    QString id;
 };
 
 #endif
