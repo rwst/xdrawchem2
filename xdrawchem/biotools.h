@@ -22,6 +22,7 @@ public:
 private:
   // Renderer
 //  Render2D *r;
+  QString which;
 };
 
 #endif

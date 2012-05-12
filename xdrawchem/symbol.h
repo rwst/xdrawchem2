@@ -51,6 +51,7 @@ private:
     // Offset (if needed -- to avoid label or bond)
     bool need_offset;
     QPoint offset;
+    QString which;
     // Rotation (if needed -- if not below or on point)
     double rotation;
     // scale (if needed)

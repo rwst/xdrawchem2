@@ -1291,7 +1291,7 @@ void Molecule::doChanged()
 QDebug operator<<(QDebug dbg, const Molecule &m)
 {
     // Drawable part
-    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id << m.style << m.which;
+    dbg.space() << m.highlighted << m.ingroup << m.start << m.end << m.color << m.id << m.style;
     dbg.space() << m.BoundingBox();
     return dbg.space();
 }

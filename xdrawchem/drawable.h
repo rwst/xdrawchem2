@@ -76,8 +76,6 @@ protected:
     QString id;
     // arrow or bracket style
     int style;
-    // which symbol or curvearrow to draw
-    QString which;
 };
 
 #endif
