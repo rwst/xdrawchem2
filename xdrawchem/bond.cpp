@@ -7,6 +7,8 @@
 
 Bond::Bond()
 {
+    start = new DPoint();
+    end = new DPoint();
     order = 1;
     stereo = STEREO_UNDEFINED;
     dashed = 0;

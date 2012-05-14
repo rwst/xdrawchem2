@@ -126,7 +126,7 @@ public:
 
 private:
     friend class Molecule;
-    DPoint *start, *end;
+    DPoint *end;
     int thick;
     // order of bond (1-3, or 5 if up, or 7 if down)
     int order;

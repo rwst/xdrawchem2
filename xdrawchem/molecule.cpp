@@ -18,6 +18,8 @@
 
 Molecule::Molecule()
 {
+    start = new DPoint();
+    end = new DPoint();
     text_mw = 0;
     text_formula = 0;
     group_type = GROUP_NONE;
