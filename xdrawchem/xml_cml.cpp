@@ -30,7 +30,7 @@ bool CMLParser::startElement( const QString &, const QString &, const QString & 
     }
     if ( qName.toUpper() == "BOND" ) {
         states = CML_BOND;
-        tmp_bond = new Bond( r );
+        tmp_bond = new Bond();
         tmp_bond->setID( attr.value( "id" ) );
         ep1 = 0;
         ep2 = 0;

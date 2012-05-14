@@ -209,7 +209,7 @@ void IOIface::convertToChemData()
 
         if ( !atom1->IsCarbon() ) {
 
-            QSharedPointer<Text> text ( new Text( chemdata->getRender2D() ));
+            QSharedPointer<Text> text ( new Text());
             QString str = IOIface::symbol[atom1->GetAtomicNum() - 1];
 
             text->setPoint( s );
@@ -222,7 +222,7 @@ void IOIface::convertToChemData()
 
         if ( !atom2->IsCarbon() ) {
 
-            QSharedPointer<Text> text ( new Text( chemdata->getRender2D() ));
+            QSharedPointer<Text> text ( new Text());
             QString str = IOIface::symbol[atom2->GetAtomicNum() - 1];
 
             text->setPoint( e );

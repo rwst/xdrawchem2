@@ -540,7 +540,7 @@ void CDXML_Reader::Build()
     // add text
     foreach ( tmp_node, nodelist ) {
         if ( tmp_node->element != "C" ) {
-            QSharedPointer<Text> nt ( new Text( c->getRender2D() ));
+            QSharedPointer<Text> nt ( new Text());
             nt->setPoint( tmp_node );
             if ( up.contains( tmp_node ) )
                 up.append( tmp_node );

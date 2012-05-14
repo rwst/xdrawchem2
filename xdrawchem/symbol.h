@@ -6,26 +6,38 @@
 #include <QPixmap>
 
 #include "drawable.h"
+#include "molpart.h"
 #include "dpoint.h"
 
 class Render2D;
 
-class Symbol : public Drawable
+class Symbol : public Drawable, public MolPart
 {
 Q_OBJECT
 public:
-    Symbol( Render2D *, QObject *parent = 0 );
-    void Render();  // draw this object
-    void Edit();
-    bool Find( DPoint * ); // does this ymbol contain this DPoint?
+    Symbol();
+    void Render(Render2D *m_renderer);  // draw this object
+    void Edit( Render2D *r );  // edit this object
+    void Move(double, double);
+    void Rotate(DPoint *, double);
+    void Flip(DPoint *, int);
+    void Resize(DPoint *, double);
+    bool Find( DPoint * ); // does this symbol contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
     double distanceTo ( DPoint * );
-    void setPoint( DPoint * );
     const QRect BoundingBox() const;
-    bool isWithinRect( QRect, bool );
-    bool WithinBounds( DPoint * );
+    DPoint *End() { return end; }
     QString ToXML( QString );
     void FromXML( QString );
+    QString ToCDXML( QString ) { return "Unexpected call to Symbol::ToCDXML"; } // TODO
+
+    bool Highlighted() { return highlighted; }
+    bool isWithinRect( QRect n, bool );
+    void SelectAll() { highlighted = true; }
+    void DeselectAll() { highlighted = false; }
+
+    void setPoint( DPoint * );
+    bool WithinBounds( DPoint * );
     void SetSymbol( QString );
     QString GetSymbol() { return which; }
     void SetOffset( QPoint d )
@@ -41,8 +53,6 @@ public:
     double GetRotate() { return rotation; }
 
 private:
-    // Renderer
-    Render2D *m_renderer;
     // Pixmap of original and rotated, regular and highlighted symbol
     QPixmap originalRegular;
     QPixmap originalHighlighted;
@@ -51,6 +61,7 @@ private:
     // Offset (if needed -- to avoid label or bond)
     bool need_offset;
     QPoint offset;
+    DPoint *end;
     QString which;
     // Rotation (if needed -- if not below or on point)
     double rotation;

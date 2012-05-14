@@ -24,16 +24,18 @@ class Molecule : public Drawable
 Q_OBJECT
 
 public:
-    Molecule( Render2D *, QObject *parent = 0 );
-    Molecule (Molecule*, Render2D *re=0);
+    Molecule();
+    Molecule (Molecule*);
     ~Molecule();
     Render2D *getRender2D() { return r; }
     void SetChemdata( ChemData *cd1 ) { cd = cd1; }
-    void Render();  // draw this object
+    void Render(Render2D * r);  // draw this object
+    void Edit( Render2D* r ) {}
     int Type();  // return type of object
     bool Find( DPoint * );   // is this DPoint present in this Molecule?
     DPoint *FindNearestPoint( DPoint *, double & );
     double distanceTo( DPoint * );
+    DPoint *End() { return end; }
     void addBond( DPoint *, DPoint *, int, int, QColor, bool hl = false );
     void addBond( QSharedPointer<Bond> );
     void addText( QSharedPointer<Text> );
@@ -194,6 +196,7 @@ private:
     bool showPC, changed;
     // reactivity info
     QStringList atomRxns, bondRxns;
+    DPoint *end;
 };
 
 #endif

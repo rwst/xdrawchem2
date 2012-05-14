@@ -32,7 +32,7 @@ void ChemData::drawAll()
     QSharedPointer<Drawable> tmp_draw;
     foreach ( tmp_draw, drawlist ) {
         qDebug() << "drawAll: " << tmp_draw;
-        tmp_draw->Render();
+        tmp_draw->Render(r);
     }
 }
 
@@ -69,7 +69,7 @@ void ChemData::addMolecule( QSharedPointer<Molecule> m1 )
 /// Create Arrow using all params, append it to drawlist
 void ChemData::addArrow( DPoint * s, DPoint * e, QColor c, int t, int p2, bool hl )
 {
-    Arrow *a1 = new Arrow( r );
+    Arrow *a1 = new Arrow();
 
     a1->setPoints( s, e );
     a1->SetColor( c );
@@ -84,7 +84,7 @@ void ChemData::addArrow( DPoint * s, DPoint * e, QColor c, int t, int p2, bool h
 /// Create CurveArrow using all params, append it to drawlist
 void ChemData::addCurveArrow( DPoint * s, DPoint * e, QColor c, QString s1, bool hl )
 {
-    CurveArrow *a1 = new CurveArrow( r );
+    CurveArrow *a1 = new CurveArrow();
 
     a1->setPoints( s, e );
     a1->SetColor( c );
@@ -98,7 +98,7 @@ void ChemData::addCurveArrow( DPoint * s, DPoint * e, QColor c, QString s1, bool
 /// Create Bracket using all params, append it to drawlist
 void ChemData::addBracket( DPoint * s, DPoint * e, QColor c, int type, bool hl )
 {
-    Bracket *a1 = new Bracket( r );
+    Bracket *a1 = new Bracket();
 
     a1->setPoints( s, e );
     a1->SetColor( c );
@@ -156,7 +156,7 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
 
     // neither point exists -- create new Molecule
     if ( ( m1 == 0 ) && ( m2 == 0 ) ) {
-        Molecule *m = new Molecule( r );
+        Molecule *m = new Molecule();
 
         m->SetChemdata( this );
         m->addBond( s, e, thick, order, c, hl );
@@ -185,7 +185,7 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
 /// Create Symbol using all params, append it to drawlist or Molecule
 void ChemData::addSymbol( DPoint * a, QString symbolfile, bool hl )
 {
-    QSharedPointer<Symbol> s1 ( new Symbol( r ));
+    QSharedPointer<Symbol> s1 ( new Symbol());
     s1->setPoint( a );
     s1->SetSymbol( symbolfile );
     if ( hl )
@@ -264,11 +264,11 @@ void ChemData::Erase( QSharedPointer<Drawable> d )
 {
     drawlist.removeAll( d );
 
-    QSharedPointer<Drawable> td;
-    foreach ( td, drawlist )
+    foreach ( QSharedPointer<Drawable> td, drawlist )
         if ( td->metaObject() == &Molecule::staticMetaObject ) {
-            bool erased = ((Molecule*)td.data())->Erase( d );
-            if ( erased && td->Members() == 0 )
+            Molecule *m = ((Molecule*)td.data());
+            bool erased = m->Erase( d );
+            if ( erased && m->Members() == 0 )
                 drawlist.removeAll( td );
         //qDebug() << "erased:" << erased;
         }
@@ -287,8 +287,9 @@ void ChemData::EraseSelected()
             continue;
         }
         if ( td->metaObject() == &Molecule::staticMetaObject ) {
-            ((Molecule*)td.data())->EraseSelected();
-            if ( td->Members() == 0 )
+            Molecule *m = ((Molecule*)td.data());
+            m->EraseSelected();
+            if ( m->Members() == 0 )
                 drawlist.removeAll( td );
         //qDebug() << "erased:" << erased;
         }
@@ -328,10 +329,10 @@ void ChemData::SelectAll()
 {
     QList < DPoint * >allpts = UniquePoints();
 
-    QSharedPointer<Drawable> tmp_draw;
-    foreach ( tmp_draw, drawlist ) {
-        tmp_draw->SelectAll();
-    }
+//    QSharedPointer<Drawable> tmp_draw;
+//    foreach ( tmp_draw, drawlist ) {
+//        tmp_draw->SelectAll();
+//    }
     foreach ( tmp_pt, allpts ) {
         tmp_pt->setHighlighted( true );
     }
@@ -341,11 +342,11 @@ void ChemData::SelectAll()
 void ChemData::DeselectAll()
 {
     QList < DPoint * >allpts = UniquePoints();
-    QSharedPointer<Drawable> tmp_draw;
+//    QSharedPointer<Drawable> tmp_draw;
 
-    foreach ( tmp_draw, drawlist ) {
-        tmp_draw->DeselectAll();
-    }
+//    foreach ( tmp_draw, drawlist ) {
+//        tmp_draw->DeselectAll();
+//    }
     foreach ( tmp_pt, allpts ) {
         tmp_pt->setHighlighted( false );
     }
@@ -478,17 +479,17 @@ QRect ChemData::BoxAllHighlightedAtoms()
     return QRect( QPoint( left, top ), QPoint( right, bottom ) );
 }
 
-/// Returns list of unique points contained in all drawables in list.
+/// Returns list of unique points contained in all molecules in list.
 QList < DPoint * >ChemData::UniquePoints()
 {
     QList < DPoint * >up, tp;
 
-    QSharedPointer<Drawable> tmp_draw;
-    foreach ( tmp_draw, drawlist ) {
-        tp = tmp_draw->AllPoints();
-        foreach ( tmp_pt, tp )
-            up.append( tmp_pt );
-    }
+    foreach ( QSharedPointer<Drawable> tmp_draw, drawlist )
+        if (tmp_draw->metaObject() == &Molecule::staticMetaObject) {
+            tp = ((Molecule *)tmp_draw.data())->AllPoints();
+            foreach ( tmp_pt, tp )
+                up.append( tmp_pt );
+        }
 
     qDebug() << up.count();
     return up;

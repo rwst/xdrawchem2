@@ -33,6 +33,7 @@ public:
     void CorrectEndpoint_bond();
     void CleanUpAfterTextTool();
     static const Qt::GlobalColor highlightColor = Qt::blue;
+    static Render2D *screen_renderer();
 
 public slots:
     // defined in render2d.cpp

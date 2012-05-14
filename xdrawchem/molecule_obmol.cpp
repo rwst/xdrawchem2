@@ -156,7 +156,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
 
         if ( !atom1->IsCarbon() ) {
 
-            QSharedPointer<Text> text ( new Text( r ));
+            QSharedPointer<Text> text ( new Text());
             QString str = esymbol[atom1->GetAtomicNum() - 1];
 
             text->setText( str );
@@ -168,7 +168,7 @@ bool Molecule::convertFromOBMol( OBMol * obmol )
 
         if ( !atom2->IsCarbon() ) {
 
-            QSharedPointer<Text> text ( new Text( r ));
+            QSharedPointer<Text> text ( new Text());
             QString str = esymbol[atom2->GetAtomicNum() - 1];
 
             text->setText( str );

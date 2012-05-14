@@ -1,33 +1,9 @@
-// drawable.cpp - Drawable's implementation of functions
+// drawable.cpp - DrawProp's implementation of functions
 
 #include "drawable.h"
 #include "dpoint.h"
 #include "defs.h"
 
-Drawable::Drawable( QObject * parent )
-    : QObject( parent )
-{
-    start = 0;
-    end = 0;
-    color = QColor( 0, 0, 0 );
-}
-
-// ***************************************************
-// functions shared by all Drawables (except Molecule)
-//
-// AllPoints() and AllObjects(): return all unique DPoint's and all
-// Drawables, respectively, contained in Molecule.  Only used by save_cml,
-// I think, and only applies to Molecule.
-int Drawable::Members()
-{
-    return 1;
-}
-
-QList < DPoint * >Drawable::AllPoints()
-{
-    QList < DPoint * >l;
-    return l;
-}
 
 double Drawable::DistanceBetween( QPoint a, QPoint b )
 {
@@ -35,24 +11,6 @@ double Drawable::DistanceBetween( QPoint a, QPoint b )
     double dy = a.y() - b.y();
 
     return sqrt( dx * dx + dy * dy );
-}
-
-// convert Drawable to XML tag.  Reimplement for all subclasses!
-QString Drawable::ToXML( QString )
-{
-    return QString( "<drawable/>\n" );
-}
-
-// convert Drawable to CDXML tag.  Reimplement for all subclasses!
-QString Drawable::ToCDXML( QString )
-{
-    return QString();
-}
-
-// convert XML tag to Drawable.  Reimplement for all subclasses!
-void Drawable::FromXML( QString )
-{
-    return;
 }
 
 // convert XML <color> tag to QColor and set current
@@ -96,7 +54,7 @@ QColor Drawable::GetColorFromXML( QString xml_tag )
 }
 
 // set DPoint *start from XML
-void Drawable::SetStartFromXML( QString xml_tag )
+DPoint *Drawable::StartFromXML( QString xml_tag )
 {
     qDebug() << "SetStartFromXML:" << xml_tag;
     int i1, i2;
@@ -111,11 +69,11 @@ void Drawable::SetStartFromXML( QString xml_tag )
 
     ts >> x1 >> y1;
 
-    start = new DPoint( x1, y1 );      // necessary
+    return new DPoint( x1, y1 );      // necessary
 }
 
-// set DPoint *end from XML
-void Drawable::SetEndFromXML( QString xml_tag )
+// get DPoint *end from XML
+DPoint *Drawable::EndFromXML( QString xml_tag )
 {
     qDebug() << "SetEndFromXML:" << xml_tag;
     int i1, i2;
@@ -130,23 +88,15 @@ void Drawable::SetEndFromXML( QString xml_tag )
 
     ts >> x1 >> y1;
 
-    end = new DPoint( x1, y1 );      // necessary
+    return new DPoint( x1, y1 );      // necessary
 }
 
 void Drawable::Highlight()
 {
-    if ( end == 0 ) {
-        if ( start->isHighlighted() == true ) {
-            highlighted = true;
-        } else {
-            highlighted = false;
-        }
+    if ( start->isHighlighted() == true ) {
+        highlighted = true;
     } else {
-        if ( ( start->isHighlighted() == true ) && ( end->isHighlighted() == true ) ) {
-            highlighted = true;
-        } else {
-            highlighted = false;
-        }
+        highlighted = false;
     }
 }
 
@@ -159,168 +109,12 @@ void Drawable::Highlight( bool hl )
     }
 }
 
-bool Drawable::Highlighted()
-{
-    return highlighted;
-}
-
-void Drawable::SelectAll()
-{
-    highlighted = true;
-}
-
-void Drawable::DeselectAll()
-{
-    highlighted = false;
-}
-
-void Drawable::SetColorIfHighlighted( QColor c )
-{
-    if ( highlighted )
-        color = c;
-}
-
-void Drawable::Move( double dx, double dy )
-{
-    if ( ( highlighted ) && ( start != 0 ) ) {
-        start->x += dx;
-        start->y += dy;
-    }
-    if ( ( highlighted ) && ( end != 0 ) ) {
-        end->x += dx;
-        end->y += dy;
-    }
-}
-
-void Drawable::ForceMove( double dx, double dy )
-{
-    if ( start != 0 ) {
-        start->x += dx;
-        start->y += dy;
-    }
-    if ( end != 0 ) {
-        end->x += dx;
-        end->y += dy;
-    }
-}
-
-void Drawable::Flip( DPoint *origin, int direction )
-{
-    double delta;
-
-    if ( highlighted == false )
-        return;
-    if ( start != 0 ) {
-        if ( direction == FLIP_H ) {
-            delta = start->x - origin->x;
-            start->x = start->x - 2 * delta;
-        } else {                // direction == FLIP_V
-            delta = start->y - origin->y;
-            start->y = start->y - 2 * delta;
-        }
-    }
-    if ( end != 0 ) {
-        if ( direction == FLIP_H ) {
-            delta = end->x - origin->x;
-            end->x = end->x - 2 * delta;
-        } else {                // direction == FLIP_V
-            delta = end->y - origin->y;
-            end->y = end->y - 2 * delta;
-        }
-    }
-}
-
-void Drawable::Rotate( DPoint *origin, double angle )
-{
-    //double dx, dy;
-
-    if ( highlighted == false )
-        return;
-    if ( start != 0 ) {
-        double thisx = start->x - origin->x;
-        double thisy = start->y - origin->y;
-        double newx = thisx * cos( angle ) + thisy * sin( angle );
-        double newy = -thisx * sin( angle ) + thisy * cos( angle );
-
-        start->x = ( newx + origin->x );
-        start->y = ( newy + origin->y );
-    }
-    if ( end != 0 ) {
-        double thisx = end->x - origin->x;
-        double thisy = end->y - origin->y;
-        double newx = thisx * cos( angle ) + thisy * sin( angle );
-        double newy = -thisx * sin( angle ) + thisy * cos( angle );
-
-        end->x = ( newx + origin->x );
-        end->y = ( newy + origin->y );
-    }
-}
-
-void Drawable::Resize( DPoint *origin, double scale )
-{
-    double dx, dy;
-
-    if ( highlighted == false )
-        return;
-    if ( start != 0 ) {
-        dx = start->x - origin->x;
-        dy = start->y - origin->y;
-        dx *= scale;
-        dy *= scale;
-        start->x = origin->x + dx;
-        start->y = origin->y + dy;
-    }
-    if ( end != 0 ) {
-        dx = end->x - origin->x;
-        dy = end->y - origin->y;
-        dx *= scale;
-        dy *= scale;
-        end->x = origin->x + dx;
-        end->y = origin->y + dy;
-    }
-}
 
 //
 // end common functions
 // ********************
 
-void Drawable::Render()
-{
-    qDebug() << "Not possible to render Drawable, only its subclasses";
-}
-
-void Drawable::Edit()
-{
-    qDebug() << "Not possible to edit Drawable, only its subclasses";
-}
-
-DPoint *Drawable::FindNearestPoint( DPoint *, double &d )
-{
-    d = 99999.0;
-    return 0;
-}
-
-bool Drawable::Find( DPoint * )
-{
-    return false;
-}
-
-void Drawable::addBond( DPoint *, DPoint *, int, int, QColor, bool )
-{
-    return;
-}
-
-bool Drawable::isWithinRect( QRect, bool )
-{
-    return false;
-}
-
-const QRect Drawable::BoundingBox() const
-{
-    return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );
-}
-
-// math functions all Drawables might need
+// math functions all DrawProps might need
 double Drawable::getAngle( DPoint * a, DPoint * b )
 {
     double dx = b->x - a->x;

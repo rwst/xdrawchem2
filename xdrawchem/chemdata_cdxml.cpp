@@ -141,7 +141,7 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
                     // create end points of this arrow
                     s1 = new DPoint( l1, l2 );
                     e1 = new DPoint( l3, l4 );
-                    QSharedPointer<Arrow> dr1 (new Arrow( r ));
+                    QSharedPointer<Arrow> dr1 (new Arrow());
 
                     dr1->setPoints( s1, e1 );
                     dr1->Highlight( true );
@@ -152,7 +152,7 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
                     qDebug() << "bracket";
                     s1 = new DPoint( l1, l2 );
                     e1 = new DPoint( l3, l4 );
-                    QSharedPointer <Bracket> dr1 (new Bracket( r ));
+                    QSharedPointer <Bracket> dr1 (new Bracket());
 
                     dr1->setPoints( s1, e1 );
                     dr1->Highlight( true );

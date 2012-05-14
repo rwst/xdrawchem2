@@ -119,7 +119,7 @@ void Molecule::AddNMRprotons()
         if ( h < 0 )
             h = 0;
         for ( ct = 0; ct < h; ct++ ) {
-            QSharedPointer<Bond> tmp_bond ( new Bond( r ));
+            QSharedPointer<Bond> tmp_bond ( new Bond());
             new_proton = new DPoint;
             new_proton->element = "H";
             new_proton->nmr_proton = true;

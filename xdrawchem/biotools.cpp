@@ -9,8 +9,7 @@ QToolBar *ApplicationWindow::BuildBioTools()
     return localbar;
 }
 
-BioTools::BioTools( Render2D *, QObject * parent )
-    : Drawable( parent )
+BioTools::BioTools()
 {
     which = "";
 }
@@ -20,7 +19,7 @@ void BioTools::SetWhich( QString w1 )
     which = w1;
 }
 
-void BioTools::Render()
+void BioTools::Render(Render2D *)
 {
 }
 

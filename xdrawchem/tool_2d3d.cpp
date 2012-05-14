@@ -20,7 +20,7 @@ Tool_2D3D::Tool_2D3D( QWidget *parent )
 
 void Tool_2D3D::process()
 {
-    new3dmol = new Molecule((Render2D*)0);
+    new3dmol = new Molecule();
     // deep copy into new3dmol
     QList <QSharedPointer<Drawable> >objs = this_mol->AllObjects();
 

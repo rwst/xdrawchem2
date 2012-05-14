@@ -5,6 +5,7 @@
 #include "render2d.h"
 #include "drawable.h"
 #include "symbol.h"
+#include "render2d.h"
 #include "bondedit.h"
 #include "defs.h"
 
@@ -12,10 +13,8 @@
 #include "symbol_xpm.h"
 // end symbol defs
 
-Symbol::Symbol( Render2D *r1, QObject *parent )
-    : Drawable( parent )
+Symbol::Symbol()
 {
-    m_renderer = r1;
     highlighted = false;
     offset = QPoint( 0, 0 );
     need_offset = false;
@@ -169,7 +168,7 @@ void Symbol::FromXML( QString xml_tag )
 
     i1 = xml_tag.indexOf( "<Start>" );
     i2 = xml_tag.indexOf( "</Start>" ) + 8;
-    SetStartFromXML( xml_tag.mid( i1, i2 - i1 ) );
+    start = StartFromXML( xml_tag.mid( i1, i2 - i1 ) );
     i1 = xml_tag.indexOf( "<symtype>" ) + 9;
     i2 = xml_tag.indexOf( "</symtype>" );
     SetSymbol( xml_tag.mid( i1, i2 - i1 ) );
@@ -188,7 +187,7 @@ void Symbol::FromXML( QString xml_tag )
     }
 }
 
-void Symbol::Render()
+void Symbol::Render( Render2D *m_renderer )
 {
     QPoint p1 = start->toQPoint();
     QPoint p11, p22;
@@ -445,7 +444,7 @@ void Symbol::Render()
     }
 }
 
-void Symbol::Edit()
+void Symbol::Edit( Render2D* r )
 {
     int lsty;
 
@@ -469,7 +468,7 @@ void Symbol::Edit()
         lsty = SYM_P_DOUBLE;
     if ( which == "bead" )
         lsty = SYM_BEAD;
-    BondEditDialog be( m_renderer, start, end, PreviewWidget::SYMBOL, 0, 0, 0, lsty, color );
+    BondEditDialog be( r, start, end, PreviewWidget::SYMBOL, 0, 0, 0, lsty, color );
 
     if ( !be.exec() )
         return;
@@ -495,6 +494,94 @@ void Symbol::Edit()
         SetSymbol( "p_double_orbital" );
     if ( lsty == SYM_BEAD )
         SetSymbol( "bead" );
+}
+
+void Symbol::Move (double dx, double dy)
+{
+    if ( ( highlighted ) && ( start != 0 ) ) {
+        start->x += dx;
+        start->y += dy;
+        }
+    if ( ( highlighted ) && ( end != 0 ) ) {
+        end->x += dx;
+        end->y += dy;
+        }
+}
+
+void Symbol::Flip( DPoint *origin, int direction )
+{
+    double delta;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = start->x - origin->x;
+            start->x = start->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = start->y - origin->y;
+            start->y = start->y - 2 * delta;
+        }
+    }
+    if ( end != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = end->x - origin->x;
+            end->x = end->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = end->y - origin->y;
+            end->y = end->y - 2 * delta;
+        }
+    }
+}
+
+void Symbol::Rotate( DPoint *origin, double angle )
+{
+    //double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        double thisx = start->x - origin->x;
+        double thisy = start->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        start->x = ( newx + origin->x );
+        start->y = ( newy + origin->y );
+    }
+    if ( end != 0 ) {
+        double thisx = end->x - origin->x;
+        double thisy = end->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        end->x = ( newx + origin->x );
+        end->y = ( newy + origin->y );
+    }
+}
+
+void Symbol::Resize( DPoint *origin, double scale )
+{
+    double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        dx = start->x - origin->x;
+        dy = start->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        start->x = origin->x + dx;
+        start->y = origin->y + dy;
+    }
+    if ( end != 0 ) {
+        dx = end->x - origin->x;
+        dy = end->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        end->x = origin->x + dx;
+        end->y = origin->y + dy;
+    }
 }
 
 bool Symbol::Find( DPoint * target )
@@ -559,16 +646,17 @@ const QRect Symbol::BoundingBox() const
     return QRect( QPoint( left, top ), QPoint( right, bottom ) );
 }
 
-bool Symbol::isWithinRect( QRect n, bool shiftdown )
+bool Symbol::isWithinRect( QRect n, bool /* shiftdown */ )
 {
     DPoint *tpt = new DPoint( start->x, start->y );
     tpt->x += offset.x();
     tpt->y += offset.y();
-    if ( n.contains( tpt->toQPoint(), true ) )
+    return n.contains( tpt->toQPoint(), true );
+    /* if ( n.contains( tpt->toQPoint(), true ) )
         highlighted = true;
     else
         highlighted = false;
-    return highlighted;
+    return highlighted; */
 }
 
 // kate: tab-width 4; indent-width 4; space-indent on; replace-trailing-space-save on;

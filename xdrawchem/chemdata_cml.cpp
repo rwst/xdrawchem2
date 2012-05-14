@@ -60,7 +60,7 @@ bool ChemData::NewLoadCMLFile( QString fn )
 
     foreach ( tmp_pt, parsedPoints ) {
         if ( tmp_pt->element != "C" ) {
-            QSharedPointer<Text> nt ( new Text( r ));
+            QSharedPointer<Text> nt ( new Text());
 
             nt->setPoint( tmp_pt );
             nt->setJustify( JUSTIFY_CENTER );
@@ -462,7 +462,7 @@ void ChemData::Convert_CML_Lists_To_Native()
     foreach ( tmp_pt, points ) {
         if ( tmp_pt->element != QString( "C" ) ) {
             qDebug() << tmp_pt->element;
-            QSharedPointer<Text> nt ( new Text( r ));
+            QSharedPointer<Text> nt ( new Text());
 
             nt->setPoint( tmp_pt );
             nt->setJustify( JUSTIFY_CENTER );

@@ -21,6 +21,7 @@
 #include "chemdata.h"
 #include "defs.h"
 
+/*
 // For AutoLayout
 class LayoutGroup
 {
@@ -68,6 +69,7 @@ public:
         return BoundingBox().center();
     }
 };
+*/
 
 // Determine Molecule clicked, do Tool action
 void ChemData::Tool( DPoint *target, int mode )
@@ -287,6 +289,7 @@ void ChemData::clearAllGroups()
     }
 }
 
+/*
 // calculate molecular weights of Molecules
 // AutoLayout
 void ChemData::AutoLayout()
@@ -502,10 +505,11 @@ void ChemData::AutoLayout()
         }                       // if (...TYPE_ARROW)
     }                           // for (...)
 }
+*/
 
 void ChemData::fromSMILES( QString sm )
 {
-    QSharedPointer<Molecule> m1 (new Molecule( r ));
+    QSharedPointer<Molecule> m1 (new Molecule());
 
     m1->FromSMILES( sm );
     m1->SelectAll();
@@ -573,7 +577,7 @@ void ChemData::SmartPlaceToo( QString sf, DPoint * t1 )
     // need to put back N if EDANS
     if ( sf.contains( "edans" ) > 0 ) {
         t1->element = "NH";
-        QSharedPointer<Text> nt ( new Text( r ));
+        QSharedPointer<Text> nt ( new Text());
 
         nt->setPoint( t1 );
         nt->setJustify( JUSTIFY_CENTER );
@@ -609,7 +613,7 @@ void ChemData::SmartPlaceThree( QString sf, DPoint * t1 )
     }
     // need to put back N
     t1->element = "NH";
-    QSharedPointer<Text> nt ( new Text( r ));
+    QSharedPointer<Text> nt ( new Text());
 
     nt->setPoint( t1 );
     nt->setJustify( JUSTIFY_CENTER );

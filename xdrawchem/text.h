@@ -4,6 +4,7 @@
 #define TEXT_H
 
 #include "drawable.h"
+#include "molpart.h"
 #include "dpoint.h"
 
 #define TEXT_AUTO 0
@@ -14,21 +15,34 @@
 class Render2D;
 class Molecule;
 
-class Text : public Drawable
+class Text : public Drawable, public MolPart
 {
 Q_OBJECT
 public:
-    Text( Render2D *, QObject *parent = 0 );
-    void Render();  // draw this object
-    int Type();  // return type of object
+    Text();
+
+    // Drawable implementation
+    void Render(Render2D * r);  // draw this object
+    void Edit( Render2D* r ) {}
+    void Move (double dx, double dy);
+    void Rotate (DPoint*, double);
+    void Flip( DPoint *origin, int direction );
+    void Resize( DPoint *origin, double scale );
     bool Find( DPoint * ); // does this Text contain this DPoint?
     double distanceTo ( DPoint *);
     DPoint *FindNearestPoint( DPoint * target, double &dist );
+    DPoint *End() { return 0; }
+    void setEnd(DPoint* /* ne */) { }
+
+    bool Highlighted() { return highlighted; }
+    bool isWithinRect( QRect n, bool );
+    void SelectAll() { highlighted = true; }
+    void DeselectAll() { highlighted = false; }
+
     void setPoint( DPoint * );
     int Justify() { return justify; }
     void setJustify( int a) { justify = a; }
     bool WithinBounds( DPoint * );
-    bool isWithinRect( QRect, bool );
     void InsertCharacter( class QKeyEvent * );
     void InsertString( QString );
     void DeleteKeyPressed();
@@ -149,8 +163,6 @@ public:
     }
 
 private:
-    // Renderer
-    Render2D *r;
     // Text this object holds
     //QString text;  *** NOW DEFINED IN dpoint.h
     // Text modifier -- super/subscript flags

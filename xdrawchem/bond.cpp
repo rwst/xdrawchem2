@@ -1,15 +1,12 @@
 // bond.cpp - Bond's implementation of functions
 
-#include "render2d.h"
-#include "drawable.h"
 #include "bond.h"
 #include "defs.h"
+#include "render2d.h"
 #include "bondedit.h"
 
-Bond::Bond( Render2D * r1, QObject * parent )
-    : Drawable( parent )
+Bond::Bond()
 {
-    r = r1;
     order = 1;
     stereo = STEREO_UNDEFINED;
     dashed = 0;
@@ -37,6 +34,7 @@ Bond& Bond::operator = (const Bond& other)
     return *this;
 }
 
+
 void Bond::setOrder( int a )
 {
     order = a;
@@ -62,16 +60,7 @@ bool Bond::Equals(QSharedPointer<Bond> a )
     return false;
 }
 
-bool Bond::isWithinRect( QRect n, bool /*shiftdown*/ )
-{
-    if ( DPointInRect( start, n ) && DPointInRect( end, n ) )
-        highlighted = true;
-    else
-        highlighted = false;
-    return highlighted;
-}
-
-void Bond::Edit()
+void Bond::Edit(Render2D *r)
 {
     int db1 = 0;
 
@@ -97,7 +86,7 @@ void Bond::Edit()
     }
 }
 
-void Bond::Render()
+void Bond::Render(Render2D * r)
 {
     double myangle, x1, y1, x2, y2, rise, run, lx, ly, cf = 0.02;
     QColor c1;
@@ -281,6 +270,94 @@ void Bond::Render()
         else
             r->drawLine( sp2, ep2, thick, c1 );
         return;
+    }
+}
+
+void Bond::Move (double dx, double dy)
+{
+    if ( ( highlighted ) && ( start != 0 ) ) {
+        start->x += dx;
+        start->y += dy;
+        }
+    if ( ( highlighted ) && ( end != 0 ) ) {
+        end->x += dx;
+        end->y += dy;
+        }
+}
+
+void Bond::Flip( DPoint *origin, int direction )
+{
+    double delta;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = start->x - origin->x;
+            start->x = start->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = start->y - origin->y;
+            start->y = start->y - 2 * delta;
+        }
+    }
+    if ( end != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = end->x - origin->x;
+            end->x = end->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = end->y - origin->y;
+            end->y = end->y - 2 * delta;
+        }
+    }
+}
+
+void Bond::Rotate( DPoint *origin, double angle )
+{
+    //double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        double thisx = start->x - origin->x;
+        double thisy = start->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        start->x = ( newx + origin->x );
+        start->y = ( newy + origin->y );
+    }
+    if ( end != 0 ) {
+        double thisx = end->x - origin->x;
+        double thisy = end->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        end->x = ( newx + origin->x );
+        end->y = ( newy + origin->y );
+    }
+}
+
+void Bond::Resize( DPoint *origin, double scale )
+{
+    double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        dx = start->x - origin->x;
+        dy = start->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        start->x = origin->x + dx;
+        start->y = origin->y + dy;
+    }
+    if ( end != 0 ) {
+        dx = end->x - origin->x;
+        dy = end->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        end->x = origin->x + dx;
+        end->y = origin->y + dy;
     }
 }
 

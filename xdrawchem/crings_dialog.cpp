@@ -87,7 +87,7 @@ void CustomRingWidget::slotTitle( QString & string )
 
 void CustomRingWidget::setMolecule( QSharedPointer<Molecule> m )
 {
-    QSharedPointer<Molecule> nm (new Molecule(m.data(), render));
+    QSharedPointer<Molecule> nm (new Molecule(m.data()));
     data->addMolecule( nm );
 
     //QPixmap pixmap=real_render->MakePixmap();

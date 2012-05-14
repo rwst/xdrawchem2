@@ -4,24 +4,23 @@
 #ifndef BIOTOOLS_H
 #define BIOTOOLS_H
 
-#include "render2d.h"
+#include <QString>
+
 #include "drawable.h"
-#include "dpoint.h"
 
 class Molecule;
+class Render2D;
 
 class BioTools : public Drawable
 {
 public:
-  BioTools( Render2D *, QObject *parent = 0 );
-  void Render();  // draw this object
+  BioTools();
+  void Render( Render2D * );  // draw this object
   int Type();  // return type of object
   void SetWhich( QString );
   QString GetWhich() { return which; }
 
 private:
-  // Renderer
-//  Render2D *r;
   QString which;
 };
 

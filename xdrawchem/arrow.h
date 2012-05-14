@@ -6,27 +6,34 @@
 #include <QRect>
 #include <QPoint>
 
-#include "render2d.h"
 #include "drawable.h"
 #include "dpoint.h"
+
+class Render2D;
 
 class Arrow : public Drawable
 {
     Q_OBJECT
 
 public:
-    Arrow( Render2D *, QObject *parent = 0 );
-    void Render();  // draw this object
-    void Edit();  // edit this object
+    Arrow();
+    void Render(Render2D *r);  // draw this object
+    void Edit(Render2D *r);  // edit this object
+    void Move(double, double);
+    void Rotate(DPoint *, double);
+    void Flip(DPoint *, int);
+    void Resize(DPoint *, double);
     bool Find( DPoint * ); // does this Arrow contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
     double distanceTo (DPoint*);
-    void setPoints( DPoint *, DPoint * );
     const QRect BoundingBox() const;
-    bool isWithinRect( QRect, bool );
+    DPoint *End() { return end; }
     QString ToXML( QString );
     QString ToCDXML( QString );
     void FromXML( QString );
+
+    void setPoints( DPoint *, DPoint * );
+    bool isWithinRect( QRect, bool );
     int Orientation();
     QPoint Midpoint();
     int Style() { return style; }
@@ -34,9 +41,8 @@ public:
     void setThick(int t) { thick = t; }
 
 private:
-    // Renderer
-    Render2D *m_renderer;
     int thick, style;
+    DPoint *end;
 };
 
 #endif

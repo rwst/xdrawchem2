@@ -473,7 +473,7 @@ Text *Molecule::CalcEmpiricalFormula( bool from_mw )
     ny = nr.top() - 16.0;
     nx = ( nr.left() + nr.right() ) / 2.0;
 
-    Text *tmp_text = new Text( r );
+    Text *tmp_text = new Text();
     DPoint *tpt = new DPoint( nx, ny );
     tmp_text->setPoint( tpt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
@@ -506,7 +506,7 @@ Text *Molecule::CalcMW( bool from_change )
     ny = nr.bottom() + 5.0;
     nx = ( nr.left() + nr.right() ) / 2.0;
 
-    Text *tmp_text = new Text( r );
+    Text *tmp_text = new Text();
     DPoint *tpt = new DPoint( nx, ny );
     tmp_text->setPoint( tpt );
     tmp_text->setJustify( JUSTIFY_TOPLEFT );
@@ -576,7 +576,7 @@ Text *Molecule::CalcElementalAnalysis( bool show_dialog )
     ny = nr.top() + 8.0;
     nx = nr.right() + 16.0;
 
-    Text *tmp_text = new Text( r );
+    Text *tmp_text = new Text();
     DPoint *tpt = new DPoint( nx, ny );
     tmp_text->setPoint( tpt );
     //qDebug() << ea;

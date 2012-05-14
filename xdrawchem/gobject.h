@@ -21,31 +21,37 @@ class GraphicObject : public Drawable
 Q_OBJECT
 
 public:
-    GraphicObject( Render2D *, QObject *parent = 0 );
-    void Render();  // draw this object
-    void Edit();
+    GraphicObject( );
+    void Render(Render2D * r);  // draw this object
+    void Edit( Render2D* r );
+    void Move(double, double);
+    void Rotate(DPoint *, double);
+    void Flip(DPoint *, int);
+    void Resize(DPoint *, double);
     bool Find( DPoint * ); // does this GraphicObject contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
     double distanceTo ( DPoint * );
+    DPoint *End() { return end; }
+    QString ToXML( QString );
+    QString ToCDXML( QString );
+    void FromXML( QString );
+
     void setPoints( DPoint *, DPoint * );
     void setPointArray( QPolygon );
     bool isWithinRect( QRect, bool );
     const QRect BoundingBox() const;
-    QString ToXML( QString );
-    QString ToCDXML( QString );
-    void FromXML( QString );
     int Style() { return style; }
     void SetStyle( int s ) { style = s; }
     int objectType() { return ot; }
     void setObjectType( int t ) { ot = t; }
+
 private:
-    // Renderer
-    Render2D *r;
     // Point array (for cubic bezier and possibly others)
     QPolygon objectPoints;
     // graphic object type
     int ot;
     int style;
+    DPoint *end;
 };
 
 #endif

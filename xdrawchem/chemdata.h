@@ -111,7 +111,7 @@ public:
     void Save3D( QString );
     void clearAllGroups();
     void Tool( DPoint *, int );
-    void AutoLayout();
+    void AutoLayout() {}
     void fromSMILES( QString );
     void SmartPlace( QString, DPoint * );
     void SmartPlaceToo( QString, DPoint * );

@@ -279,7 +279,7 @@ void Molecule::FromSMILES( QString sm )
         thisDPoint->elementmask = tmp_element_mask;
 
         if ( tmp_element != "C" ) {
-            QSharedPointer<Text> nt ( new Text( r ));
+            QSharedPointer<Text> nt ( new Text());
 
             nt->setPoint( thisDPoint );
             nt->setJustify( JUSTIFY_CENTER );

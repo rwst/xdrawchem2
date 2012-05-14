@@ -16,10 +16,8 @@
 #include "dpoint.h"
 #include "defs.h"
 
-Molecule::Molecule( Render2D * r1, QObject * parent )
-    : Drawable( parent )
+Molecule::Molecule()
 {
-    r = r1;
     text_mw = 0;
     text_formula = 0;
     group_type = GROUP_NONE;
@@ -32,20 +30,16 @@ Molecule::Molecule( Render2D * r1, QObject * parent )
 }
 
 /// Copy and construct completely new.
-Molecule::Molecule (Molecule* m, Render2D *re)
+Molecule::Molecule (Molecule* m)
 {
     start = new DPoint(m->start);
     end = new DPoint(m->end);
 
-    if (re==0)
-        r = m->r;
-    else
-        r = re;
     cd = m->cd;
 
     peaklist = m->peaklist;
     foreach (QSharedPointer<Bond> b, m->bonds) {
-        QSharedPointer<Bond> nb (new Bond(r));
+        QSharedPointer<Bond> nb (new Bond());
         *nb = *b;
         bonds.append(nb);
     }
@@ -73,7 +67,7 @@ Molecule::~Molecule()
 }
 
 /// Calls AllPoints(), update double bond states, draw group box if needed, render bonds, texts, symbols.
-void Molecule::Render()
+void Molecule::Render(Render2D *r)
 {
     doChanged();
 
@@ -133,16 +127,16 @@ void Molecule::Render()
     }
 
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
-        tmp_bond->Render();
+        tmp_bond->Render(r);
 
     foreach ( QSharedPointer<Text> tmp_text, labels ) {
         // ignore if just "C"
         //if (tmp_text->getText() == "C") continue;
-        tmp_text->Render();
+        tmp_text->Render(r);
     }
     CalcOffsets();
     foreach ( QSharedPointer<Symbol> tmp_sym, symbols )
-        tmp_sym->Render();
+        tmp_sym->Render(r);
 }
 
 /// Calculate offsets, i.e., where to put a Symbol.
@@ -230,10 +224,9 @@ bool Molecule::isWithinRect( QRect qr, bool shiftdown )
     return false;
 }
 
-/// Calls SelectAll() for base class, bonds, labels, symbols
+/// Calls SelectAll() for bonds, labels, symbols
 void Molecule::SelectAll()
 {
-    Drawable::SelectAll();
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
         tmp_bond->SelectAll();
 
@@ -244,10 +237,9 @@ void Molecule::SelectAll()
         tmp_sym->SelectAll();
 }
 
-/// Calls DeselectAll() for base class, bonds, labels, symbols
+/// Calls DeselectAll() for bonds, labels, symbols
 void Molecule::DeselectAll()
 {
-    Drawable::DeselectAll();
     foreach ( QSharedPointer<Bond> tmp_bond, bonds )
         tmp_bond->DeselectAll();
 
@@ -319,7 +311,7 @@ QList < QSharedPointer <Molecule> > Molecule::MakeSplit()
     DPoint *current;
 
     // Start with first Bond...
-    QSharedPointer<Molecule> nm ( new Molecule( r ));
+    QSharedPointer<Molecule> nm ( new Molecule());
     nm->SetChemdata( cd );
     QSharedPointer<Bond> tmp_bond = uo.first();
     nm->addBond( tmp_bond );
@@ -346,7 +338,7 @@ QList < QSharedPointer <Molecule> > Molecule::MakeSplit()
             // Still bonds left, make new Molecule
             molecules.append( nm );
             nm.clear();
-            QSharedPointer<Molecule> nm1 ( new Molecule( r ));
+            QSharedPointer<Molecule> nm1 ( new Molecule());
             nm = nm1;
             nm->SetChemdata( cd );
             QSharedPointer<Bond> tb = uo.first();
@@ -474,9 +466,14 @@ void MakeTomoveList(Molecule* m, QList<DPoint*> &tomove)
     }
 }
 
-/// Adds param to all points to move. Calls Changed().
+/// Adds param to start, end, and all points to move. Calls Changed().
 void Molecule::Move( double dx, double dy )
 {
+    start->x += dx;
+    start->y += dy;
+    end->x += dx;
+    end->y += dy;
+
     QList<DPoint*> tomove;
     MakeTomoveList(this, tomove);
 
@@ -676,7 +673,7 @@ double Molecule::distanceTo ( DPoint * target )
 void Molecule::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, bool hl )
 {
     int o, p;
-    QSharedPointer<Bond> b ( new Bond( r ));
+    QSharedPointer<Bond> b ( new Bond());
 
     b->setPoints( s, e );
     b->setThick( thick );
@@ -1168,7 +1165,7 @@ void Molecule::FromXML( QString xml_tag )
         int i1 = xml_tag.indexOf( "<bond " );
         int i2 = xml_tag.indexOf( "</bond>" ) + 7;
         if ( i1 >= 0 ) {
-            QSharedPointer<Bond> tmp_bond ( new Bond( r ));
+            QSharedPointer<Bond> tmp_bond ( new Bond());
             bondtag = xml_tag.mid( i1, i2 - i1 );
             xml_tag.remove( i1, i2 - i1 );
             qDebug() << bondtag;
@@ -1244,7 +1241,7 @@ void Molecule::FromXML( QString xml_tag )
     // add Text and Symbol as needed
     foreach ( DPoint *tpt, points ) {
         if ( ( tpt->element != QString( "C" ) ) || ( tpt->hit == true ) ) {
-            QSharedPointer<Text> tmp_text ( new Text( r ));
+            QSharedPointer<Text> tmp_text ( new Text());
             tmp_text->setPoint( tpt );
             tmp_text->SetColor( tpt->color );
             tmp_text->setFont( tpt->font );
@@ -1258,7 +1255,7 @@ void Molecule::FromXML( QString xml_tag )
             labels.append( tmp_text );
         }
         if ( tpt->symbol.length() > 0 ) {
-            QSharedPointer<Symbol> tmp_sym ( new Symbol( r ));
+            QSharedPointer<Symbol> tmp_sym ( new Symbol());
             tmp_sym->setPoint( tpt );
             tmp_sym->SetSymbol( tpt->symbol );
             symbols.append( tmp_sym );

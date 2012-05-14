@@ -1,5 +1,6 @@
 #include "defs.h"
 #include "chemdata.h"
+#include "render2d.h"
 #include "drawable.h"
 #include "molecule.h"
 #include "bond.h"
@@ -82,7 +83,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<arrow" );
             d2 = wholefile.indexOf( "</arrow>" );
             thistag = wholefile.mid( d1, d2 - d1 + 8 );
-            QSharedPointer<Arrow> a1 ( new Arrow( r ));
+            QSharedPointer<Arrow> a1 ( new Arrow());
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -94,7 +95,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<graphicobject" );
             d2 = wholefile.indexOf( "</graphicobject>" );
             thistag = wholefile.mid( d1, d2 - d1 + 16 );
-            QSharedPointer<GraphicObject> a1 ( new GraphicObject( r ));
+            QSharedPointer<GraphicObject> a1 ( new GraphicObject());
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -106,7 +107,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<curvearrow" );
             d2 = wholefile.indexOf( "</curvearrow>" );
             thistag = wholefile.mid( d1, d2 - d1 + 13 );
-            QSharedPointer<CurveArrow> a1 ( new CurveArrow( r ));
+            QSharedPointer<CurveArrow> a1 ( new CurveArrow());
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -118,7 +119,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<text" );
             d2 = wholefile.indexOf( "</text>" );
             thistag = wholefile.mid( d1, d2 - d1 + 7 );
-            QSharedPointer<Text> a1 ( new Text( r ));
+            QSharedPointer<Text> a1 ( new Text());
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -130,7 +131,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<bracket" );
             d2 = wholefile.indexOf( "</bracket>" );
             thistag = wholefile.mid( d1, d2 - d1 + 10 );
-            QSharedPointer<Bracket> a1 ( new Bracket( r ));
+            QSharedPointer<Bracket> a1 ( new Bracket());
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -142,7 +143,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<symbol" );
             d2 = wholefile.indexOf( "</symbol>" );
             thistag = wholefile.mid( d1, d2 - d1 + 9 );
-            QSharedPointer<Symbol> a1 ( new Symbol( r ));
+            QSharedPointer<Symbol> a1 ( new Symbol());
 
             a1->FromXML( thistag );
             drawlist.append( a1 );
@@ -154,7 +155,7 @@ bool ChemData::load_native( QString wholefile )
             d1 = wholefile.indexOf( "<molecule" );
             d2 = wholefile.indexOf( "</molecule>" );
             thistag = wholefile.mid( d1, d2 - d1 + 11 );
-            QSharedPointer<Molecule> a1 ( new Molecule( r ));
+            QSharedPointer<Molecule> a1 ( new Molecule());
 
             a1->SetChemdata( this );
             a1->FromXML( thistag );

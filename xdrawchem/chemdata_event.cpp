@@ -49,7 +49,7 @@ void ChemData::XDCEventHandler( XDC_Event *evt )
         addCurveArrow( evt->Start(), evt->End(), evt->color(), evt->text() );
         break;
     case EVT_ADD_GRAPHIC:
-        go = new GraphicObject( r );
+        go = new GraphicObject();
         go->setObjectType( TYPE_BEZIER );       // for now!
         go->SetStyle( evt->Param1() );
         go->SetColor( evt->color() );

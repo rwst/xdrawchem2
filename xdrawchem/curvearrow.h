@@ -6,32 +6,39 @@
 #include <QRect>
 #include <QString>
 
-#include "render2d.h"
 #include "drawable.h"
 #include "dpoint.h"
+
+class Render2D;
 
 class CurveArrow : public Drawable
 {
 Q_OBJECT
 public:
-    CurveArrow( Render2D *, QObject *parent = 0 );
-    void Render();  // draw this object
-    void Edit();
-    bool Find( DPoint * ); // does this CurveArrow contain this DPoint?
-    double distanceTo( DPoint * );
-    DPoint *FindNearestPoint( DPoint * target, double &dist );
-    void setPoints( DPoint *, DPoint * );
+    CurveArrow();
+    void Render(Render2D *r);  // draw this object
+    void Edit( Render2D* r );  // edit this object
+    void Move(double, double);
+    void Rotate(DPoint *, double);
+    void Flip(DPoint *, int);
+    void Resize(DPoint *, double);
+    bool Find( DPoint * ); // does this Arrow contain this DPoint?
+    DPoint *FindNearestPoint( DPoint *, double & );
+    double distanceTo (DPoint*);
     const QRect BoundingBox() const;
-    bool isWithinRect( QRect, bool );
+    DPoint *End() { return end; }
     QString ToXML( QString );
     void FromXML( QString );
+    QString ToCDXML( QString ) { return "Unexpected call to CurveArrow::ToCDXML"; } // TODO
+
+    void setPoints( DPoint *, DPoint * );
+    bool isWithinRect( QRect, bool );
     void SetCurve( const QString &t ) { which = t; }
     QString GetCurve() { return which; }
 
 private:
-    // Renderer
-    Render2D *r;
     QString which;
+    DPoint *end;
 };
 
 #endif

@@ -9,6 +9,7 @@
 #include "drawable.h"
 #include "dpoint.h"
 #include "moldata.h"
+#include "molpart.h"
 
 #define BOND_LEFT 0
 #define BOND_RIGHT 1
@@ -16,14 +17,32 @@
 
 class Render2D;
 
-class Bond : public Drawable
+class Bond : public Drawable, public MolPart
 {
 Q_OBJECT
 public:
-    Bond( Render2D *, QObject *parent = 0 );
+    Bond();
     Bond& operator= (const Bond &);
-    void Render();  // draw this object
-    void Edit();  // open edit window
+
+    void Render(Render2D * r);  // draw this object
+    void Edit( Render2D* r );  // open edit window
+    void Move(double, double);
+    void Rotate(DPoint *, double);
+    void Flip(DPoint *, int);
+    void Resize(DPoint *, double);
+    bool Find( DPoint * ); // does this Bond contain this DPoint?
+    DPoint *FindNearestPoint( DPoint *, double & );
+    double distanceTo ( DPoint * );
+    DPoint *Start() { return start; }
+    DPoint *End() { return end; }
+    QString ToXML( QString ) { return "Unexpected call to Bond::ToXML"; }
+    QString ToCDXML( QString ) { return "Unexpected call to Bond::ToCDXML"; }
+    void FromXML( QString ) {}
+
+    bool Highlighted() { return highlighted; }
+    bool isWithinRect( QRect n, bool ) { return ( DPointInRect( start, n ) && DPointInRect( end, n ) ); }
+    void SelectAll() { highlighted = true; start->setHighlighted(true); end->setHighlighted(true); }
+    void DeselectAll() { highlighted = false; start->setHighlighted(false); end->setHighlighted(false); }
 
     void RenderSide( int w )
     {
@@ -31,12 +50,8 @@ public:
             wside = w;
     }
 
-    bool Find( DPoint * ); // does this Bond contain this DPoint?
-    DPoint *FindNearestPoint( DPoint *, double & );
-    double distanceTo ( DPoint * );
     void setPoints( DPoint *, DPoint * );
     bool Equals( QSharedPointer<Bond> );
-    bool isWithinRect( QRect, bool );
     void setThick(int t) { thick = t; }
     int thickness() { return thick; }
     int Order() { return order; }
@@ -111,8 +126,7 @@ public:
 
 private:
     friend class Molecule;
-    // Renderer
-    Render2D *r;
+    DPoint *start, *end;
     int thick;
     // order of bond (1-3, or 5 if up, or 7 if down)
     int order;

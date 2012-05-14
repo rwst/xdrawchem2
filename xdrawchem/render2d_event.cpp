@@ -132,7 +132,7 @@ void Render2D::bondEdit()
         DrawText_mousePressEvent( 0, QPoint( 0, 0 ) );
         return;
     }
-    highlightobject->Edit();
+    highlightobject->Edit(this);
     highlightobject->Highlight( false );
     highlightobject.clear();
     if ( mode == MODE_SELECT )
@@ -415,7 +415,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
                 return;
             }
             qDebug() << "Will edit";
-            highlightobject->Edit();
+            highlightobject->Edit(this);
             highlightobject->Highlight( false );
             highlightobject.clear();
             if ( mode == MODE_SELECT )

@@ -1,9 +1,5 @@
 // text.cpp - Text's implementation of functions
 
-// (obsolete note!)
-// NOTE ABOUT TEXTMASK: + marks superscript, - marks subscript
-// B marks bold, I marks italic, U marks underline
-
 #include <QKeyEvent>
 
 #include "render2d.h"
@@ -11,12 +7,8 @@
 #include "text.h"
 #include "defs.h"
 
-// lastflag settings
-
-Text::Text( Render2D * r1, QObject * parent )
-    : Drawable( parent )
+Text::Text()
 {
-    r = r1;
     font = QFont( "Helvetica", 12 );    // CHANGE BACK TO 12
     highlighted = false;
     shiftdown = false;
@@ -42,6 +34,64 @@ Text::Text( Render2D * r1, QObject * parent )
     drawFill = false;
     borderColor = QColor( 0, 0, 0 );
     fillColor = QColor( 0, 255, 255 );
+}
+
+void Text::Move (double dx, double dy)
+{
+    if ( ( highlighted ) && ( start != 0 ) ) {
+        start->x += dx;
+        start->y += dy;
+        }
+}
+
+void Text::Rotate( DPoint *origin, double angle )
+{
+    //double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        double thisx = start->x - origin->x;
+        double thisy = start->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        start->x = ( newx + origin->x );
+        start->y = ( newy + origin->y );
+    }
+}
+
+void Text::Flip( DPoint *origin, int direction )
+{
+    double delta;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = start->x - origin->x;
+            start->x = start->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = start->y - origin->y;
+            start->y = start->y - 2 * delta;
+        }
+    }
+}
+
+void Text::Resize( DPoint *origin, double scale )
+{
+    double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        dx = start->x - origin->x;
+        dy = start->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        start->x = origin->x + dx;
+        start->y = origin->y + dy;
+    }
 }
 
 QString Text::ToXML( QString xml_id )
@@ -164,7 +214,7 @@ void Text::FromXML( QString xml_tag )
 
     i1 = xml_tag.indexOf( "<Start>" );
     i2 = xml_tag.indexOf( "</Start>" ) + 8;
-    SetStartFromXML( xml_tag.mid( i1, i2 - i1 ) );
+    start = StartFromXML( xml_tag.mid( i1, i2 - i1 ) );
     i1 = xml_tag.indexOf( "<color>" );
     if ( i1 >= 0 ) {
         i2 = xml_tag.indexOf( "</color>" ) + 8;
@@ -365,7 +415,7 @@ bool Text::isWithinRect( QRect n, bool /*shiftdown*/ )
     return highlighted;
 }
 
-void Text::Render()
+void Text::Render(Render2D *r)
 {
   qDebug() << "Text::Render begin";
 
@@ -754,7 +804,7 @@ void Text::setPoint( DPoint * s )
 
 bool Text::WithinBounds( DPoint * target )
 {
-    QRect b = r->GetTextDimensions( start->element, font );
+    QRect b = molecule->getRender2D()->GetTextDimensions( start->element, font );
     QPoint t = GetTopLeftPoint();
 
     b.translate( t.x(), t.y() );
@@ -768,7 +818,7 @@ const QRect Text::BoundingBox() const
 {
     if ( highlighted == false )
         return QRect( QPoint( 999, 999 ), QPoint( 0, 0 ) );
-    QRect b = r->GetTextDimensions( start->element, font );
+    QRect b = molecule->getRender2D()->GetTextDimensions( start->element, font );
     QPoint t = GetTopLeftPoint();
 
     b.translate( t.x(), t.y() );
@@ -778,7 +828,7 @@ const QRect Text::BoundingBox() const
 // return nearest center point to m (see ChemData::AutoLayout)
 QPoint Text::NearestCenter( QPoint m, int di, int &ns )
 {
-    QRect b = r->GetTextDimensions( start->element, font );
+    QRect b = molecule->getRender2D()->GetTextDimensions( start->element, font );
     QPoint t = GetTopLeftPoint();
 
     b.translate( t.x(), t.y() );
@@ -1087,7 +1137,7 @@ void Text::MoveCursor( DPoint * target )
     if ( WithinBounds( target ) == false )
         return;
     QPoint t = GetTopLeftPoint();
-    int lx = t.x(), ly = t.y() + ( r->GetTextFullHeight( font ) / 2 );
+    int lx = t.x(), ly = t.y() + ( molecule->getRender2D()->GetTextFullHeight( font ) / 2 );
 
     for ( int i = 0; i < start->element.length(); i++ ) {
         DPoint e(lx,ly);
@@ -1098,9 +1148,9 @@ void Text::MoveCursor( DPoint * target )
         }
         if ( QChar( start->element[i] ).digitValue() == 10 ) {
             lx = t.x();
-            ly = ly + r->GetTextFullHeight( font );
+            ly = ly + molecule->getRender2D()->GetTextFullHeight( font );
         } else {
-            lx = lx + r->GetCharWidth( start->element[i], font );
+            lx = lx + molecule->getRender2D()->GetCharWidth( start->element[i], font );
         }
     }
     cursor = newcur;
@@ -1122,7 +1172,7 @@ void Text::Select( DPoint * e1, DPoint * e2 )
 
     t = GetTopLeftPoint();
     lx = t.x();
-    ly = t.y() + ( r->GetTextFullHeight( font ) / 2 );
+    ly = t.y() + ( molecule->getRender2D()->GetTextFullHeight( font ) / 2 );
     for ( i = 0; i < start->element.length(); i++ ) {
         DPoint e(lx,ly);
         ldist = e.distanceTo( e1 );
@@ -1133,16 +1183,16 @@ void Text::Select( DPoint * e1, DPoint * e2 )
         if ( QChar( start->element[i] ).digitValue() == 10 ) {
             cr1++;
             lx = t.x();
-            ly = ly + r->GetTextFullHeight( font );
+            ly = ly + molecule->getRender2D()->GetTextFullHeight( font );
         } else {
-            lx = lx + r->GetCharWidth( start->element[i], font );
+            lx = lx + molecule->getRender2D()->GetCharWidth( start->element[i], font );
         }
     }
     selectMin = newcur;
     mindist = 99999.0;
     t = GetTopLeftPoint();
     lx = t.x();
-    ly = t.y() + ( r->GetTextFullHeight( font ) / 2 );
+    ly = t.y() + ( molecule->getRender2D()->GetTextFullHeight( font ) / 2 );
     for ( i = 0; i < start->element.length(); i++ ) {
         DPoint e(lx,ly);
         ldist = e.distanceTo( e2 );
@@ -1153,9 +1203,9 @@ void Text::Select( DPoint * e1, DPoint * e2 )
         if ( QChar( start->element[i] ).digitValue() == 10 ) {
             cr2++;
             lx = t.x();
-            ly = ly + r->GetTextFullHeight( font );
+            ly = ly + molecule->getRender2D()->GetTextFullHeight( font );
         } else {
-            lx = lx + r->GetCharWidth( start->element[i], font );
+            lx = lx + molecule->getRender2D()->GetCharWidth( start->element[i], font );
         }
     }
     selectMax = newcur;
@@ -1176,7 +1226,7 @@ QPoint Text::GetTopLeftPoint() const
         return start->toQPoint();
     } else {
         QPoint a;
-        QRect b = r->GetTextDimensions( start->element, font );
+        QRect b = molecule->getRender2D()->GetTextDimensions( start->element, font );
 
         // center on first or last character.  Try to guess what user intended
         // (a dangerous idea at best :)
@@ -1197,11 +1247,12 @@ QPoint Text::GetTopLeftPoint() const
         if ( tjustify == TEXT_RALIGN )
             leftcenter = false;
         if ( leftcenter ) {
-            int lc = r->GetCharWidth( start->element.at( 0 ), font );
+            int lc = molecule->getRender2D()->GetCharWidth( start->element.at( 0 ), font );
 
             a.setX( qRound( start->x - lc / 2.0 ) );
         } else {
-            int rc = r->GetCharWidth( start->element.at( start->element.length() - 1 ), font );
+            int rc = molecule->getRender2D()->GetCharWidth( start->element.at( start->element.length() - 1 ), font );
+            // TODO: write a helper for all font metrics calculations
 
             a.setX( qRound( start->x - b.width() + rc / 2.0 ) );
         }

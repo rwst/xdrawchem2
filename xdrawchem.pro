@@ -62,6 +62,7 @@ HEADERS += xdrawchem/aa_xpm.h \
            xdrawchem/defs.h \
            xdrawchem/dpoint.h \
            xdrawchem/drawable.h \
+           xdrawchem/drawable_interface.h \
            xdrawchem/dyk.h \
            xdrawchem/fixeddialog.h \
            xdrawchem/gobject.h \

@@ -1,15 +1,13 @@
 // arrow.cpp - Arrow's implementation of functions
 
-#include "render2d.h"
 #include "drawable.h"
 #include "arrow.h"
 #include "bondedit.h"
 #include "defs.h"
+#include "render2d.h"
 
-Arrow::Arrow( Render2D * r1, QObject * parent )
-    : Drawable( parent )
+Arrow::Arrow()
 {
-    m_renderer = r1;
     highlighted = false;
     style = ARROW_REGULAR;
     thick = 1;
@@ -115,10 +113,10 @@ void Arrow::FromXML( QString xml_tag )
 
     i1 = xml_tag.indexOf( "<Start>" );
     i2 = xml_tag.indexOf( "</Start>" ) + 8;
-    SetStartFromXML( xml_tag.mid( i1, i2 - i1 ) );
+    start = StartFromXML( xml_tag.mid( i1, i2 - i1 ) );
     i1 = xml_tag.indexOf( "<End>" );
     i2 = xml_tag.indexOf( "</End>" ) + 6;
-    SetEndFromXML( xml_tag.mid( i1, i2 - i1 ) );
+    end = EndFromXML( xml_tag.mid( i1, i2 - i1 ) );
     i1 = xml_tag.indexOf( "<style>" );
     if ( i1 >= 0 ) {
         i2 = xml_tag.indexOf( "</style>" ) + 8;
@@ -138,7 +136,7 @@ void Arrow::FromXML( QString xml_tag )
     }
 }
 
-void Arrow::Render()
+void Arrow::Render( Render2D* r )
 {
     QColor c1;
 
@@ -146,13 +144,13 @@ void Arrow::Render()
         c1 = QColor( 255, 0, 0 );
     else
         c1 = color;
-    m_renderer->drawArrow( start->toQPoint(), end->toQPoint(), c1, style, thick );
+    r->drawArrow( start->toQPoint(), end->toQPoint(), c1, style, thick );
 }
 
-void Arrow::Edit()
+void Arrow::Edit( Render2D* r )
 {
     qDebug() << "edit arrow";
-    BondEditDialog be( m_renderer, start, end, PreviewWidget::ARROW, 0, 0, thick, style, color );
+    BondEditDialog be( r, start, end, PreviewWidget::ARROW, 0, 0, thick, style, color );
 
     if ( !be.exec() )
         return;
@@ -160,6 +158,94 @@ void Arrow::Edit()
     style = be.Style();
     color = be.Color();
     thick = be.Thick();
+}
+
+void Arrow::Move (double dx, double dy)
+{
+    if ( ( highlighted ) && ( start != 0 ) ) {
+        start->x += dx;
+        start->y += dy;
+        }
+    if ( ( highlighted ) && ( end != 0 ) ) {
+        end->x += dx;
+        end->y += dy;
+        }
+}
+
+void Arrow::Flip( DPoint *origin, int direction )
+{
+    double delta;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = start->x - origin->x;
+            start->x = start->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = start->y - origin->y;
+            start->y = start->y - 2 * delta;
+        }
+    }
+    if ( end != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = end->x - origin->x;
+            end->x = end->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = end->y - origin->y;
+            end->y = end->y - 2 * delta;
+        }
+    }
+}
+
+void Arrow::Rotate( DPoint *origin, double angle )
+{
+    //double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        double thisx = start->x - origin->x;
+        double thisy = start->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        start->x = ( newx + origin->x );
+        start->y = ( newy + origin->y );
+    }
+    if ( end != 0 ) {
+        double thisx = end->x - origin->x;
+        double thisy = end->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        end->x = ( newx + origin->x );
+        end->y = ( newy + origin->y );
+    }
+}
+
+void Arrow::Resize( DPoint *origin, double scale )
+{
+    double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        dx = start->x - origin->x;
+        dy = start->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        start->x = origin->x + dx;
+        start->y = origin->y + dy;
+    }
+    if ( end != 0 ) {
+        dx = end->x - origin->x;
+        dy = end->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        end->x = origin->x + dx;
+        end->y = origin->y + dy;
+    }
 }
 
 int Arrow::Orientation()

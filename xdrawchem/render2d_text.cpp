@@ -196,7 +196,7 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
     } else {
         text_exists = false;
         localtexteditor->move( e1->pos() );
-        QSharedPointer<Text> tt ( new Text( this ));
+        QSharedPointer<Text> tt ( new Text());
         localtext = tt;
         localtext->setFont( currentFont );
         localtext->SetColor( currentColor );
@@ -402,7 +402,7 @@ void Render2D::keyPressEvent( QKeyEvent * k )
             } else {
                 text_exists = false;
                 localtexteditor->move( highlightpoint->toQPoint() );
-                QSharedPointer<Text> tt (new Text(this));
+                QSharedPointer<Text> tt (new Text());
                 localtext = tt;
                 localtext->setFont( currentFont );
                 localtext->SetColor( currentColor );

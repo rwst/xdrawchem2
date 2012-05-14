@@ -1,68 +1,55 @@
-// drawable.h -- the class that is the parent of all drawable objects
+/*********************************************************************
+ * drawable.h
+ *
+ * Copyright (C)
+ * 2004, 2005 Bryan Herger -- bherger@users.sourceforge.net
+ * 2012 Ralf Stephan -- ralf@ark.in-berlin.de
+ *
+ * LICENSE: GPL v. 2 see GPL.txt
+ *********************************************************************/
 
 #ifndef DRAWABLE_H
 #define DRAWABLE_H
 
-#include <QRect>
-#include <QString>
 #include <QColor>
-#include <QList>
+#include <QRect>
 
-#include "dpoint.h"
+#include "drawable_interface.h"
 
-class Drawable : public QObject
+class DPoint;
+class Render2D;
+
+class Drawable : public DrawableInterface
 {
     Q_OBJECT
 
 public:
-    Drawable(QObject *parent = 0);
-    virtual void Render();  // draw this object
-    virtual void Edit();  // edit this object
-    virtual DPoint *FindNearestPoint(DPoint *, double &);
-    virtual double distanceTo (DPoint *) = 0;
-    virtual bool Find(DPoint *);
-    virtual void addBond(DPoint *, DPoint *, int, int, QColor, bool hl = false);
-    virtual void Highlight();
-    virtual void Highlight(bool);
-    virtual bool Highlighted();
-    virtual bool isWithinRect( QRect, bool );
-    virtual void SelectAll();
-    virtual void DeselectAll();
-    virtual void Move(double, double);
-    virtual void ForceMove(double, double);
-    virtual void Rotate(DPoint *, double);
-    virtual void Flip(DPoint *, int);
-    virtual void Resize(DPoint *, double);
-    virtual const QRect BoundingBox() const;
-    virtual QList<DPoint *> AllPoints();
-    virtual QString ToXML(QString);
-    virtual QString ToCDXML(QString);
-    virtual void FromXML(QString);
-    virtual int Members();
+
     // stuff that all Drawables should know about
+    DPoint *Start() { return start; }
+    void setStart(DPoint *ns) { start = ns; }
+    void SetColor(QColor c) { color = c; }
+    void SetColorIfHighlighted(QColor c) { if ( highlighted ) color = c; }
+    QColor GetColor() { return color; }
+    bool Highlighted() { return highlighted; }
+    void Highlight();
+    void Highlight(bool);
     static double getAngle(DPoint *, DPoint *);
     double DistanceToLine(DPoint *, DPoint *, DPoint *);
     double DistanceBetween(QPoint, QPoint);
     bool DPointInRect(DPoint *, QRect);
-    DPoint *Start() { return start; }
-    DPoint *End() { return end; }
-    void setStart(DPoint *ns) { start = ns; }
-    void setEnd(DPoint *ne) { end = ne; }
-    virtual void SetColorIfHighlighted(QColor);
-    void SetColor(QColor c) { color = c; }
-    QColor GetColorFromXML(QString);
-    QColor GetColor() { return color; }
-    void SetColorFromXML(QString);
-    void SetStartFromXML(QString);
-    void SetEndFromXML(QString);
 
-    enum type { drawable=0, arrow=1, bond, bracket, curvearrow, symbol };
+    // TODO: separate this from this class
+    QColor GetColorFromXML(QString);
+    void SetColorFromXML(QString);
+    DPoint *StartFromXML(QString);
+    DPoint *EndFromXML(QString);
 
 protected:
     // highlighted?
     bool highlighted;
     // points which define this Drawable (only start needed for TEXT)
-    DPoint *start, *end;
+    DPoint *start;
     // color
     QColor color;
 };

@@ -11,10 +11,8 @@
 #include "bondedit.h"
 #include "defs.h"
 
-GraphicObject::GraphicObject( Render2D *r1, QObject *parent )
-    : Drawable( parent )
+GraphicObject::GraphicObject()
 {
-    r = r1;
     highlighted = false;
     style = 0;
     ot = 0;
@@ -115,12 +113,12 @@ void GraphicObject::FromXML( QString xml_tag )
     i1 = xml_tag.indexOf( "<Start>" );
     if ( i1 >= 0 ) {
         i2 = xml_tag.indexOf( "</Start>" ) + 8;
-        SetStartFromXML( xml_tag.mid( i1, i2 - i1 ) );
+        start = StartFromXML( xml_tag.mid( i1, i2 - i1 ) );
     }
     i1 = xml_tag.indexOf( "<End>" );
     if ( i1 >= 0 ) {
         i2 = xml_tag.indexOf( "</End>" ) + 6;
-        SetEndFromXML( xml_tag.mid( i1, i2 - i1 ) );
+        end = EndFromXML( xml_tag.mid( i1, i2 - i1 ) );
     }
     i1 = xml_tag.indexOf( "<objecttype>" );
     if ( i1 >= 0 ) {
@@ -163,7 +161,7 @@ void GraphicObject::FromXML( QString xml_tag )
     }
 }
 
-void GraphicObject::Render()
+void GraphicObject::Render( Render2D *r )
 {
     QColor c1;
 
@@ -179,7 +177,7 @@ void GraphicObject::Render()
         r->drawLine( start->toQPoint(), end->toQPoint(), 1, GetColor(), 1 );
 }
 
-void GraphicObject::Edit()
+void GraphicObject::Edit(Render2D *r)
 {
     return;                     // it's not practical to edit any graphic objects this way
     /*
@@ -190,6 +188,94 @@ void GraphicObject::Edit()
        style = be.Style();
        color = be.Color();
      */
+}
+
+void GraphicObject::Move (double dx, double dy)
+{
+    if ( ( highlighted ) && ( start != 0 ) ) {
+        start->x += dx;
+        start->y += dy;
+        }
+    if ( ( highlighted ) && ( end != 0 ) ) {
+        end->x += dx;
+        end->y += dy;
+        }
+}
+
+void GraphicObject::Flip( DPoint *origin, int direction )
+{
+    double delta;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = start->x - origin->x;
+            start->x = start->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = start->y - origin->y;
+            start->y = start->y - 2 * delta;
+        }
+    }
+    if ( end != 0 ) {
+        if ( direction == FLIP_H ) {
+            delta = end->x - origin->x;
+            end->x = end->x - 2 * delta;
+        } else {                // direction == FLIP_V
+            delta = end->y - origin->y;
+            end->y = end->y - 2 * delta;
+        }
+    }
+}
+
+void GraphicObject::Rotate( DPoint *origin, double angle )
+{
+    //double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        double thisx = start->x - origin->x;
+        double thisy = start->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        start->x = ( newx + origin->x );
+        start->y = ( newy + origin->y );
+    }
+    if ( end != 0 ) {
+        double thisx = end->x - origin->x;
+        double thisy = end->y - origin->y;
+        double newx = thisx * cos( angle ) + thisy * sin( angle );
+        double newy = -thisx * sin( angle ) + thisy * cos( angle );
+
+        end->x = ( newx + origin->x );
+        end->y = ( newy + origin->y );
+    }
+}
+
+void GraphicObject::Resize( DPoint *origin, double scale )
+{
+    double dx, dy;
+
+    if ( highlighted == false )
+        return;
+    if ( start != 0 ) {
+        dx = start->x - origin->x;
+        dy = start->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        start->x = origin->x + dx;
+        start->y = origin->y + dy;
+    }
+    if ( end != 0 ) {
+        dx = end->x - origin->x;
+        dy = end->y - origin->y;
+        dx *= scale;
+        dy *= scale;
+        end->x = origin->x + dx;
+        end->y = origin->y + dy;
+    }
 }
 
 bool GraphicObject::Find( DPoint *target )
