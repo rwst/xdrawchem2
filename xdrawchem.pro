@@ -171,7 +171,6 @@ SOURCES += xdrawchem/application.cpp \
            xdrawchem/molecule_tools_1.cpp \
            xdrawchem/molecule_tools_2.cpp \
            xdrawchem/molinfodialog.cpp \
-           xdrawchem/molpart.cpp \
            xdrawchem/myfiledialog.cpp \
            xdrawchem/netaccess.cpp \
            xdrawchem/netchoosedialog.cpp \
