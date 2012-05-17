@@ -33,6 +33,7 @@ public:
     bool Find( DPoint * ); // does this Bond contain this DPoint?
     DPoint *FindNearestPoint( DPoint *, double & );
     double distanceTo ( DPoint * );
+    const QRect BoundingBox() const;
     DPoint *Start() { return start; }
     DPoint *End() { return end; }
     QString ToXML( QString ) { return "Unexpected call to Bond::ToXML"; }
@@ -68,7 +69,6 @@ public:
     void setStereo( int a ) { stereo = a; }
     int Dash() { return dashed; }
     void setDash( int d ) { dashed = d; }
-    const QRect BoundingBox() const;
     DPoint *otherPoint( DPoint * );
     QString getID() { return id; }
     void setID(QString x) { id = x; }

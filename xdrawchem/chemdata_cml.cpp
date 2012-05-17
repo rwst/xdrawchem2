@@ -454,7 +454,7 @@ void ChemData::Convert_CML_Lists_To_Native()
                 break;
             }
         }
-        addBond( end1, end2, th1, tmp_bond->order, QColor( 0, 0, 0 ), true );
+        addBond( end1, end2, th1, tmp_bond->order, QColor( 0, 0, 0 ), false );
         totlen += end1->distanceTo( end2 );
         n++;
     }

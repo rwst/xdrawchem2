@@ -22,8 +22,8 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
         return;
     }
     //bool update;
-    DPoint *prevhighlight = highlightpoint;
-    QSharedPointer<Drawable> prevhighlightobject (highlightobject);
+    DPoint *prevActivePoint = activePoint;
+    QSharedPointer<Drawable> prevActiveObject (activeObject);
 
     // Create DPoint of current pointer position
     QPoint curqpt = zoomCorrectReverse( e1->pos() );
@@ -87,12 +87,13 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
             // highlight text and symbol objects preferentially when MODE_SELECT...
             if ( no->metaObject() == &Text::staticMetaObject
                  || no->metaObject() == &Symbol::staticMetaObject ) {
-                highlightpoint = 0;
-                highlightobject = no;
-                if ( ( prevhighlightobject != highlightobject ) && ( prevhighlightobject != 0 ) )
-                    prevhighlightobject->Highlight( false );
-                highlightobject->Highlight( true );
-                if ( prevhighlightobject != highlightobject )
+                activePoint = 0;
+                activeObject = no;
+                if ( ( prevActiveObject != activeObject ) && ( prevActiveObject != 0 ) )
+                    prevActiveObject->Highlight( false );
+                activeObject->Highlight( true );
+//                activeObject->setActive( true );
+                if ( prevActiveObject != activeObject )
                     update();
                 setCursor( Qt::SizeAllCursor );
                 // return since no need to check points
@@ -100,12 +101,14 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
             }
             // highlight object if object close enough and no point close
             if ( ( distobj < 6.0 ) && ( dist >= 8.0 ) ) {
-                highlightpoint = 0;
-                highlightobject = no;
-                if ( prevhighlightobject != 0 )
-                    prevhighlightobject->Highlight( false );
-                highlightobject->Highlight( true );
-                if ( prevhighlightobject != highlightobject )
+//               if ( no->metaObject() == &Molecule::staticMetaObject ) {
+                activePoint = 0;
+                activeObject = no;
+                if ( prevActiveObject != 0 )
+                    prevActiveObject->Highlight( false );
+                activeObject->Highlight( true );
+//                activeObject->setActive( true );
+                if ( prevActiveObject != activeObject )
                     update();
                 setCursor( Qt::SizeAllCursor );
                 // return since no need to check points
@@ -114,29 +117,29 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
             // unhighlight object if no object close
             if ( distobj >= 6.0 ) {
                 // Clear highlighted object
-                highlightobject.clear();
-                if ( prevhighlightobject != 0 )
-                    prevhighlightobject->Highlight( false );
-                if ( prevhighlightobject != highlightobject )
+                activeObject.clear();
+                if ( prevActiveObject != 0 )
+                    prevActiveObject->Highlight( false );
+                if ( prevActiveObject != activeObject )
                     update();
                 // don't return; go on to check for points
             }
             // unhighlight object if point close
             if ( dist < 8.0 ) {
                 // Clear highlighted object
-                highlightobject.clear();
-                if ( prevhighlightobject != 0 )
-                    prevhighlightobject->Highlight( false );
-                if ( prevhighlightobject != highlightobject )
+                activeObject.clear();
+                if ( prevActiveObject != 0 )
+                    prevActiveObject->Highlight( false );
+                if ( prevActiveObject != activeObject )
                     update();
                 // don't return; go on to check for points
             }
         }
         if ( np == 0 ) {
-            highlightpoint = 0;
-            highlightobject.clear();
-            if ( prevhighlightobject != 0 ) {
-                prevhighlightobject->Highlight( false );
+            activePoint = 0;
+            activeObject.clear();
+            if ( prevActiveObject != 0 ) {
+                prevActiveObject->Highlight( false );
                 update();
             }
             setCursor( Qt::ArrowCursor );
@@ -145,21 +148,21 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
         if ( np != 0 ) {
             //qDebug() << dist << " to (" << np->x << "," << np->y << ")" ;
             if ( dist < 8.0 ) {
-                highlightpoint = np;
-                if ( prevhighlight != highlightpoint )
+                activePoint = np;
+                if ( prevActivePoint != activePoint )
                     update();
                 setCursor( Qt::SizeAllCursor );
                 return;
             } else {
                 // Clear object, if any
-                if ( prevhighlightobject != 0 ) {
-                    prevhighlightobject->Highlight( false );
-                    highlightobject.clear();
+                if ( prevActiveObject != 0 ) {
+                    prevActiveObject->Highlight( false );
+                    activeObject.clear();
                     update();
                 }
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 setCursor( Qt::ArrowCursor );
                 return;
@@ -241,8 +244,8 @@ void Render2D::Select_mouseMoveEvent( QMouseEvent * e1 )
         dx = e.x - prevpos->x;
         dy = e.y - prevpos->y;
         //qDebug() << "Move by " << dx << "," << dy ;
-        highlightpoint->x += dx;
-        highlightpoint->y += dy;
+        activePoint->x += dx;
+        activePoint->y += dy;
         update();
     }
 }

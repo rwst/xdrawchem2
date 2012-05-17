@@ -46,7 +46,7 @@ Render2D::Render2D( QWidget * parent )
     dragging = false;
     moved = false;
 
-    highlightpoint = 0;
+    activePoint = 0;
     localtext.clear();
     localtexteditor = 0;
 
@@ -533,7 +533,7 @@ void Render2D::Tool( int t )
         emit SignalSetStatusBar( tr( "Click on a molecule for possible retrosynthesis" ) );
         break;
     case MODE_TOOL_RETRO_BONDNAME:
-        highlightobject.clear();
+        activeObject.clear();
         emit SignalSetStatusBar( tr( "Click on a molecule to display its bond identifier" ) );
 
         break;
@@ -595,8 +595,8 @@ void Render2D::Cut()
     c->Cut();
     mode = MODE_SELECT;         // the selection is gone, don't draw selection box
     // the selection is gone, don't reference it anymore
-    highlightpoint = 0;
-    highlightobject.clear();
+    activePoint = 0;
+    activeObject.clear();
     update();
 }
 
@@ -690,7 +690,7 @@ void Render2D::EraseSelected()
     c->EraseSelected();
     // in all likelihood, we just blew away highlightobject.
     // if not (unlikely!), user can reselect it.
-    highlightobject.clear();
+    activeObject.clear();
     if ( mode == MODE_SELECT_MULTIPLE_SELECTED )
         mode = MODE_SELECT;
     update();

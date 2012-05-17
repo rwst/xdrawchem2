@@ -107,11 +107,11 @@ void Render2D::DrawText_FinishText()
         localstring = "XDC_DELETE_ME";
     }
     localtext.clear();
-    highlightpoint = 0;
-    if ( highlightobject != 0 ) {
-        highlightobject->Highlight( false );
+    activePoint = 0;
+    if ( activeObject != 0 ) {
+        activeObject->Highlight( false );
     }
-    highlightobject.clear();
+    activeObject.clear();
     if ( doubleClickFlag ) {
         mode = prev_mode;
         doubleClickFlag = false;
@@ -144,7 +144,7 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
     }
 
     qDebug() << "DrawText_mousePressEvent 3";
-    qDebug() << highlightobject;
+    qDebug() << activeObject;
 
 /*  if (0 && highlightobject) { // edit existing object
         qDebug() << "DrawText_mousePressEvent 3.1";
@@ -174,9 +174,9 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
     Q_CHECK_PTR(localtext);
   }*/
     qDebug() << "DrawText_mousePressEvent 3.2";
-    if (highlightobject) {
-      if (highlightobject->metaObject() == &Text::staticMetaObject) {
-          localtext = highlightobject.objectCast<Text>();
+    if (activeObject) {
+      if (activeObject->metaObject() == &Text::staticMetaObject) {
+          localtext = activeObject.objectCast<Text>();
       } 
     } else {
       localtexteditor->setPlainText( "" );
@@ -200,8 +200,8 @@ void Render2D::DrawText_mousePressEvent( QMouseEvent * e1, QPoint cqp )
         localtext = tt;
         localtext->setFont( currentFont );
         localtext->SetColor( currentColor );
-        if ( highlightpoint ) {
-            localtext->setPoint( highlightpoint );
+        if ( activePoint ) {
+            localtext->setPoint( activePoint );
             localtext->setJustify( JUSTIFY_CENTER );
             localtext->setText( "" );
 //            localtext->setTextMask( "" );
@@ -241,8 +241,8 @@ void Render2D::DrawText_mouseReleaseEvent( QMouseEvent * /*e1*/, QPoint /*cqp*/ 
 void Render2D::DrawText_mouseMoveEvent( QMouseEvent * e1 )
 {
     //bool update;
-    DPoint *prevhighlight = highlightpoint;
-    QSharedPointer<Drawable> prevhighlightobject = highlightobject;
+    DPoint *prevActivePoint = activePoint;
+    QSharedPointer<Drawable> prevActiveObject = activeObject;
 
     // Create DPoint of current pointer position
     DPoint *e = new DPoint;
@@ -270,40 +270,40 @@ void Render2D::DrawText_mouseMoveEvent( QMouseEvent * e1 )
         if ( ( no->metaObject() == &Text::staticMetaObject )
              || ( ( no->metaObject() == &Bracket::staticMetaObject ) && ( distobj < 8.0 ) ) ) {
             // highlight text if closest, or bracket
-            highlightpoint = 0;
-            highlightobject = no;
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            highlightobject->Highlight( true );
-            if ( prevhighlightobject != highlightobject )
+            activePoint = 0;
+            activeObject = no;
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            activeObject->Highlight( true );
+            if ( prevActiveObject != activeObject )
                 update();
             return;
         } else {                // deselect and check for points
             // Clear highlighted object
-            highlightobject.clear();
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            if ( prevhighlightobject != highlightobject )
+            activeObject.clear();
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            if ( prevActiveObject != activeObject )
                 update();
         }
     }
     // clear highlighted object (if any)
-    if ( prevhighlightobject != 0 ) {
-        prevhighlightobject->Highlight( false );
-        highlightobject.clear();
+    if ( prevActiveObject != 0 ) {
+        prevActiveObject->Highlight( false );
+        activeObject.clear();
         update();
     }
     // check points
     if ( dist < 6.0 ) {
-        highlightpoint = np;
-        if ( prevhighlight != highlightpoint )
+        activePoint = np;
+        if ( prevActivePoint != activePoint )
             update();
         return;
     }
     if ( dist >= 6.0 ) {
         // Clear highlighted point
-        highlightpoint = 0;
-        if ( prevhighlight != highlightpoint )
+        activePoint = 0;
+        if ( prevActivePoint != activePoint )
             update();
         return;
     }
@@ -330,11 +330,11 @@ void Render2D::keyPressEvent( QKeyEvent * k )
         setMode_Select();
         return;
     } else {
-        if ( highlightobject != 0 )
+        if ( activeObject != 0 )
             qDebug() << "hiobj";
-        if ( highlightpoint != 0 )
+        if ( activePoint != 0 )
             qDebug() << "hipt";
-        if ( ( highlightpoint != 0 ) || ( highlightobject != 0 ) ) {
+        if ( ( activePoint != 0 ) || ( activeObject != 0 ) ) {
             // emulate ChemDraw(R) "hot key" behavior
             QString tmpstr = k->text();
 
@@ -357,12 +357,12 @@ void Render2D::keyPressEvent( QKeyEvent * k )
                 super_set = false;
                 sub_set = false;
             }
-            if ( highlightobject != 0 ) {       // edit existing object
-                if ( highlightobject->metaObject() == &Bracket::staticMetaObject ) {
+            if ( activeObject != 0 ) {       // edit existing object
+                if ( activeObject->metaObject() == &Bracket::staticMetaObject ) {
                     delete localtexteditor;
 
                     localtexteditor = 0;
-                    Bracket *this_bracket = ( Bracket * ) highlightobject.data();
+                    Bracket *this_bracket = ( Bracket * ) activeObject.data();
                     bool ok = false;
                     QString btext = QInputDialog::getText( this, tr( "Enter subscript" ),
                                                            tr( "Please type or edit the subscript for this bracket:" ),
@@ -377,15 +377,15 @@ void Render2D::keyPressEvent( QKeyEvent * k )
                     return;     // a seg fault will occur otherwise!!!
                 }
 
-                if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
+                if ( activeObject->metaObject() == &Text::staticMetaObject ) {
                     hotkeymode = false;
                     mode = hkprevmode;
                     return;
                 }
 
                 text_exists = true;
-                if ( highlightobject->metaObject() == &Text::staticMetaObject )
-                    localtext = highlightobject.objectCast<Text>();
+                if ( activeObject->metaObject() == &Text::staticMetaObject )
+                    localtext = activeObject.objectCast<Text>();
             }
             localtexteditor->setPlainText( tmpstr );
             if ( localtext != 0 ) {
@@ -401,13 +401,13 @@ void Render2D::keyPressEvent( QKeyEvent * k )
 				   localtexteditor->contentsHeight() );*/
             } else {
                 text_exists = false;
-                localtexteditor->move( highlightpoint->toQPoint() );
+                localtexteditor->move( activePoint->toQPoint() );
                 QSharedPointer<Text> tt (new Text());
                 localtext = tt;
                 localtext->setFont( currentFont );
                 localtext->SetColor( currentColor );
-                if ( highlightpoint ) {
-                    localtext->setPoint( highlightpoint );
+                if ( activePoint ) {
+                    localtext->setPoint( activePoint );
                     localtext->setJustify( JUSTIFY_CENTER );
                     localtext->setText( "" );
 //                    localtext->setTextMask( "" );

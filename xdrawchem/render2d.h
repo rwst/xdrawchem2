@@ -145,7 +145,6 @@ public slots:
     void bracketFillOff();
 
     // defined here:
-    void setDirectDraw(bool dd1) { directdraw = dd1; }
     double DistanceBetween(QPoint a, QPoint b)
     {
         double dx = (double)a.x() - (double)b.x();
@@ -244,9 +243,9 @@ private:
     // previous position (of mouse, usually)
     DPoint *prevpos;
     // highlighted point, if any
-    DPoint *highlightpoint;
+    DPoint *activePoint;
     // highlighted object, if any
-    QSharedPointer<Drawable> highlightobject;
+    QSharedPointer<Drawable> activeObject;
     // current input/output/drawing mode
     int mode, prev_mode;
     // temporary Bezier curve

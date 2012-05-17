@@ -125,16 +125,16 @@ void Render2D::molCopy()
 
 void Render2D::bondEdit()
 {
-    if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
+    if ( activeObject->metaObject() == &Text::staticMetaObject ) {
         doubleClickFlag = true;
         prev_mode = mode;
         mode = MODE_TEXT;
         DrawText_mousePressEvent( 0, QPoint( 0, 0 ) );
         return;
     }
-    highlightobject->Edit(this);
-    highlightobject->Highlight( false );
-    highlightobject.clear();
+    activeObject->Edit(this);
+    activeObject->Highlight( false );
+    activeObject.clear();
     if ( mode == MODE_SELECT )
         setCursor( Qt::ArrowCursor );
     else
@@ -149,8 +149,8 @@ void Render2D::bondInfo()
 
     objinf = tr( "No information." );
 
-    if ( highlightobject->metaObject() == &Bond::staticMetaObject ) {
-        Bond *b = (Bond*) highlightobject.data();
+    if ( activeObject->metaObject() == &Bond::staticMetaObject ) {
+        Bond *b = (Bond*) activeObject.data();
         objinf = "ID: ";
         objinf.append( b->CName() );
         objinf.append( "\nReactions: " );
@@ -164,9 +164,9 @@ void Render2D::bondInfo()
 
 void Render2D::textShape()
 {
-    if (highlightobject->metaObject() != &Text::staticMetaObject)
+    if (activeObject->metaObject() != &Text::staticMetaObject)
         return;
-    Text *ltext = (Text*) highlightobject.data();
+    Text *ltext = (Text*) activeObject.data();
     TextShapeDialog *tsd = new TextShapeDialog( this );
 
     tsd->set_stype( ltext->getShape() );
@@ -194,7 +194,7 @@ void Render2D::textShape()
 
 void Render2D::bracketFill()
 {
-    Bracket *lbracket = ( Bracket * ) highlightobject.data();
+    Bracket *lbracket = ( Bracket * ) activeObject.data();
     QColor b1color = lbracket->getFillColor();
 
     b1color = QColorDialog::getColor( b1color );
@@ -207,7 +207,7 @@ void Render2D::bracketFill()
 
 void Render2D::bracketFillOff()
 {
-    Bracket *lbracket = ( Bracket * ) highlightobject.data();
+    Bracket *lbracket = ( Bracket * ) activeObject.data();
 
     lbracket->setFill( false );
 }
@@ -260,7 +260,7 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
         rtclickpopup = new QMenu( this );
         bool menu_ok = false;
 
-        if ( ( mode == MODE_DRAWBRACKET ) && ( highlightobject == 0 ) ) {
+        if ( ( mode == MODE_DRAWBRACKET ) && ( activeObject == 0 ) ) {
             // put nearest bracket into highlightobject
             DPoint *e = new DPoint;
 
@@ -272,13 +272,13 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             QSharedPointer<Drawable> no = c->FindNearestObject( e, distobj );
 
             if ( ( distobj < 5.0 ) && ( no->metaObject() == &Bracket::staticMetaObject ) )
-                highlightobject = no;
+                activeObject = no;
         }
 
-        if ( highlightobject != 0 ) {
+        if ( activeObject != 0 ) {
             QString rtmt;
 
-            rtmt = tr( highlightobject->metaObject()->className() );
+            rtmt = tr( activeObject->metaObject()->className() );
 
             QAction *title = new QAction( "test", this );
             title->setEnabled(false);
@@ -287,12 +287,12 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
             rtclickpopup->addAction( title );
             rtclickpopup->addSeparator();
             rtclickpopup->addAction( tr( "Edit" ), this, SLOT( bondEdit() ) );
-            if ( highlightobject->metaObject() == &Bond::staticMetaObject ) {
+            if ( activeObject->metaObject() == &Bond::staticMetaObject ) {
                 rtclickpopup->addAction( tr( "Info" ), this, SLOT( bondInfo() ) );
-            } else if ( highlightobject->metaObject() == &Bracket::staticMetaObject ) {
+            } else if ( activeObject->metaObject() == &Bracket::staticMetaObject ) {
                 rtclickpopup->addAction( tr( "Fill color..." ), this, SLOT( bracketFill() ) );
                 rtclickpopup->addAction( tr( "No fill" ), this, SLOT( bracketFillOff() ) );
-            } else if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
+            } else if ( activeObject->metaObject() == &Text::staticMetaObject ) {
                 rtclickpopup->addAction( tr( "Shape..." ), this, SLOT( textShape() ) );
             }
             menu_ok = true;
@@ -316,15 +316,15 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
         rtclickpopup = new QMenu( this );
         bool menu_ok = false;
 
-        if ( highlightobject != 0 ) {
+        if ( activeObject != 0 ) {
             QString rtmt;
 
             rtmt = tr( "Object" );
-            if ( highlightobject->metaObject() == &Text::staticMetaObject )
+            if ( activeObject->metaObject() == &Text::staticMetaObject )
                 rtmt = tr( "Text" );
             rtclickpopup->addAction( rtmt );
             rtclickpopup->addAction( tr( "Edit" ), this, SLOT( bondEdit() ) );
-            if ( highlightobject->metaObject() == &Text::staticMetaObject )
+            if ( activeObject->metaObject() == &Text::staticMetaObject )
                 rtclickpopup->addAction( tr( "Shape..." ), this, SLOT( textShape() ) );
             menu_ok = true;
         }
@@ -351,16 +351,16 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     }
     // MODE_SELECT: start multiple selection
     if ( ( mode == MODE_SELECT ) && ( mouse1down ) ) {
-        if ( ( highlightpoint == 0 ) && ( highlightobject == 0 ) ) {
+        if ( ( activePoint == 0 ) && ( activeObject == 0 ) ) {
             selectOrigin = e1->pos();
             mode = MODE_SELECT_MULTIPLE;
             return;
         } else {
             qDebug() << "Should move.";
-            if ( highlightpoint == 0 ) {
+            if ( activePoint == 0 ) {
                 mode = MODE_SELECT_MOVE_OBJECT;
             } else {
-                if ( highlightpoint->other != 0 ) {
+                if ( activePoint->other != 0 ) {
                     mode = MODE_DRAWLINE_DRAWING;
 /*                    savedBondOrder = highlightpoint->otherBond->Order();
                     c->Erase( highlightpoint->otherBond );
@@ -401,23 +401,23 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     }
     // allowedit and BUTTON3: edit item under mouse
     if ( ( allowedit ) && ( mouse3down ) ) {
-        if ( highlightobject == 0 )
-            highlightobject = no;
-        if ( highlightobject != 0 ) {
-            if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
+        if ( activeObject == 0 )
+            activeObject = no;
+        if ( activeObject != 0 ) {
+            if ( activeObject->metaObject() == &Text::staticMetaObject ) {
                 setCursor( Qt::IBeamCursor );
                 mode = MODE_TEXT;
                 text_exists = true;
-                localtext = highlightobject.objectCast<Text>();
+                localtext = activeObject.objectCast<Text>();
                 emit textOn( localtext->getFont() );
 
                 update();
                 return;
             }
             qDebug() << "Will edit";
-            highlightobject->Edit(this);
-            highlightobject->Highlight( false );
-            highlightobject.clear();
+            activeObject->Edit(this);
+            activeObject->Highlight( false );
+            activeObject.clear();
             if ( mode == MODE_SELECT )
                 setCursor( Qt::ArrowCursor );
             else
@@ -464,8 +464,8 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     // MODE_DRAWLINE (draw line tool selected), and left button.
     // This means we start drawing a line
     if ( ( mode == MODE_DRAWLINE ) && ( mouse1down ) ) {
-        startpoint = highlightpoint;    // both 0 if nothing selected
-        highlightpoint = 0;     // stop drawing highlight box
+        startpoint = activePoint;    // both 0 if nothing selected
+        activePoint = 0;     // stop drawing highlight box
         if ( startpoint == 0 ) {
             startpoint = new DPoint;
             startpoint->set( curqpt );
@@ -476,8 +476,8 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     // MODE_DRAWWAVYLINE (draw line tool selected), and left button.
     // This means we start drawing a line
     if ( ( mode == MODE_DRAWWAVYLINE ) && ( mouse1down ) ) {
-        startpoint = highlightpoint;    // both 0 if nothing selected
-        highlightpoint = 0;     // stop drawing highlight box
+        startpoint = activePoint;    // both 0 if nothing selected
+        activePoint = 0;     // stop drawing highlight box
         if ( startpoint == 0 ) {
             startpoint = new DPoint;
             startpoint->set( curqpt );
@@ -488,8 +488,8 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     // MODE_DRAWCHAIN (draw chain tool selected), and left button.
     // This means we start drawing an aliphatic chain
     if ( ( mode == MODE_DRAWCHAIN ) && ( mouse1down ) ) {
-        startpoint = highlightpoint;    // both 0 if nothing selected
-        highlightpoint = 0;     // stop drawing highlight box
+        startpoint = activePoint;    // both 0 if nothing selected
+        activePoint = 0;     // stop drawing highlight box
         if ( startpoint == 0 ) {
             startpoint = new DPoint;
             startpoint->set( curqpt );
@@ -500,8 +500,8 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     // MODE_DRAWLINE_DASH (draw dashed line tool selected), and left button.
     // This means we start drawing a dashed line
     if ( ( mode == MODE_DRAWLINE_DASH ) && ( mouse1down ) ) {
-        startpoint = highlightpoint;    // both 0 if nothing selected
-        highlightpoint = 0;     // stop drawing highlight box
+        startpoint = activePoint;    // both 0 if nothing selected
+        activePoint = 0;     // stop drawing highlight box
         if ( startpoint == 0 ) {
             startpoint = new DPoint;
             startpoint->set( curqpt );
@@ -512,8 +512,8 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     // MODE_DRAWLINE_UP (draw stereo-up line tool selected), and left button.
     // This means we start drawing a line
     if ( ( mode == MODE_DRAWLINE_UP ) && ( mouse1down ) ) {
-        startpoint = highlightpoint;    // both 0 if nothing selected
-        highlightpoint = 0;     // stop drawing highlight box
+        startpoint = activePoint;    // both 0 if nothing selected
+        activePoint = 0;     // stop drawing highlight box
         if ( startpoint == 0 ) {
             startpoint = new DPoint;
             startpoint->set( curqpt );
@@ -524,8 +524,8 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     // MODE_DRAWLINE_DOWN (draw stereo-down line tool selected), and left button.
     // This means we start drawing a line
     if ( ( mode == MODE_DRAWLINE_DOWN ) && ( mouse1down ) ) {
-        startpoint = highlightpoint;    // both 0 if nothing selected
-        highlightpoint = 0;     // stop drawing highlight box
+        startpoint = activePoint;    // both 0 if nothing selected
+        activePoint = 0;     // stop drawing highlight box
         if ( startpoint == 0 ) {
             startpoint = new DPoint;
             startpoint->set( curqpt );
@@ -559,10 +559,10 @@ void Render2D::mousePressEvent( QMouseEvent * e1 )
     }
     // MODE_ERASE, and left button.  Erase highlighted object.
     if ( ( mode == MODE_ERASE ) && ( mouse1down ) ) {
-        if ( highlightobject == 0 )
+        if ( activeObject == 0 )
             return;
-        c->Erase( highlightobject );
-        highlightobject.clear();
+        c->Erase( activeObject );
+        activeObject.clear();
         update();
     }
 }
@@ -592,8 +592,8 @@ void Render2D::mouseDoubleClickEvent( QMouseEvent * e1 )
 
     qDebug() << "mouseDoubleClickEvent received";
 
-    if ( highlightobject != 0 ) {
-        if ( highlightobject->metaObject() == &Text::staticMetaObject ) {
+    if ( activeObject != 0 ) {
+        if ( activeObject->metaObject() == &Text::staticMetaObject ) {
             qDebug() << "Activate text object?";
             doubleClickFlag = true;
             prev_mode = mode;
@@ -691,11 +691,11 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
     if ( mode == MODE_TOOL_RETRO_BONDNAME ) {
         qDebug() << "mode invoke";
         // retro_bondname handled by Molecule containing this bond
-        if ( highlightobject != 0 ) {
+        if ( activeObject != 0 ) {
             qDebug() << "invoke";
             //qDebug() << c->insideMolecule( highlightobject->Start() )->RetroBondName( (( Bond * ) highlightobject, true );
-            highlightobject->Highlight( false );
-            highlightobject.clear();
+            activeObject->Highlight( false );
+            activeObject.clear();
             update();
             setMode_Select();
         }
@@ -1019,10 +1019,10 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
     }
     // MODE_SYMBOL: create Symbol
     if ( ( mode == MODE_SYMBOL ) && ( !mouse1down ) ) {
-        if ( highlightpoint == 0 ) {
+        if ( activePoint == 0 ) {
             endpoint = new DPoint( curqpt );
         } else {
-            endpoint = highlightpoint;
+            endpoint = activePoint;
         }
         if ( symbolfile == "antibody" ) {
             c->DeselectAll();
@@ -1074,8 +1074,8 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
             endpoint = 0;
             return;
         }
-        if ( highlightpoint != 0 ) {
-            c->addSymbol( highlightpoint, symbolfile ); // add to existing point
+        if ( activePoint != 0 ) {
+            c->addSymbol( activePoint, symbolfile ); // add to existing point
         } else {
             c->addSymbol( endpoint, symbolfile );       // add at current mouse position
         }
@@ -1147,16 +1147,16 @@ void Render2D::mouseReleaseEvent( QMouseEvent *e1 )
         endpoint->set( curqpt );
         c->setThickKludge( thick );
         // are we smart-placing this ring?
-        if ( ( smartplace != 0 ) && ( highlightpoint != 0 ) ) {
+        if ( ( smartplace != 0 ) && ( activePoint != 0 ) ) {
             qDebug() << "smart placement! Mode " << smartplace;
             if ( smartplace == 1 )
-                c->SmartPlace( symbolfile, highlightpoint );
+                c->SmartPlace( symbolfile, activePoint );
             if ( smartplace == 2 )
-                c->SmartPlaceToo( symbolfile, highlightpoint );
+                c->SmartPlaceToo( symbolfile, activePoint );
             if ( smartplace == 3 )
-                c->SmartPlaceThree( symbolfile, highlightpoint );
+                c->SmartPlaceThree( symbolfile, activePoint );
             // Clear highlighted point
-            highlightpoint = 0;
+            activePoint = 0;
             endpoint = 0;
             mode = MODE_SELECT_MULTIPLE_SELECTED;
             emit SignalSetStatusBar( tr( "Select mode: left click on object to move" ) );
@@ -1201,7 +1201,7 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
     }
 
     if ( mode == MODE_DRAWBRACKET )
-        highlightobject.clear();
+        activeObject.clear();
 
     if ( ( mode == MODE_RING ) && mouse1down )
         return;
@@ -1316,8 +1316,8 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
     //bool update;
     double ang, len;
     QString sang, slen;
-    DPoint *prevhighlight = highlightpoint;
-    QSharedPointer<Drawable> prevhighlightobject = highlightobject;
+    DPoint *prevActivePoint = activePoint;
+    QSharedPointer<Drawable> prevActiveObject = activeObject;
 
     // Create DPoint of current pointer position
     DPoint *e = new DPoint;
@@ -1340,32 +1340,32 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // if (no != 0) {
         // highlight object if object close enough
         if ( ( no != 0 ) && ( mode == MODE_ERASE ) && ( distobj < 6.0 ) ) {
-            highlightobject = no;
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            highlightobject->Highlight( true );
-            if ( prevhighlightobject != highlightobject )
+            activeObject = no;
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            activeObject->Highlight( true );
+            if ( prevActiveObject != activeObject )
                 update();
         }
         // unhighlight object if no object close
         if ( ( mode == MODE_ERASE ) && ( no == 0 || distobj >= 6.0 ) ) {
             // Clear highlighted object
-            highlightobject.clear();
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            if ( prevhighlightobject != highlightobject )
+            activeObject.clear();
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            if ( prevActiveObject != activeObject )
                 update();
             return;
         }
 
         if ( ( no != 0 ) && ( mode == MODE_TOOL_RETRO_BONDNAME ) && ( distobj < 6.0 ) ) {
             if ( no->metaObject() == &Bond::staticMetaObject ) {
-                highlightobject = no;
-                if ( prevhighlightobject != 0 ) {
-                    prevhighlightobject->Highlight( false );
+                activeObject = no;
+                if ( prevActiveObject != 0 ) {
+                    prevActiveObject->Highlight( false );
                 }
-                highlightobject->Highlight( true );
-                if ( prevhighlightobject != highlightobject ) {
+                activeObject->Highlight( true );
+                if ( prevActiveObject != activeObject ) {
                     update();
                 }
             }
@@ -1373,32 +1373,32 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // unhighlight object if no object close
         if ( ( mode == MODE_TOOL_RETRO_BONDNAME ) && ( no == 0 || distobj >= 6.0 ) ) {
             // Clear highlighted object
-            highlightobject.clear();
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            if ( prevhighlightobject != highlightobject )
+            activeObject.clear();
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            if ( prevActiveObject != activeObject )
                 update();
             return;
         }
         // highlight text object preferentially when MODE_SELECT...
         if ( ( no != 0 ) && ( mode == MODE_SELECT ) && ( no->metaObject() == &Text::staticMetaObject ) ) {
-            highlightpoint = 0;
-            highlightobject = no;
-            if ( ( prevhighlightobject != highlightobject ) && ( prevhighlightobject != 0 ) )
-                prevhighlightobject->Highlight( false );
-            highlightobject->Highlight( true );
-            if ( prevhighlightobject != highlightobject )
+            activePoint = 0;
+            activeObject = no;
+            if ( ( prevActiveObject != activeObject ) && ( prevActiveObject != 0 ) )
+                prevActiveObject->Highlight( false );
+            activeObject->Highlight( true );
+            if ( prevActiveObject != activeObject )
                 update();
             // return since no need to check points
             return;
         }
         // highlight object if object close enough and no point close
         if ( ( no != 0 ) && ( mode == MODE_SELECT ) && ( distobj < 6.0 ) && ( dist >= 8.0 ) ) {
-            highlightobject = no;
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            highlightobject->Highlight( true );
-            if ( prevhighlightobject != highlightobject )
+            activeObject = no;
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            activeObject->Highlight( true );
+            if ( prevActiveObject != activeObject )
                 update();
             // return since no need to check points
             return;
@@ -1406,20 +1406,20 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // unhighlight object if no object close
         if ( ( mode == MODE_SELECT ) && ( no == 0 || distobj >= 6.0 ) ) {
             // Clear highlighted object
-            highlightobject.clear();
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            if ( prevhighlightobject != highlightobject )
+            activeObject.clear();
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            if ( prevActiveObject != activeObject )
                 update();
             // don't return; go on to check for points
         }
         // unhighlight object if point close
         if ( ( mode == MODE_SELECT ) && ( dist < 8.0 ) ) {
             // Clear highlighted object
-            highlightobject.clear();
-            if ( prevhighlightobject != 0 )
-                prevhighlightobject->Highlight( false );
-            if ( prevhighlightobject != highlightobject )
+            activeObject.clear();
+            if ( prevActiveObject != 0 )
+                prevActiveObject->Highlight( false );
+            if ( prevActiveObject != activeObject )
                 update();
             // don't return; go on to check for points
         }
@@ -1427,136 +1427,136 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         if ( nearestPoint != 0 ) {
             //qDebug() << dist << " to (" << nearestPoint->x << "," << nearestPoint->y << ")" ;
             if ( ( mode == MODE_TEXT ) && ( dist < 8.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_TEXT ) && ( dist >= 8.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_SYMBOL ) && ( dist < 8.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_SYMBOL ) && ( dist >= 8.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_SELECT ) && ( dist < 8.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_SELECT ) && ( dist >= 8.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE ) && ( dist < 6.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE ) && ( dist >= 6.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_RING ) && smartplace && ( dist < 6.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_RING ) && smartplace && ( dist >= 6.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE_DASH ) && ( dist < 6.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE_DASH ) && ( dist >= 6.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE_UP ) && ( dist < 6.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE_UP ) && ( dist >= 6.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE_DOWN ) && ( dist < 6.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWLINE_DOWN ) && ( dist >= 6.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWCHAIN ) && ( dist < 6.0 ) ) {
-                highlightpoint = nearestPoint;
-                if ( prevhighlight != highlightpoint )
+                activePoint = nearestPoint;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
 
             if ( ( mode == MODE_DRAWCHAIN ) && ( dist >= 6.0 ) ) {
                 // Clear highlighted point
-                highlightpoint = 0;
-                if ( prevhighlight != highlightpoint )
+                activePoint = 0;
+                if ( prevActivePoint != activePoint )
                     update();
                 return;
             }
@@ -1575,18 +1575,18 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // if within range of existing point AND the end point is not the same
         // as the start point, snap to that point
         if ( ( dist < 6.0 ) && ( startpoint != nearestPoint ) ) {
-            highlightpoint = nearestPoint;
+            activePoint = nearestPoint;
             endpoint = nearestPoint;
         } else {
             endpoint = new DPoint;
             endpoint->x = curqpt.x();
             endpoint->y = curqpt.y();
-            highlightpoint = 0; // stop highlighting
+            activePoint = 0; // stop highlighting
             if ( preferences.getBond_fixed() ) {      // fix endpoint if fixed set
                 CorrectEndpoint_bond();
                 nearestPoint = c->FindNearestPoint( endpoint, dist );
                 if ( dist < 2.0 ) {
-                    highlightpoint = nearestPoint;
+                    activePoint = nearestPoint;
                     endpoint = nearestPoint;
                 }
             }
@@ -1612,18 +1612,18 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // if within range of existing point AND the end point is not the same
         // as the start point, snap to that point
         if ( ( dist < 6.0 ) && ( startpoint != nearestPoint ) ) {
-            highlightpoint = nearestPoint;
+            activePoint = nearestPoint;
             endpoint = nearestPoint;
         } else {
             endpoint = new DPoint;
             endpoint->x = curqpt.x();
             endpoint->y = curqpt.y();
-            highlightpoint = 0; // stop highlighting
+            activePoint = 0; // stop highlighting
             if ( preferences.getBond_fixed() ) {      // fix endpoint if fixed set
                 CorrectEndpoint_bond();
                 nearestPoint = c->FindNearestPoint( endpoint, dist );
                 if ( dist < 2.0 ) {
-                    highlightpoint = nearestPoint;
+                    activePoint = nearestPoint;
                     endpoint = nearestPoint;
                 }
             }
@@ -1641,13 +1641,13 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // if within range of existing point AND the end point is not the same
         // as the start point, snap to that point
         if ( ( dist < 6.0 ) && ( startpoint != nearestPoint ) ) {
-            highlightpoint = nearestPoint;
+            activePoint = nearestPoint;
             endpoint = nearestPoint;
         } else {
             endpoint = new DPoint;
             endpoint->x = curqpt.x();
             endpoint->y = curqpt.y();
-            highlightpoint = 0; // stop highlighting
+            activePoint = 0; // stop highlighting
         }
         ang = Drawable::getAngle( startpoint, endpoint );
         double alt_ang1 = ( ang - 30.0 ) * M_PI / 180.0;
@@ -1692,18 +1692,18 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // if within range of existing point AND the end point is not the same
         // as the start point, snap to that point
         if ( ( dist < 6.0 ) && ( startpoint != nearestPoint ) ) {
-            highlightpoint = nearestPoint;
+            activePoint = nearestPoint;
             endpoint = nearestPoint;
         } else {
             endpoint = new DPoint;
             endpoint->x = curqpt.x();
             endpoint->y = curqpt.y();
-            highlightpoint = 0; // stop highlighting
+            activePoint = 0; // stop highlighting
             if ( preferences.getBond_fixed() ) {      // fix endpoint if fixed set
                 CorrectEndpoint_bond();
                 nearestPoint = c->FindNearestPoint( endpoint, dist );
                 if ( dist < 2.0 ) {
-                    highlightpoint = nearestPoint;
+                    activePoint = nearestPoint;
                     endpoint = nearestPoint;
                 }
             }
@@ -1721,18 +1721,18 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // if within range of existing point AND the end point is not the same
         // as the start point, snap to that point
         if ( ( dist < 6.0 ) && ( startpoint != nearestPoint ) ) {
-            highlightpoint = nearestPoint;
+            activePoint = nearestPoint;
             endpoint = nearestPoint;
         } else {
             endpoint = new DPoint;
             endpoint->x = curqpt.x();
             endpoint->y = curqpt.y();
-            highlightpoint = 0; // stop highlighting
+            activePoint = 0; // stop highlighting
             if ( preferences.getBond_fixed() ) {      // fix endpoint if fixed set
                 CorrectEndpoint_bond();
                 nearestPoint = c->FindNearestPoint( endpoint, dist );
                 if ( dist < 2.0 ) {
-                    highlightpoint = nearestPoint;
+                    activePoint = nearestPoint;
                     endpoint = nearestPoint;
                 }
             }
@@ -1750,18 +1750,18 @@ void Render2D::mouseMoveEvent( QMouseEvent * e1 )
         // if within range of existing point AND the end point is not the same
         // as the start point, snap to that point
         if ( ( dist < 6.0 ) && ( startpoint != nearestPoint ) ) {
-            highlightpoint = nearestPoint;
+            activePoint = nearestPoint;
             endpoint = nearestPoint;
         } else {
             endpoint = new DPoint;
             endpoint->x = curqpt.x();
             endpoint->y = curqpt.y();
-            highlightpoint = 0; // stop highlighting
+            activePoint = 0; // stop highlighting
             if ( preferences.getBond_fixed() ) {      // fix endpoint if fixed set
                 CorrectEndpoint_bond();
                 nearestPoint = c->FindNearestPoint( endpoint, dist );
                 if ( dist < 2.0 ) {
-                    highlightpoint = nearestPoint;
+                    activePoint = nearestPoint;
                     endpoint = nearestPoint;
                 }
             }
@@ -1883,9 +1883,9 @@ void Render2D::paintEvent( QPaintEvent * )
 
     qDebug() << "paintEvent mode: " << mode;
     // local/temporary draw operations
-    if ( highlightpoint != 0 ) {
+    if ( activePoint != 0 ) {
         qDebug() << "tempBox";
-        drawBox( QPoint( qRound( highlightpoint->x - 2.0 ), qRound( highlightpoint->y - 2.0 ) ), QPoint( qRound( highlightpoint->x + 2.0 ), qRound( highlightpoint->y + 2.0 ) ), QColor( 0, 0, 0 ) );
+        drawBox( QPoint( qRound( activePoint->x - 2.0 ), qRound( activePoint->y - 2.0 ) ), QPoint( qRound( activePoint->x + 2.0 ), qRound( activePoint->y + 2.0 ) ), QColor( 0, 0, 0 ) );
     }
     // if multiple selection, draw rotate and resize handles
     if ( mode == MODE_SELECT_MULTIPLE ) {
