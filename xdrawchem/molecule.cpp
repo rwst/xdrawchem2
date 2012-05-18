@@ -439,34 +439,29 @@ void MakeTomoveList(Molecule* m, QList<DPoint*> &tomove)
 {
     tomove.clear();
     foreach ( QSharedPointer<Bond> tmp_bond, m->bonds ) {
-        if ( tmp_bond->Highlighted() ) {
-            DPoint *tpt = tmp_bond->Start();
-            if ( tomove.contains( tpt ) == 0 )
-                tomove.append( tpt );
-            tpt = tmp_bond->End();
-            if ( tomove.contains( tpt ) == 0 )
-                tomove.append( tpt );
-        }
+        DPoint *tpt = tmp_bond->Start();
+        if ( tomove.contains( tpt ) == 0 )
+            tomove.append( tpt );
+        tpt = tmp_bond->End();
+        if ( tomove.contains( tpt ) == 0 )
+            tomove.append( tpt );
     }
     foreach ( QSharedPointer<Text> tmp_text, m->labels ) {
-        if ( tmp_text->Highlighted() ) {
-            DPoint *tpt = tmp_text->Start();
-            if ( tomove.contains( tpt ) == 0 )
-                tomove.append( tpt );
-        }
+        DPoint *tpt = tmp_text->Start();
+        if ( tomove.contains( tpt ) == 0 )
+            tomove.append( tpt );
     }
     foreach ( QSharedPointer<Symbol> tmp_sym, m->symbols ) {
-        if ( tmp_sym->Highlighted() ) {
-            DPoint *tpt = tmp_sym->Start();
-            if ( tomove.contains( tpt ) == 0 )
-                tomove.append( tpt );
-        }
+        DPoint *tpt = tmp_sym->Start();
+        if ( tomove.contains( tpt ) == 0 )
+            tomove.append( tpt );
     }
 }
 
 /// Adds param to start, end, and all points to move. Calls Changed().
 void Molecule::Move( double dx, double dy )
 {
+    qDebug() << "Molecule::Move(" << dx << dy << ")";
     start->x += dx;
     start->y += dy;
     end->x += dx;
