@@ -37,8 +37,6 @@ Molecule::Molecule (Molecule* m)
     start = new DPoint(m->start);
     end = new DPoint(m->end);
 
-    cd = m->cd;
-
     peaklist = m->peaklist;
     foreach (QSharedPointer<Bond> b, m->bonds) {
         QSharedPointer<Bond> nb (new Bond());
@@ -314,7 +312,6 @@ QList < QSharedPointer <Molecule> > Molecule::MakeSplit()
 
     // Start with first Bond...
     QSharedPointer<Molecule> nm ( new Molecule());
-    nm->SetChemdata( cd );
     QSharedPointer<Bond> tmp_bond = uo.first();
     nm->addBond( tmp_bond );
     uo.removeFirst();
@@ -342,7 +339,6 @@ QList < QSharedPointer <Molecule> > Molecule::MakeSplit()
             nm.clear();
             QSharedPointer<Molecule> nm1 ( new Molecule());
             nm = nm1;
-            nm->SetChemdata( cd );
             QSharedPointer<Bond> tb = uo.first();
             nm->addBond( tb );
             uo.removeFirst();

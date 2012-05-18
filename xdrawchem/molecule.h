@@ -27,15 +27,23 @@ public:
     Molecule();
     Molecule (Molecule*);
     ~Molecule();
-    Render2D *getRender2D() { return r; }
-    void SetChemdata( ChemData *cd1 ) { cd = cd1; }
     void Render(Render2D * r);  // draw this object
-    void Edit( Render2D* r ) {}
-    int Type();  // return type of object
+    void Edit( Render2D* /* r */ ) {}
+    void Move( double, double );
+    void Rotate( DPoint *, double );
+    void Flip( DPoint *, int );
+    void Resize( DPoint *, double );
+    const QRect BoundingBox() const;
+    QString ToXML( QString );
+    QString ToCDXML( QString );
+    void FromXML( QString );
+
     bool Find( DPoint * );   // is this DPoint present in this Molecule?
     DPoint *FindNearestPoint( DPoint *, double & );
     double distanceTo( DPoint * );
     DPoint *End() { return end; }
+
+    Render2D *getRender2D() { return r; }
     void addBond( DPoint *, DPoint *, int, int, QColor, bool hl = false );
     void addBond( QSharedPointer<Bond> );
     void addText( QSharedPointer<Text> );
@@ -51,22 +59,14 @@ public:
     void SelectAll();
     void DeselectAll();
     void SetColorIfHighlighted( QColor );
-    void Move( double, double );
-    void Rotate( DPoint *, double );
     void Rotate( double );
-    void Flip( DPoint *, int );
-    void Resize( DPoint *, double );
-    const QRect BoundingBox() const;
     QRect BoundingBoxAll();
     QList<DPoint *> AllPoints();
     QList<QSharedPointer<Drawable> > AllObjects();
     const QList<QSharedPointer<Bond> > AllBonds();
     QList<QSharedPointer<Molecule> > MakeSplit();
     int Members() { return bonds.count(); }
-    QString ToXML( QString );
-    QString ToCDXML( QString );
     QString ToMDLMolfile( int coords = 0 );
-    void FromXML( QString );
     void Changed();
     void doChanged();
     // defined in molecule_tools.cpp
@@ -176,8 +176,6 @@ public:
 private:
     // Renderer
     Render2D *r;
-    // ChemData
-    ChemData *cd;
     // Text objects which hold MW and formula
     Text *text_mw, *text_formula;
     // used for elemental analysis (set by CalcEmpiricalFormula)

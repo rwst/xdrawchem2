@@ -157,7 +157,6 @@ bool ChemData::load_native( QString wholefile )
             thistag = wholefile.mid( d1, d2 - d1 + 11 );
             QSharedPointer<Molecule> a1 ( new Molecule());
 
-            a1->SetChemdata( this );
             a1->FromXML( thistag );
             drawlist.append( a1 );
             wholefile.remove( d1, d2 - d1 + 11 );

@@ -158,7 +158,6 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
     if ( ( m1 == 0 ) && ( m2 == 0 ) ) {
         Molecule *m = new Molecule();
 
-        m->SetChemdata( this );
         m->addBond( s, e, thick, order, c, hl );
         QSharedPointer<Drawable> d (m);
         drawlist.append( d );
