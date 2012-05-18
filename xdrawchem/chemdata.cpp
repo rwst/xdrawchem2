@@ -325,12 +325,13 @@ void ChemData::DetectSplit()
 /// Calls SelectAll() on all Drawables in list, calls setHighlighted(true) on all UniquePoints()
 void ChemData::SelectAll()
 {
-    QList < DPoint * >allpts = UniquePoints();
+    QSharedPointer<Drawable> tmp_draw;
+    foreach ( tmp_draw, drawlist ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject )
+            ((Molecule*)tmp_draw.data())->SelectAll();
+    }
 
-//    QSharedPointer<Drawable> tmp_draw;
-//    foreach ( tmp_draw, drawlist ) {
-//        tmp_draw->SelectAll();
-//    }
+    QList < DPoint * >allpts = UniquePoints();
     foreach ( tmp_pt, allpts ) {
         tmp_pt->setHighlighted( true );
     }
@@ -339,12 +340,12 @@ void ChemData::SelectAll()
 /// Calls DeselectAll() on all Drawables in list, calls setHighlighted(false) on all UniquePoints()
 void ChemData::DeselectAll()
 {
+    QSharedPointer<Drawable> tmp_draw;
+    foreach ( tmp_draw, drawlist ) {
+        if ( tmp_draw->metaObject() == &Molecule::staticMetaObject )
+            ((Molecule*)tmp_draw.data())->DeselectAll();
+    }
     QList < DPoint * >allpts = UniquePoints();
-//    QSharedPointer<Drawable> tmp_draw;
-
-//    foreach ( tmp_draw, drawlist ) {
-//        tmp_draw->DeselectAll();
-//    }
     foreach ( tmp_pt, allpts ) {
         tmp_pt->setHighlighted( false );
     }
