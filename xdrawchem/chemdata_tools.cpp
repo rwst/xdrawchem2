@@ -536,15 +536,15 @@ void ChemData::SmartPlace( QString sf, DPoint * t1 )
         }
     }
     qDebug() << "angle = " << ( ang1 * 180.0 / 3.14159 ) << " degrees!";
-    tmp_pt = m1->GetRingAttachPoint();
+    DPoint *tpt = m1->GetRingAttachPoint();
     m1->Rotate( ang1 );
     double dx, dy;
 
-    dx = t1->x - tmp_pt->x;
-    dy = t1->y - tmp_pt->y;
+    dx = t1->x - tpt->x;
+    dy = t1->y - tpt->y;
     m1->Move( dx, dy );
-    QList < DPoint * >nb = m1->BreakRingBonds( tmp_pt );
-    foreach ( tmp_pt, nb ) {
+    QList < DPoint * >nb = m1->BreakRingBonds( tpt );
+    foreach ( DPoint *tmp_pt, nb ) {
         addBond( tmp_pt, t1, 1, tmp_pt->new_order, QColor( 0, 0, 0 ), true );
         qDebug() << "added a bond";
     }
@@ -562,15 +562,15 @@ void ChemData::SmartPlaceToo( QString sf, DPoint * t1 )
 
     qDebug() << "angle = " << ( ang1 * 180.0 / 3.14159 ) << " degrees!";
     //tmp_pt = m1->GetRingAttachPoint();
-    tmp_pt = m1->GetAttachPoint( sf );
+    DPoint *tpt = m1->GetAttachPoint( sf );
     m1->Rotate( ang1 );
     double dx, dy;
 
-    dx = t1->x - tmp_pt->x;
-    dy = t1->y - tmp_pt->y;
+    dx = t1->x - tpt->x;
+    dy = t1->y - tpt->y;
     m1->Move( dx, dy );
-    QList < DPoint * >nb = m1->BreakRingBonds( tmp_pt );
-    foreach ( tmp_pt, nb ) {
+    QList < DPoint * >nb = m1->BreakRingBonds( tpt );
+    foreach ( DPoint *tmp_pt, nb ) {
         addBond( tmp_pt, t1, 1, tmp_pt->new_order, QColor( 0, 0, 0 ), true );
         qDebug() << "added a bond";
     }
@@ -599,15 +599,15 @@ void ChemData::SmartPlaceThree( QString sf, DPoint * t1 )
 
     qDebug() << "angle = " << ( ang1 * 180.0 / 3.14159 ) << " degrees!";
     //tmp_pt = m1->GetRingAttachPoint();
-    tmp_pt = m1->GetAttachPoint( sf );
+    DPoint *tpt = m1->GetAttachPoint( sf );
     m1->Rotate( ang1 );
     double dx, dy;
 
-    dx = t1->x - tmp_pt->x;
-    dy = t1->y - tmp_pt->y;
+    dx = t1->x - tpt->x;
+    dy = t1->y - tpt->y;
     m1->Move( dx, dy );
-    QList < DPoint * >nb = m1->BreakRingBonds( tmp_pt );
-    foreach ( tmp_pt, nb ) {
+    QList < DPoint * >nb = m1->BreakRingBonds( tpt );
+    foreach ( DPoint *tmp_pt, nb ) {
         addBond( tmp_pt, t1, 1, tmp_pt->new_order, QColor( 0, 0, 0 ), true );
         qDebug() << "added a bond";
     }

@@ -332,7 +332,7 @@ void ChemData::SelectAll()
     }
 
     QList < DPoint * >allpts = UniquePoints();
-    foreach ( tmp_pt, allpts ) {
+    foreach ( DPoint *tmp_pt, allpts ) {
         tmp_pt->setHighlighted( true );
     }
 }
@@ -346,7 +346,7 @@ void ChemData::DeselectAll()
             ((Molecule*)tmp_draw.data())->DeselectAll();
     }
     QList < DPoint * >allpts = UniquePoints();
-    foreach ( tmp_pt, allpts ) {
+    foreach ( DPoint *tmp_pt, allpts ) {
         tmp_pt->setHighlighted( false );
     }
 }
@@ -434,7 +434,7 @@ void ChemData::NewSelectRect( QRect n, bool shiftdown )
 {
     QList < DPoint * >allpts = UniquePoints();
 
-    foreach ( tmp_pt, allpts ) {
+    foreach ( DPoint *tmp_pt, allpts ) {
         if ( n.contains( tmp_pt->toQPoint() ) == true ) {
             tmp_pt->setHighlighted( true );
         } else {
@@ -455,7 +455,7 @@ QRect ChemData::BoxAllHighlightedAtoms()
     int top = 99999, bottom = 0, left = 99999, right = 0;
     QList < DPoint * >allpts = UniquePoints();
 
-    foreach ( tmp_pt, allpts ) {
+    foreach ( DPoint *tmp_pt, allpts ) {
         if ( !tmp_pt->highlighted )
             continue;
         if ( left > tmp_pt->x )
@@ -487,7 +487,7 @@ QList < DPoint * >ChemData::UniquePoints()
     foreach ( QSharedPointer<Drawable> tmp_draw, drawlist )
         if (tmp_draw->metaObject() == &Molecule::staticMetaObject) {
             tp = ((Molecule *)tmp_draw.data())->AllPoints();
-            foreach ( tmp_pt, tp )
+            foreach ( DPoint *tmp_pt, tp )
                 up.append( tmp_pt );
         }
 

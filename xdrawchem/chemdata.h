@@ -154,7 +154,6 @@ private:
     QList<CML_Bond *> CML_Bonds_Sub;
     QList<int *> TagStack;
     QList<QSharedPointer<Drawable> > CDXML_Objects;
-    DPoint *tmp_pt;
     CML_Atom *tmp_atom;
     CML_Bond *tmp_bond;
     // variables for Undo

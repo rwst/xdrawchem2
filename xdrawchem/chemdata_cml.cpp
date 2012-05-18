@@ -58,7 +58,7 @@ bool ChemData::NewLoadCMLFile( QString fn )
     parsedPoints = handler.getPoints();
     QString makesub, ms2;
 
-    foreach ( tmp_pt, parsedPoints ) {
+    foreach ( DPoint *tmp_pt, parsedPoints ) {
         if ( tmp_pt->element != "C" ) {
             QSharedPointer<Text> nt ( new Text());
 
@@ -90,7 +90,7 @@ bool ChemData::NewLoadCMLFile( QString fn )
     double sf = curfixed / avglen;
 
     qDebug() << sf;
-    foreach ( tmp_pt, parsedPoints ) {
+    foreach ( DPoint *tmp_pt, parsedPoints ) {
         tmp_pt->x *= sf;
         tmp_pt->y *= sf;
     }
@@ -441,14 +441,14 @@ void ChemData::Convert_CML_Lists_To_Native()
 
     foreach ( tmp_bond, CML_Bonds ) {
         // find first atom
-        foreach ( tmp_pt, points ) {
+        foreach ( DPoint *tmp_pt, points ) {
             if ( tmp_bond->a1 == tmp_pt->id ) {
                 end1 = tmp_pt;
                 break;
             }
         }
         // find second atom
-        foreach ( tmp_pt, points ) {
+        foreach ( DPoint *tmp_pt, points ) {
             if ( tmp_bond->a2 == tmp_pt->id ) {
                 end2 = tmp_pt;
                 break;
@@ -459,7 +459,7 @@ void ChemData::Convert_CML_Lists_To_Native()
         n++;
     }
     // add Text labels
-    foreach ( tmp_pt, points ) {
+    foreach ( DPoint *tmp_pt, points ) {
         if ( tmp_pt->element != QString( "C" ) ) {
             qDebug() << tmp_pt->element;
             QSharedPointer<Text> nt ( new Text());
@@ -496,7 +496,7 @@ void ChemData::Convert_CML_Lists_To_Native()
         points.append( tmp_draw->Start() );
         points.append( tmp_draw->End() );
     }
-    foreach ( tmp_pt, points ) {
+    foreach ( DPoint *tmp_pt, points ) {
         tmp_pt->x *= sf;
         tmp_pt->y *= sf;
     }
@@ -562,7 +562,7 @@ bool ChemData::save_cml( QString fn )
     }
     // Add XML ID's to DPoint's, write as we go
     t << "<atomArray>";
-    foreach ( tmp_pt, up ) {
+    foreach ( DPoint *tmp_pt, up ) {
         n1.setNum( n );
         nfull = QString( "a" ) + n1;
         tmp_pt->id = nfull;
