@@ -48,7 +48,7 @@ public:
     void DetectSplit();
     DPoint *FindNearestPoint( DPoint *, double & );
     QSharedPointer<Drawable> FindNearestObject( DPoint *, double & );
-    void NewSelectRect( QRect, bool );
+    void NewSelectRect(QRect, bool shiftdown);
     void SelectAll();
     void DeselectAll();
     void Move( double, double );

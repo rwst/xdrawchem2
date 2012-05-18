@@ -200,28 +200,33 @@ bool Molecule::Find( DPoint * target )
     return false;
 }
 
-/// Returns if parts of this are isWithinRect(param), handles shiftdown
-bool Molecule::isWithinRect( QRect qr, bool shiftdown )
+/// If parts of this are isWithinRect(param), sets highlight, handles shiftdown
+void Molecule::HighlightIfWithinRect( QRect qr, bool shiftdown )
 {
     if ( shiftdown )
         qDebug() << "shiftdown";
-    bool ret = false;
 
+    bool allHighlighted = true;
     foreach ( QSharedPointer<Bond> tmp_bond, bonds ) {
         if ( tmp_bond->isWithinRect( qr, false ) )
-            ret = true;
+            tmp_bond->Highlight(true);
+        else
+            allHighlighted = false;
     }
-    if ( ( ret == true ) && ( shiftdown == true ) ) {
+
+    if ( ( allHighlighted == true ) && ( shiftdown == true ) ) {
         qDebug() << "selectall";
         SelectAll();
-        return false;
+        return;
     }
+
     foreach ( QSharedPointer<Text> tmp_text, labels )
-        tmp_text->isWithinRect( qr, false );
+        if ( tmp_text->isWithinRect( qr, false ) )
+            tmp_text->Highlight(true);
 
     foreach ( QSharedPointer<Symbol> tmp_sym, symbols )
-        tmp_sym->isWithinRect( qr, false );
-    return false;
+        if ( tmp_sym->isWithinRect( qr, false ) )
+            tmp_sym->Highlight(true);
 }
 
 /// Calls SelectAll() for bonds, labels, symbols
@@ -461,7 +466,7 @@ void MakeTomoveList(Molecule* m, QList<DPoint*> &tomove)
 /// Adds param to start, end, and all points to move. Calls Changed().
 void Molecule::Move( double dx, double dy )
 {
-    qDebug() << "Molecule::Move(" << dx << dy << ")";
+    //qDebug() << "Molecule::Move(" << dx << dy << ")";
     start->x += dx;
     start->y += dy;
     end->x += dx;

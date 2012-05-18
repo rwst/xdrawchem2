@@ -430,7 +430,7 @@ QRect ChemData::selectionBox()
  * box changes.  This function is called to start checking whether objects
  * fall within the select box and settig highlighted on them.
  ***/
-void ChemData::NewSelectRect( QRect n, bool /* shiftdown */ )
+void ChemData::NewSelectRect( QRect n, bool shiftdown )
 {
     QList < DPoint * >allpts = UniquePoints();
 
@@ -442,10 +442,11 @@ void ChemData::NewSelectRect( QRect n, bool /* shiftdown */ )
         }
     }
 
-    //QSharedPointer<Drawable> tmp_draw;
-    //foreach ( tmp_draw, drawlist ) {
-    //    tmp_draw->isWithinRect( n, shiftdown );
-    //}
+    QSharedPointer<Drawable> tmp_draw;
+    foreach ( tmp_draw, drawlist ) {
+        if (tmp_draw->metaObject() == &Molecule::staticMetaObject)
+            ((Molecule*)tmp_draw.data())->HighlightIfWithinRect( n, shiftdown );
+    }
 }
 
 /// Returns rectangle enclosing all highlighted UniquePoints(), with a margin.

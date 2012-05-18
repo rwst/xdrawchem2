@@ -54,7 +54,7 @@ public:
 
     bool Erase(QSharedPointer<Drawable> );
     void EraseSelected();
-    bool isWithinRect( QRect, bool );
+    void HighlightIfWithinRect( QRect, bool );
     bool WithinBounds( DPoint * );
     void SelectAll();
     void DeselectAll();
