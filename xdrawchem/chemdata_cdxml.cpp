@@ -25,6 +25,7 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
     int d1, ptr = 0;
     int *st1;
     double l1, l2, l3, l4;
+    CML_Atom *tmp_atom = 0;
 
     do {
         bool found = ReadTag( wholefile, ptr, thistag );

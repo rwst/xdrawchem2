@@ -142,6 +142,7 @@ bool ChemData::LoadCMLFile( QString wholefile, QString doctype )
             }
         }
         // handle <atom> records
+        CML_Atom *tmp_atom = 0;
         if ( thistag.indexOf( QString( "<atom " ) ) >= 0 ) {
             st1 = new int;
 
@@ -434,7 +435,7 @@ void ChemData::Convert_CML_Lists_To_Native()
 
     // convert CML_Atoms to DPoints
     QList < DPoint * >points;
-    foreach ( tmp_atom, CML_Atoms ) {
+    foreach ( CML_Atom *tmp_atom, CML_Atoms ) {
         points.append( tmp_atom->toDPoint() );
     }
     // add Bonds
