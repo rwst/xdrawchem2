@@ -162,7 +162,6 @@ void ChemData::addBond( DPoint * s, DPoint * e, int thick, int order, QColor c, 
         m->addBond( s, e, thick, order, c, hl );
         QSharedPointer<Drawable> d (m);
         drawlist.append( d );
-        debug_mol = (Molecule*)d.data();
         return;
     }
     // one point exists, or both in same molecule
@@ -513,6 +512,18 @@ QList < QSharedPointer <Drawable> > ChemData::UniqueObjects()
 
     qDebug() << uo.count();
     return uo;
+}
+
+/// Returns last molecule in list, or 0.
+Molecule *ChemData::LastMolInList()
+{
+    for (int pos=drawlist.size()-1; pos >= 0; --pos)
+    {
+        const QSharedPointer<Drawable>& d = drawlist.at(pos);
+        if (d->metaObject() == &Molecule::staticMetaObject)
+            return (Molecule*)d.data();
+    }
+    return 0;
 }
 
 //cmake#include "chemdata.moc"

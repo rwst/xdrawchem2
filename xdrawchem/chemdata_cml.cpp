@@ -504,10 +504,9 @@ void ChemData::Convert_CML_Lists_To_Native()
         drawlist.append( tmp_draw );
     }
 
-    qDebug() << *debug_mol;
-    SelectAll();
-    qDebug() << *debug_mol;
-    QRect sb = selectionBox();
+    Molecule *mol = LastMolInList();
+
+    QRect sb = mol->BoundingBox();
 
     qDebug() << sb.left();
     qDebug() << sb.right();
@@ -516,7 +515,7 @@ void ChemData::Convert_CML_Lists_To_Native()
     double tx = RenderTopLeft.x() + 50 - sb.left();
     double ty = RenderTopLeft.y() + 50 - sb.top();
 
-    Move( tx, ty );
+    mol->Move( tx, ty );
 }
 
 // Save CML format
