@@ -169,6 +169,7 @@ bool ChemData::LoadCMLFile( QString wholefile, QString doctype )
             CML_Atoms.append( tmp_atom );
         }
         // handle <bond> records
+        CML_Bond *tmp_bond;
         if ( thistag.indexOf( QString( "<bond " ) ) >= 0 ) {
             st1 = new int;
 
@@ -439,7 +440,7 @@ void ChemData::Convert_CML_Lists_To_Native()
     // add Bonds
     DPoint *end1 = 0, *end2 = 0;        // Bond endpoints
 
-    foreach ( tmp_bond, CML_Bonds ) {
+    foreach ( CML_Bond *tmp_bond, CML_Bonds ) {
         // find first atom
         foreach ( DPoint *tmp_pt, points ) {
             if ( tmp_bond->a1 == tmp_pt->id ) {

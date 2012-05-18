@@ -104,6 +104,7 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
             }
         }
         // handle <graphic> and <graphic/>
+        CML_Bond *tbond;
         if ( thistag.indexOf( QString( "<graphic" ) ) >= 0 ) {
             qDebug() << thistag;
             st1 = new int;
@@ -111,7 +112,7 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
             *st1 = CDXML_GRAPHIC;
             TagStack.append( st1 );
             tokens = ReadAttr( thistag );
-            tmp_bond = new CML_Bond;
+            tbond = new CML_Bond;
             for ( int c1 = 0; c1 < tokens.count(); c1 += 2 ) {
                 a1 = tokens.at( c1 );
                 v1 = tokens.at( c1 + 1 );
@@ -292,7 +293,7 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
 
             *st1 = CDXML_BOND;
             TagStack.append( st1 );
-            tmp_bond = new CML_Bond;
+            CML_Bond *tmp_bond = new CML_Bond;
             tmp_bond->a1 = "";
             tokens = ReadAttr( thistag );
             for ( int c1 = 0; c1 < tokens.count(); c1 += 2 ) {
@@ -329,7 +330,7 @@ bool ChemData::LoadCDXMLFile( QString wholefile, QString doctype )
                 qDebug() << "Imbalanced <bond> tags!";
             }
             if ( nodedepth == 0 )       // only add if not in a node
-                CML_Bonds.append( tmp_bond );
+                CML_Bonds.append( tbond );
         }
         // Look for end of document
         if ( thistag.indexOf( QString( "</" ) + doctype ) >= 0 ) {
